@@ -1,0 +1,144 @@
+---
+title:  "Gró-FTP - Stock assessment line - Simple pop. models"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+# Simple population models
+
+# Basic models
+
+## Exponential models
+
+Wikipedia example: if a species of bacteria doubles every 10 minutes, starting with 1 bacteria, how many bacteria would there be after 1 hour?
+
+There are 3 pieces of information here, which we can represent with mathematical notation: $N_0$ = initial population = 1 R = rate of increase = 2 per 10 minutes (or 2/(10 mins/60 mins) in per-hour units) T = time step = 10 minutes (or 10 min/60 mins in per-hour units) t = total number of time steps = 60 mins/10 mins (or 1 hour/ (10/60 hour)) = 6
+
+Here is an equation that describes the process of increasing over time:
+
+$N_t = N_0*R^t$
+
+$N_6 = 1*2^6 = 64$
+
+After one hour, or 6 ten-minute intervals, there would be sixty-four bacteria.
+
+RExcercies...$N_t = N_0*R^t = R*N_{t-1} = N_{t-1} + r*N_{t-1}$
+
+Therefore, if $N_t = N_{t-1} + r*N_{t-1}$, then $dN/dt = r*N$
+
+### Exercise 1
+
+```{r}
+#Below, TT and PP are storage vectors for your time step (TT) 
+#and your population abundance measure at that time step. So TT[1] shows year 1 
+#as your first time step; PP[1] shows your population abundance at TT[1]. 
+PP<-vector(mode = "numeric", length = 5); RR<-exp(1); PP0<-1
+TT<-1:5
+PP[1]; TT[1]
+
+#RR and PP0 above are the 2 parameters included in this model (in contrast to storage). 
+#The 2 parameters affect the values resulting in PP, based on TT). 
+#Therefore, they affect the shape of your population growth function. 
+#TT is input, PP is output, and the PP output values depend on parameters RR and PP0.
+# See how equations in slides are translated into the model below. Also try to keep 
+# track of your parameters versus storage components as the models presented become 
+# more complex.
+
+#This is the model - it updates your expected population abundance at each of the 
+#5 time step, assuming the population grows exponentially.
+for(i in 1:5){ PP[i]<-PP0*exp(TT[i])}
+
+#Note that the model can also be written as below with the same result.
+for(i in 1:5){ PP[i]<-PP0*RR^TT[i]}
+PP
+par(mfrow = c(1,3))
+plot(PP~TT, xlab = "Time", ylab = "Population N")
+
+#### Still Other ways to write the exponential model ... 
+PP<-vector(mode = "numeric", length = 5); PP0<-1
+TT<-1:5
+PP[1]<-PP0*RR
+for(i in 2:5){ PP[i]<-RR*PP[i-1]} 
+PP
+plot(PP~TT, xlab = "Time", ylab = "Population N") # same graph
+
+# If RR = 1 + rr, then this is the same as PP[i]<-(1 + rr)*PP[i-1] = PP[i-1] + rr*PP[i-1].
+#  Change the code above to the last form to show this: 
+
+PP<-vector(mode = "numeric", length = 5); PP0<-1
+TT<-1:5
+rr <- RR - 1
+PP[1]<-PP0 + rr*PP0
+PP[1]<-PP0*(1 + rr)
+for(i in 2:5){ PP[i]<-PP[i-1] + rr*PP[i-1]} 
+for(i in 2:5){ PP[i]<-PP[i-1]*(1 + rr)} 
+PP
+plot(PP~TT, xlab = "Time", ylab = "Population N") # same graph
+
+
+
+```
+
+## Logistic growth
+
+$N_t = N_{t-1} + r*N_{t-1}*(1-N_{t-1}/K)$
+
+-   What is the new parameter?
+
+-   What is dN/dt?
+
+-   What differs from exponential growth?
+
+### Exercise
+
+```{r}
+# Add density dependence into the code below to reflect logistic growth. 
+
+PP<-vector(mode = "numeric", length = 10); PP0<-2; rr<-1 ;
+TT<-1:10
+KK<-10
+PP[1]<-PP0+rr*PP0*(1-PP0/KK)
+for(i in 2:10){ PP[i]<-PP[i-1] + rr*PP[i-1]*(1-PP[i-1]/KK)} 
+PP
+plot(PP~TT, xlab = "Time", ylab = "Population N", ylim = c(0,12)) 
+
+# Now Change rr and K values above to see how they affect the model 
+#Q2.0: Try KK between values of 10 and 70. Why does it control?
+
+PP<-vector(mode = "numeric", length = 10); PP0<-2; rr<-1 ;
+TT<-1:10
+KK<-70
+PP[1]<-PP0+rr*PP0*(1-PP0/KK)
+for(i in 2:10){ PP[i]<-PP[i-1] + rr*PP[i-1]*(1-PP[i-1]/KK)} 
+PP
+plot(PP~TT, xlab = "Time", ylab = "Population N") 
+
+
+#Q2.1: Set KK at 50 and rr at 2. Why do you get strange shapes at higher rr values?
+
+PP<-vector(mode = "numeric", length = 1500); PP0<-2; rr<-2 ;
+TT<-1:1500
+KK<-50
+PP[1]<-PP0+rr*PP0*(1-PP0/KK)
+for(i in 2:1500){ PP[i]<-PP[i-1] + rr*PP[i-1]*(1-PP[i-1]/KK)} 
+PP
+plot(PP~TT, xlab = "Time", ylab = "Population N") 
+
+
+```
+
+## Further considerations
+
+-   What biological and ecological factors contribute to r and K?
+-   What population characteristic is the most important for natural resource management?
+-   How to detect this without biological/ecological data?
+-   Draw a graph of how population growth rate ($dN/dt$) changes over time for the case studies of 1) exponential and 2) logistic growth. How does the density dependent term $(1-N/K)$ change over time?
+-   What species would be difficult to represent with this?

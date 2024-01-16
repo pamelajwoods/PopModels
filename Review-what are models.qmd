@@ -1,0 +1,247 @@
+---
+title:  "Gró-FTP - Stock assessment line - what are models?"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+# Review - what are models?
+
+Models are only a representation and simplification of reality. Population dynamics models represent how populations grow or decline over time. They can be **parameterized** by **fitting** models to available data.
+
+In natural resource management of *renewable* resources, predictions from population dynamics models often used to provide advice for near-term removals from a population.
+
+A wide variety of models and types of information can be included, but here we start with some of the most basic models. These are also often used when little detail is known about the population.
+
+## Parameterization
+
+*Parameterization* is the process of choosing values for *parameters* in an equation. For example, in a line equation:
+
+$y = a + bx$ ,
+
+the intercept parameter $a$ and the slope parameter $b$ can be chosen to be certain values. For example, what value of $y$ results from $a=0$ and $b=1$? Any two values can be used to create a single line that yields a given set of $x$ and $y$ values. Plotting these yields a line:
+
+```{r, echo=TRUE}
+a <- 0; b<-1; x<-1:10; y<- a + b*x
+
+tibble(x,y) %>% ggplot(aes(x,y)) + geom_line()
+```
+
+This line is an example of a *mathematical model*:
+
+```{r}
+knitr::include_graphics('imgs/Mathematical_Models.png')
+```
+
+With a linear functional form:
+
+```{r}
+knitr::include_graphics('imgs/Linear_Models.png')
+```
+
+Other functional forms are possible. For example, can you find an equation that roughly represents this process?
+
+```{r}
+knitr::include_graphics('imgs/Wave_model.png')
+```
+
+This is one option, but others exist:
+
+```{r, echo = TRUE}
+x <- seq(0,3*pi,pi/10); y <- sin(x)
+
+tibble(x,y) %>% ggplot(aes(x,y)) + geom_line()
+```
+
+Another kind of model could describe circular processes:
+
+```{r}
+knitr::include_graphics('imgs/Circular_model.png')
+```
+
+Mathematical models therefore can have a variety of forms, with specific *parameterizations* defining a certain model's exact shape.
+
+## Statistical models
+
+Instead of describing operational linkages, statistical models describe variation surrounding a central process. The generation of this variation is often itself described of as a process, but it is instead a process describing how chance results in certain numbers more frequently than other numbers, given the type of process. The result of these processes are *distributions* around a central process, such as a binomial, Poisson, Gaussian (normal), or lognormal distributions.
+
+```{r}
+knitr::include_graphics('imgs/Statistical models.png')
+```
+
+Distributions are well-used in the study of biological processes, because they are notoriously imperfect and therefore partially controlled by chance. Growth for example, can be partially determined by age, but is also simply the result of variation:
+
+```{r}
+age <- 6:115; pred_size <- 6:115; size <-pred_size + rnorm(110, sd = 10)
+
+tibble(age, size, pred_size) %>% ggplot(aes(age, size)) + geom_point() + geom_line(aes(age, pred_size))
+
+tibble(age, size, pred_size) %>% ggplot(aes(size - pred_size)) + geom_histogram()
+```
+
+## Fitting
+
+If we do not know the process behind a pattern observed in nature, how do we best describe the process using parameters, or *parameterize* our model?
+
+This is done using statistical model fitting. For example:
+
+```{r, echo = TRUE}
+age <- 6:115; pred_size <- 6:115; size <-pred_size + rnorm(110, sd = 10)
+
+test.lm <- lm(size~age)
+summary(test.lm)
+```
+
+Notice that the fitting process accurately achieved our *simulated* parameters? How did it do that? It used a fitting *algorithm* to find the line that best fit all data points simultaneously. This is done by *minimizing the objective function*.
+
+A general form for an algorithm goes something like:
+
+1 - Pick or jump to new values for parameters (e.g., $a$ and $b$ in a linear model).
+
+2- Calculate predictions
+
+3 - Evaluate the objection function, which is usually a statistic representing model fit (e.g., sum of squares or likelihood function)
+
+4 - Repeat 1-3, then compare the fit to the previous value.
+
+5 - If the fit is better, keep new parameter values. If worse, keep old values. Some algorithms add an element of chance here to avoid local minima (e.g., keep the better values only 90% of the time)
+
+6 - Repeat until no better answer can be found (i.e., essentially the same answer is found again and again, indicating *convergence*)
+
+### Exercise
+
+By comparison, let's try to do something similar by hand:\
+
+```{r, echo = T}
+####Exercise 3 - fit linear model----###
+line_f<-function(b, a = 0, x = xx){
+  y<-a + b*x
+  return(y)
+}
+
+
+set.seed(100)
+?rnorm
+rnorm(100)
+hist(rnorm(100))
+
+xx <- seq(0.5,3.5,0.5)
+line_f(xx)
+
+obs <- 0 + 2.3*xx + rnorm(length(xx))
+
+
+pred<-line_f(1)
+
+par(mfrow = c(1,1))
+plot(obs~xx)
+lines(pred~xx)
+
+SS1<- sum((obs-pred)^2)
+
+pred<-line_f(1.5)
+SS1.5<- sum((obs-pred)^2)
+pred1.5<-line_f(1.5)
+
+pred<-line_f(2)
+SS2<- sum((obs-pred)^2)
+pred2<-line_f(2)
+
+pred<-line_f(2.5)
+SS2.5<- sum((obs-pred)^2)
+pred2.5<-line_f(2.5)
+
+par(mfrow = c(1,1))
+plot(obs~xx)
+lines(pred1.5~xx)
+lines(pred2~xx, col = 2)
+lines(pred2.5~xx, col = 3)
+
+pred<-line_f( 3)
+SS3<- sum((obs-pred)^2)
+
+SS1; SS1.5; SS2; SS2.5; SS3
+
+plot(c(SS1, SS1.5, SS2, SS2.5, SS3)~c(1, 1.5, 2, 2.5, 3), type = 'l')
+
+
+SS_f<-function(b, a = 0, obs1 = obs){
+  pred<-line_f(b)
+  SS<- sum((obs1-pred)^2)
+  return(SS)
+}
+
+SS_f(2.5)
+
+
+
+```
+
+There must be a better way to do this... try <https://www.r-bloggers.com/2013/04/the-golden-section-search-method-modifying-the-bisection-method-with-the-golden-ratio-for-numerical-optimization/>
+
+<https://www.youtube.com/watch?v=VBFuqglVW3c>
+
+```{r, echo = TRUE}
+
+source('goldensectionsearch.r')
+
+golden.section.search(SS_f, 1, 3, 0.00001)
+
+#Check out optim function
+?optim
+```
+
+And for more complicated problems with many parameters, there are more complex algorithms, e.g.:
+
+<https://en.wikipedia.org/wiki/Simulated_annealing>
+
+## Conclusion
+
+Understanding the basics of programming, mathematical modeling, and statistical model fitting are not only the basis to stock assessment, but also yields other transferable skills.
+
+```{r}
+knitr::include_graphics('imgs/Transferable_skills.png')
+```
+
+This process can be frustrating as you learn *debugging*, or quickly learning how to find your own mistakes. Some things to remember as you get better at this:
+
+```{r}
+knitr::include_graphics('imgs/Debugging.png')
+```
+
+### Exercise
+
+This text came with the quarto package. Can you fit linear models to each of the three groups of penguins and add the lines to the plots?
+
+## Meet the penguins
+
+![](https://raw.githubusercontent.com/quarto-dev/quarto-web/main/docs/get-started/hello/rstudio/lter_penguins.png){style="float:right;" fig-alt="Illustration of three species of Palmer Archipelago penguins: Chinstrap, Gentoo, and Adelie. Artwork by @allison_horst." width="401"}
+
+The `penguins` data from the [**palmerpenguins**](https://allisonhorst.github.io/palmerpenguins "palmerpenguins R package") package contains size measurements for `r nrow(penguins)` penguins from three species observed on three islands in the Palmer Archipelago, Antarctica.
+
+The plot below shows the relationship between flipper and bill lengths of these penguins.
+
+```{r}
+#| label: plot-penguins
+#| warning: false
+#| echo: false
+
+ggplot(penguins, 
+       aes(x = flipper_length_mm, y = bill_length_mm)) +
+  geom_point(aes(color = species, shape = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(
+    title = "Flipper and bill length",
+    subtitle = "Dimensions for penguins at Palmer Station LTER",
+    x = "Flipper length (mm)", y = "Bill length (mm)",
+    color = "Penguin species", shape = "Penguin species"
+  ) +
+  theme_minimal()
+```
