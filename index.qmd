@@ -27,3 +27,17 @@ The population dynamics section of teaching is split into roughly 8 half-day ses
 \[Age-based models 1\]
 
 \[Age-based models 2\]
+
+Render here, check index.html
+
+rm -r population_dynamics/
+
+cp -a \~/Documents/Hafro/UNU/2024/PopModels/\_site .
+
+mv \_site population_dynamics
+
+chmod 777 population_dynamics
+
+ls -l
+
+heima..
