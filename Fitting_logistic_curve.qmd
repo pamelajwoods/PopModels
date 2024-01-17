@@ -1,5 +1,5 @@
 ---
-title:  "Gró-FTP - Stock assessment line - Simple pop. models"
+title:  "Fitting a logistic curve"
 format: html
 editor: visual
 ---
@@ -10,15 +10,18 @@ editor: visual
 
 library(tidyverse)
 library(palmerpenguins)
+theme_set(theme_minimal())
 ```
 
-# Fitting a logistic curve
+
 
 ## Logistic growth - review
 
-Remember this from the Simple Population Models section?
+Remember this equation from the Simple Population Models section?
 
-$N_t = N_{t-1} + r*N_{t-1}*(1-N_{t-1}/K)$
+$N_t = N_{t-1} + rN_{t-1}(1-N_{t-1}/K)$
+
+Let's review.
 
 -   What is the functional form?
 
@@ -28,15 +31,13 @@ $N_t = N_{t-1} + r*N_{t-1}*(1-N_{t-1}/K)$
 
 ### Fitting a logistic growth curve to elephant data
 
-Note - here we use sum of squares as our objective function, which is not the best way to fit a non-linear model, but is used for demonstration.
+In this section, building on the basics we have learned on how statistical models are fit, we are going to fit a non-linear model. The model describes logistic growth of an elephant population. Note: here we use sum of squares as our objective function, which is not the best way to fit a non-linear model, but is used for demonstration.
 
-Take a look at the website below to get familiar with the system. Then continue with the exercise.
-
-<https://ecosystem-project.com/epopulationgrowth>
+Take a look at [this website](https://ecosystem-project.com/epopulationgrowth) below to get familiar with the system. Then continue with the exercise.
 
 ### Exercise
 
-```{r}
+```{r, echo = TRUE}
 
 Yrs<-c(1903, 1905, 1907, 1926, 1928, 1932, 1935, 1939, 1946, 1948, 1961, 1964, 1967, 1970, 1972, 1974, 1976, 1979, 1982, 1985, 1988, 1990, 1993, 1996)
 Data<-c(12, 15, 17, 25, 27, 30, 37, 42, 52, 108, 156, 219, 7563, 8642, 7378, 7245, 6983, 7367, 7689, 8503, 7654, 6803, 7204, 7343)
@@ -45,13 +46,13 @@ length(Yrs); length(Data)
 #pars, Years, and Numbers are vector arguments
 LogisticGrowthModel<-function(pars, Years, Numbers, ReturnResults=F){
   
-  print(Years)
+  #print(Years)
   
   KK<-pars[1]; rr<-pars[2]; BB<-pars[3]#assign parameters
   
   TT<-Years[1]:Years[length(Years)] #stretch out years within model so no missing years
 
-  print(TT)
+  #print(TT)
   
   PP<-vector(mode = "numeric", length = length(TT));  #empty population size vector
   
@@ -70,8 +71,8 @@ LogisticGrowthModel<-function(pars, Years, Numbers, ReturnResults=F){
     
     } 
 
-  print(DD)
-  print(PP)
+  #print(DD)
+  #print(PP)
   
    Predictions<-data.frame(Years = TT, Pred = PP); #create predictions
    
@@ -81,8 +82,8 @@ LogisticGrowthModel<-function(pars, Years, Numbers, ReturnResults=F){
   
    SS<-sum((Results$Numbers - Results$Pred)^2) #calculate sum of squares: sum((obs - pred)^2)
   
-   print('Results')
-   print(Results)
+   #print('Results')
+   #print(Results)
   if(ReturnResults==T){ return(list(Predictions, SS))} else {return(SS)}
    #controls options for what is returned from function
 
@@ -96,9 +97,13 @@ LogisticGrowthModel(c(7500,0.5,1), Years=Yrs, Numbers=Data, ReturnResults=T)
 
 Now we would like to fit this model by minimizing the objective function using algorithms implemented in the 'optim' function.
 
-```{r, eval = FALSE}
-?optim # this function tries different parameter values to minimize the output of 
+```{r, eval = FALSE, echo = TRUE}
+?optim
+# this function tries different parameter values to minimize the output of 
 #LogisticGrowthModel. The output is the sum of squares.
+```
+
+```{r, echo = TRUE}
 
 OptPars1<-optim(c(7500,0.5,1), LogisticGrowthModel, method = 'L-BFGS-B', Years = Yrs, Numbers = Data, lower = c(2000, 0,0.8), upper = c(10000, 1,100), control = list(maxit = 50000))
 OptPars1
@@ -109,11 +114,16 @@ OptPars2
 Predictions1<-LogisticGrowthModel(OptPars1$par, Yrs, Data, ReturnResults=T)[[1]]
 Predictions2<-LogisticGrowthModel(OptPars2$par, Yrs, Data, ReturnResults=T)[[1]]
 
-plot(Data~Yrs, pch = "*", col = "red", ylim = c(0,8000), ylab = '', xlab = '')
-par(new = T)
-plot(Pred~Years, data = Predictions1, type = "l", ylim = c(0,8000))
-lines(Pred~Years, data = Predictions2, lty = 2)
+#tibble(Yrs, Data) %>% 
+#  ggplot(aes(Yrs, Data)) + geom_point(shape = '*', color = 'red', size = 5) + ylim(0,8000)
 
+
+tibble(Yrs, Data) %>% 
+  ggplot(aes(Yrs, Data)) + geom_point(shape = '*', color = 'red', size = 5) + ylim(0,8000) + geom_line(aes(Years, Pred), data = Predictions1) + geom_line(aes(Years, Pred), data = Predictions2, linetype = 2)
+
+```
+
+```{r, echo = TRUE}
 # Now try to figure out the best time lag as shown in the on-line example. 
 # Hint: plot SS as it relates to the time lag value. SS is your sums of 
 # squares, so the value with the lowest sum of squares is the one you want. 
@@ -162,37 +172,38 @@ for(i in 0:6){
   SS2[i+1]<-try(OptPars2_list[[i+1]]$value/1000000,silent=T )
 }
 
-SS1 
-SS2
+SS1 %>% head(.)
+SS2 %>% head(.)
 
+```
 
+```{r, echo = TRUE}
 #Q - The time lag corresponding with the minimum SS is the best. What is time lag is that?
 #That is, which would you choose if the best model by least squares (SS)?
 
-par(mfrow = c(1,2))
-plot(SS1~c(0:6))
-plot(SS2~c(0:6))
+
+
+tibble(lags=c(0:6), SS=SS1) %>% 
+  mutate(type = 'SS1') %>% 
+  bind_rows(tibble(lags=c(0:6), SS=ifelse(grepl('Error', SS2), NA_real_, as.numeric(SS2))) %>% 
+  mutate(type = 'SS2')) %>% 
+  group_by(type) %>% 
+  ggplot(aes(lags, SS)) + geom_point() + facet_wrap(~type)
+
+```
+
+```{r, echo = TRUE}
 
 #Q - BUT, this is what happens with lag = 5. Why? (Compare plots with lag = 0 - 4)
-par(mfrow = c(1,3))
 
 OptPars<-NULL
 
 OptPars<-optim(c(7500,0.5,1), LogisticGrowthModelLag, t=5, Years = Yrs, Numbers = Data)
 
 Predictions<-LogisticGrowthModelLag(c(OptPars$par), t=5,Yrs, Data, ReturnResults=T)[[1]]
+Predictions2<-LogisticGrowthModelLag(c(OptPars1_list[[6]]$par), t=6-1,Yrs, Data, ReturnResults=T)[[1]]
 
-plot(Data~Yrs, pch = "*", col = "red", ylim = c(0,8000), xlab = '', ylab = '')
-
-par(new = T)
-
-plot(Pred~Years, data = Predictions, type = "l", ylim = c(0,8000))
-
-mtext('Lag 5')
-
-Predictions<-LogisticGrowthModelLag(c(OptPars1_list[[6]]$par), t=6-1,Yrs, Data, ReturnResults=T)[[1]]
-
-lines(Pred~Years, data = Predictions, lty = 2)
+L5 <- tibble(Yrs, Data) %>% ggplot(aes(Yrs, Data)) + geom_point(shape = "*", color = "red", size = 5) + ylim(0,9000) + geom_line(aes(Years, Pred), data = Predictions) + ggtitle('Lag 5') + geom_line(aes(Years, Pred), data = Predictions2, lty = 2)
 
 LogisticGrowthModelLag(OptPars2$par, t=5,Yrs, Data, ReturnResults=T)
 
@@ -201,42 +212,26 @@ LogisticGrowthModelLag(OptPars2$par, t=5,Yrs, Data, ReturnResults=T)
 OptPars<-NULL
 OptPars<-optim(c(7500,0.5,1), LogisticGrowthModelLag, t=3, Years = Yrs, Numbers = Data)
 Predictions<-LogisticGrowthModelLag(c(OptPars$par), t=3,Yrs, Data, ReturnResults=T)[[1]]
-plot(Data~Yrs, pch = "*", col = "red", ylim = c(0,8000), xlab = '', ylab = '')
-par(new = T)
-plot(Pred~Years, data = Predictions, type = "l", ylim = c(0,8000))
-mtext('Lag 3')
-Predictions<-LogisticGrowthModelLag(c(OptPars1_list[[4]]$par), t=4-1,Yrs, Data, ReturnResults=T)[[1]]
-lines(Pred~Years, data = Predictions, lty = 2)
-
+Predictions2<-LogisticGrowthModelLag(c(OptPars1_list[[4]]$par), t=4-1,Yrs, Data, ReturnResults=T)[[1]]
+L3 <- tibble(Yrs,Data) %>% ggplot(aes(Yrs, Data)) + geom_point(shape = "*", color = "red", size = 5) + ylim(0,9000) + geom_line(aes(Years, Pred), data = Predictions) + ggtitle('Lag 3') + geom_line(aes(Years, Pred), data = Predictions2, lty = 2)
 
 #...and no lag = 0
 OptPars<-NULL
 OptPars<-optim(c(7500,0.5,1), LogisticGrowthModelLag, t=0, Years = Yrs, Numbers = Data)
 Predictions<-LogisticGrowthModelLag(c(OptPars$par), t=0,Yrs, Data, ReturnResults=T)[[1]]
-plot(Data~Yrs, pch = "*", col = "red", ylim = c(0,8000), xlab = '', ylab = '')
-par(new = T)
-plot(Pred~Years, data = Predictions, type = "l", ylim = c(0,8000))
-mtext('Lag 0')
-Predictions<-LogisticGrowthModelLag(c(OptPars1_list[[1]]$par), t=1-1,Yrs, Data, ReturnResults=T)[[1]]
-lines(Pred~Years, data = Predictions, lty = 2)
+Predictions2<-LogisticGrowthModelLag(c(OptPars1_list[[1]]$par), t=1-1,Yrs, Data, ReturnResults=T)[[1]]
+L0 <- tibble(Yrs, Data) %>% ggplot(aes(Yrs, Data)) + geom_point(shape = "*", color = "red", size = 5) + ylim(0,9000) + geom_line(aes(Years, Pred), data = Predictions) + ggtitle('Lag 0') + geom_line(aes(Years, Pred), data = Predictions2, lty = 2)
 
 
 #Q - Which one fits the data best?
+gridExtra::grid.arrange(L5, L3, L0, ncol = 3)
 
-
-#TAKE HOME MESSAGES
-#- the optimizer matters
-#- the starting values matter
-#- the biology matters
 ```
 
-## Further considerations
+### TAKE HOME MESSAGES 
 
--   What biological and ecological factors contribute to r and K?
++ The optimizer matters
 
-<!-- -->
++ The starting values matter
 
--   What population characteristic is the most important for natural resource management?
--   How to detect this without biological/ecological data?
--   Draw a graph of how population growth rate ($dN/dt$) changes over time for the case studies of 1) exponential and 2) logistic growth. How does the density dependent term $(1-N/K)$ change over time?
--   What species would be difficult to represent with this?
++ The biology matters

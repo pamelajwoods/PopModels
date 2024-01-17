@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>PopModels - Gró-FTP - Stock assessment line - what are models?</title>
+<title>PopModels - Review - what are models?</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -175,7 +175,7 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#review---what-are-models" id="toc-review---what-are-models" class="nav-link active" data-scroll-target="#review---what-are-models">Review - what are models?</a>
+  <li><a href="#section" id="toc-section" class="nav-link active" data-scroll-target="#section"></a>
   <ul class="collapse">
   <li><a href="#parameterization" id="toc-parameterization" class="nav-link" data-scroll-target="#parameterization">Parameterization</a></li>
   <li><a href="#statistical-models" id="toc-statistical-models" class="nav-link" data-scroll-target="#statistical-models">Statistical models</a></li>
@@ -197,7 +197,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Gró-FTP - Stock assessment line - what are models?</h1>
+<h1 class="title">Review - what are models?</h1>
 </div>
 
 
@@ -214,16 +214,16 @@ window.Quarto = {
 </header>
 
 
-<section id="review---what-are-models" class="level1">
-<h1>Review - what are models?</h1>
+<section id="section" class="level1">
+<h1></h1>
 <p>Models are only a representation and simplification of reality. Population dynamics models represent how populations grow or decline over time. They can be <strong>parameterized</strong> by <strong>fitting</strong> models to available data.</p>
-<p>In natural resource management of <em>renewable</em> resources, predictions from population dynamics models often used to provide advice for near-term removals from a population.</p>
+<p>In natural resource management of <em>renewable</em> resources, predictions from population dynamics models often used to provide advice for near-term removals from a population. For example, in fisheries management, usually the advice provides guidance on maximal amounts that can be removed from a fish population (i.e., catch) without depressing its ability to regenerate (i.e., overfishing).</p>
 <p>A wide variety of models and types of information can be included, but here we start with some of the most basic models. These are also often used when little detail is known about the population.</p>
 <section id="parameterization" class="level2">
 <h2 class="anchored" data-anchor-id="parameterization">Parameterization</h2>
-<p><em>Parameterization</em> is the process of choosing values for <em>parameters</em> in an equation. For example, in a line equation:</p>
+<p><em>Parameterization</em> is the process of choosing values for <em>parameters</em> in an equation. In a line equation:</p>
 <p><span class="math inline">\(y = a + bx\)</span> ,</p>
-<p>the intercept parameter <span class="math inline">\(a\)</span> and the slope parameter <span class="math inline">\(b\)</span> can be chosen to be certain values. For example, what value of <span class="math inline">\(y\)</span> results from <span class="math inline">\(a=0\)</span> and <span class="math inline">\(b=1\)</span>? Any two values can be used to create a single line that yields a given set of <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> values. Plotting these yields a line:</p>
+<p>the intercept parameter <span class="math inline">\(a\)</span> and the slope parameter <span class="math inline">\(b\)</span> can be chosen to be certain values. For example, what value of <span class="math inline">\(y\)</span> results from <span class="math inline">\(a=0\)</span> and <span class="math inline">\(b=1\)</span>? Any two values can be used to create a single line that yields an infinite set of <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> values along it. Plotting these yields a line:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">0</span>; b<span class="ot">&lt;-</span><span class="dv">1</span>; x<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>; y<span class="ot">&lt;-</span> a <span class="sc">+</span> b<span class="sc">*</span>x</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -238,7 +238,6 @@ window.Quarto = {
 </div>
 <p>This line is an example of a <em>mathematical model</em>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">'imgs/Mathematical_Models.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -249,7 +248,6 @@ window.Quarto = {
 </div>
 <p>With a linear functional form:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">'imgs/Linear_Models.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -260,7 +258,6 @@ window.Quarto = {
 </div>
 <p>Other functional forms are possible. For example, can you find an equation that roughly represents this process?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">'imgs/Wave_model.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -269,11 +266,11 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>This is one option, but others exist:</p>
+<p>This is one option, but others exist. Polynomial models for example could replicate this shape, even though they are a class of ‘linear’ models.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">3</span><span class="sc">*</span>pi,pi<span class="sc">/</span><span class="dv">10</span>); y <span class="ot">&lt;-</span> <span class="fu">sin</span>(x)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(x,y) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(x,y)) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">3</span><span class="sc">*</span>pi,pi<span class="sc">/</span><span class="dv">10</span>); y <span class="ot">&lt;-</span> <span class="fu">sin</span>(x)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(x,y) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(x,y)) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -284,7 +281,6 @@ window.Quarto = {
 </div>
 <p>Another kind of model could describe circular processes:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">'imgs/Circular_model.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -297,9 +293,8 @@ window.Quarto = {
 </section>
 <section id="statistical-models" class="level2">
 <h2 class="anchored" data-anchor-id="statistical-models">Statistical models</h2>
-<p>Instead of describing operational linkages, statistical models describe variation surrounding a central process. The generation of this variation is often itself described of as a process, but it is instead a process describing how chance results in certain numbers more frequently than other numbers, given the type of process. The result of these processes are <em>distributions</em> around a central process, such as a binomial, Poisson, Gaussian (normal), or lognormal distributions.</p>
+<p>Instead of describing operational linkages, statistical models describe variation surrounding a central process described by the functional form. The generation of this variation is often itself described of as a process, but it is instead an error process describing how chance results in certain numbers more frequently than other numbers. The result of are <em>error distributions</em> around a central process. These are modeled in statistics using equations for various error distributions, such as a binomial, Poisson, Gaussian (normal), or lognormal distributions.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">'imgs/Statistical models.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -308,11 +303,11 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Distributions are well-used in the study of biological processes, because they are notoriously imperfect and therefore partially controlled by chance. Growth for example, can be partially determined by age, but is also simply the result of variation:</p>
+<p>Distributions are well-used in the study of biological processes, because biological processes are notoriously imperfect and therefore partially controlled by chance. Growth for example, can be partially determined by age, but is also simply the result of variation:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">115</span>; pred_size <span class="ot">&lt;-</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">115</span>; size <span class="ot">&lt;-</span>pred_size <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">110</span>, <span class="at">sd =</span> <span class="dv">10</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(age, size, pred_size) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(age, size)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(age, pred_size))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">115</span>; pred_size <span class="ot">&lt;-</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">115</span>; size <span class="ot">&lt;-</span>pred_size <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">110</span>, <span class="at">sd =</span> <span class="dv">10</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(age, size, pred_size) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(age, size)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(age, pred_size))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -320,7 +315,7 @@ window.Quarto = {
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(age, size, pred_size) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(size <span class="sc">-</span> pred_size)) <span class="sc">+</span> <span class="fu">geom_histogram</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(age, size, pred_size) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(size <span class="sc">-</span> pred_size)) <span class="sc">+</span> <span class="fu">geom_histogram</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 </div>
@@ -338,33 +333,33 @@ window.Quarto = {
 <p>If we do not know the process behind a pattern observed in nature, how do we best describe the process using parameters, or <em>parameterize</em> our model?</p>
 <p>This is done using statistical model fitting. For example:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">115</span>; pred_size <span class="ot">&lt;-</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">115</span>; size <span class="ot">&lt;-</span>pred_size <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">110</span>, <span class="at">sd =</span> <span class="dv">10</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>test.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(size<span class="sc">~</span>age)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(test.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">115</span>; pred_size <span class="ot">&lt;-</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">115</span>; size <span class="ot">&lt;-</span>pred_size <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">110</span>, <span class="at">sd =</span> <span class="dv">10</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>test.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(size<span class="sc">~</span>age)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(test.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 lm(formula = size ~ age)
 
 Residuals:
-     Min       1Q   Median       3Q      Max 
--24.5942  -5.2334  -0.3966   6.3316  24.3620 
+    Min      1Q  Median      3Q     Max 
+-28.504  -7.939   0.768   6.194  36.925 
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)  4.73259    2.00460   2.361     0.02 *  
-age          0.92313    0.02934  31.465   &lt;2e-16 ***
+(Intercept) -1.68348    2.21435   -0.76    0.449    
+age          1.01615    0.03241   31.36   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 9.771 on 108 degrees of freedom
-Multiple R-squared:  0.9016,    Adjusted R-squared:  0.9007 
-F-statistic:   990 on 1 and 108 DF,  p-value: &lt; 2.2e-16</code></pre>
+Residual standard error: 10.79 on 108 degrees of freedom
+Multiple R-squared:  0.901, Adjusted R-squared:  0.9001 
+F-statistic: 983.1 on 1 and 108 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
-<p>Notice that the fitting process accurately achieved our <em>simulated</em> parameters? How did it do that? It used a fitting <em>algorithm</em> to find the line that best fit all data points simultaneously. This is done by <em>minimizing the objective function</em>.</p>
-<p>A general form for an algorithm goes something like:</p>
+<p>Notice that the fitting process accurately achieved our <em>simulated</em> parameters? How did it do that? It used a fitting <em>algorithm</em> to find the line that best fit all data points simultaneously. The fit is summarised as a single number in an <em>objective function</em>. Finding the <em>best</em> fit is done iteratively by flipping the sign of an equation that reflects fit to the model (i.e., taking the negative), and then following a routine to <em>minimize the objective function</em>. Flipping the sign is done simply because minimizing is computationally easier to handle than maximizing.</p>
+<p>A general form for such an algorithm goes something like:</p>
 <p>1 - Pick or jump to new values for parameters (e.g., <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> in a linear model).</p>
 <p>2- Calculate predictions</p>
 <p>3 - Evaluate the objection function, which is usually a statistic representing model fit (e.g., sum of squares or likelihood function)</p>
@@ -376,16 +371,16 @@ F-statistic:   990 on 1 and 108 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>By comparison, let’s try to do something similar by hand:<br>
 </p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">####Exercise 3 - fit linear model----</span><span class="al">###</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>line_f<span class="ot">&lt;-</span><span class="cf">function</span>(b, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">x =</span> xx){</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  y<span class="ot">&lt;-</span>a <span class="sc">+</span> b<span class="sc">*</span>x</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>?rnorm</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">rnorm</span>(<span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="do">####Exercise 3 - fit linear model----</span><span class="al">###</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>line_f<span class="ot">&lt;-</span><span class="cf">function</span>(b, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">x =</span> xx){</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  y<span class="ot">&lt;-</span>a <span class="sc">+</span> b<span class="sc">*</span>x</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>?rnorm</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">rnorm</span>(<span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  [1] -0.50219235  0.13153117 -0.07891709  0.88678481  0.11697127  0.31863009
   [7] -0.58179068  0.71453271 -0.82525943 -0.35986213  0.08988614  0.09627446
@@ -405,7 +400,7 @@ F-statistic:   990 on 1 and 108 DF,  p-value: &lt; 2.2e-16</code></pre>
  [91] -0.55712229  1.42830143 -0.89295740 -1.15757124 -0.53029645  2.44568276
  [97] -0.83249580  0.41351985 -1.17868314 -1.17403476</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -413,19 +408,17 @@ F-statistic:   990 on 1 and 108 DF,  p-value: &lt; 2.2e-16</code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>xx <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.5</span>,<span class="fl">3.5</span>,<span class="fl">0.5</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">line_f</span>(xx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>xx <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.5</span>,<span class="fl">3.5</span>,<span class="fl">0.5</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">line_f</span>(xx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  0.25  1.00  2.25  4.00  6.25  9.00 12.25</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="sc">+</span> <span class="fl">2.3</span><span class="sc">*</span>xx <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(xx))</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="dv">1</span>)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(obs<span class="sc">~</span>xx)</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(pred<span class="sc">~</span>xx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="sc">+</span> <span class="fl">2.3</span><span class="sc">*</span>xx <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(xx))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="dv">1</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(xx, obs, pred) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(xx, obs)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(xx,pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -433,25 +426,25 @@ F-statistic:   990 on 1 and 108 DF,  p-value: &lt; 2.2e-16</code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>SS1<span class="ot">&lt;-</span> <span class="fu">sum</span>((obs<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="fl">1.5</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>SS1<span class="fl">.5</span><span class="ot">&lt;-</span> <span class="fu">sum</span>((obs<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>pred1<span class="fl">.5</span><span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="fl">1.5</span>)</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="dv">2</span>)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>SS2<span class="ot">&lt;-</span> <span class="fu">sum</span>((obs<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>pred2<span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="dv">2</span>)</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="fl">2.5</span>)</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>SS2<span class="fl">.5</span><span class="ot">&lt;-</span> <span class="fu">sum</span>((obs<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>pred2<span class="fl">.5</span><span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="fl">2.5</span>)</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(obs<span class="sc">~</span>xx)</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(pred1<span class="fl">.5</span><span class="sc">~</span>xx)</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(pred2<span class="sc">~</span>xx, <span class="at">col =</span> <span class="dv">2</span>)</span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(pred2<span class="fl">.5</span><span class="sc">~</span>xx, <span class="at">col =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>SS1<span class="ot">&lt;-</span> <span class="fu">sum</span>((obs<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="fl">1.5</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>SS1<span class="fl">.5</span><span class="ot">&lt;-</span> <span class="fu">sum</span>((obs<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>pred1<span class="fl">.5</span><span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="fl">1.5</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="dv">2</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>SS2<span class="ot">&lt;-</span> <span class="fu">sum</span>((obs<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>pred2<span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="dv">2</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="fl">2.5</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>SS2<span class="fl">.5</span><span class="ot">&lt;-</span> <span class="fu">sum</span>((obs<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>pred2<span class="fl">.5</span><span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="fl">2.5</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(obs<span class="sc">~</span>xx)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(pred1<span class="fl">.5</span><span class="sc">~</span>xx)</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(pred2<span class="sc">~</span>xx, <span class="at">col =</span> <span class="dv">2</span>)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(pred2<span class="fl">.5</span><span class="sc">~</span>xx, <span class="at">col =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -459,10 +452,25 @@ F-statistic:   990 on 1 and 108 DF,  p-value: &lt; 2.2e-16</code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">&lt;-</span><span class="fu">line_f</span>( <span class="dv">3</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>SS3<span class="ot">&lt;-</span> <span class="fu">sum</span>((obs<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>SS1; SS1<span class="fl">.5</span>; SS2; SS2<span class="fl">.5</span>; SS3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(xx, obs, <span class="at">pred =</span> pred1<span class="fl">.5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">'1.5'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">tibble</span>(xx, obs, <span class="at">pred =</span> pred2) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mutate</span>(<span class="at">type=</span><span class="st">'2'</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">tibble</span>(xx, obs, <span class="at">pred =</span> pred2<span class="fl">.5</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mutate</span>(<span class="at">type=</span><span class="st">'2.5'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(xx, obs)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(xx, pred, <span class="at">color =</span> type))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Review-what-are-models_files/figure-html/unnamed-chunk-11-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">&lt;-</span><span class="fu">line_f</span>( <span class="dv">3</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>SS3<span class="ot">&lt;-</span> <span class="fu">sum</span>((obs<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>SS1; SS1<span class="fl">.5</span>; SS2; SS2<span class="fl">.5</span>; SS3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 61.30771</code></pre>
 </div>
@@ -478,31 +486,32 @@ F-statistic:   990 on 1 and 108 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 21.39458</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">c</span>(SS1, SS1<span class="fl">.5</span>, SS2, SS2<span class="fl">.5</span>, SS3)<span class="sc">~</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>, <span class="fl">2.5</span>, <span class="dv">3</span>), <span class="at">type =</span> <span class="st">'l'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">SS =</span> <span class="fu">c</span>(SS1, SS1<span class="fl">.5</span>, SS2, SS2<span class="fl">.5</span>, SS3),</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">slope=</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>, <span class="fl">2.5</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(slope, SS)) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Review-what-are-models_files/figure-html/unnamed-chunk-11-4.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Review-what-are-models_files/figure-html/unnamed-chunk-11-5.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>SS_f<span class="ot">&lt;-</span><span class="cf">function</span>(b, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">obs1 =</span> obs){</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  pred<span class="ot">&lt;-</span><span class="fu">line_f</span>(b)</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  SS<span class="ot">&lt;-</span> <span class="fu">sum</span>((obs1<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(SS)</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="fu">SS_f</span>(<span class="fl">2.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>SS_f<span class="ot">&lt;-</span><span class="cf">function</span>(b, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">obs1 =</span> obs){</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  pred<span class="ot">&lt;-</span><span class="fu">line_f</span>(b)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  SS<span class="ot">&lt;-</span> <span class="fu">sum</span>((obs1<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(SS)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="fu">SS_f</span>(<span class="fl">2.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 5.122861</code></pre>
 </div>
 </div>
-<p>There must be a better way to do this… try <a href="https://www.r-bloggers.com/2013/04/the-golden-section-search-method-modifying-the-bisection-method-with-the-golden-ratio-for-numerical-optimization/" class="uri">https://www.r-bloggers.com/2013/04/the-golden-section-search-method-modifying-the-bisection-method-with-the-golden-ratio-for-numerical-optimization/</a></p>
-<p><a href="https://www.youtube.com/watch?v=VBFuqglVW3c" class="uri">https://www.youtube.com/watch?v=VBFuqglVW3c</a></p>
+<p>Finding the right answer by hand is clearly a very tedious process. There must be a better way to do this, and in fact there are many many different better ways to do this. At [this web page](<a href="https://www.r-bloggers.com/2013/04/the-golden-section-search-method-modifying-the-bisection-method-with-the-golden-ratio-for-numerical-optimization/" class="uri">https://www.r-bloggers.com/2013/04/the-golden-section-search-method-modifying-the-bisection-method-with-the-golden-ratio-for-numerical-optimization/</a>), one rather easy-to-understand algorithm is described as an example of an efficient search method for finding the minimum. It is called the ‘Golden Section search’ and is further described in a video [here](<a href="https://www.youtube.com/watch?v=hLm8xfwWYPw" class="uri">https://www.youtube.com/watch?v=hLm8xfwWYPw</a>).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'goldensectionsearch.r'</span>)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">golden.section.search</span>(SS_f, <span class="dv">1</span>, <span class="dv">3</span>, <span class="fl">0.00001</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'goldensectionsearch.r'</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">golden.section.search</span>(SS_f, <span class="dv">1</span>, <span class="dv">3</span>, <span class="fl">0.00001</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> 
 Iteration # 1 
@@ -743,18 +752,16 @@ Final Lower Bound = 2.285089
 Final Upper Bound = 2.285097 
 Estimated Minimizer = 2.285093 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Check out optim function</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>?optim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Check out optim function</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>?optim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>And for more complicated problems with many parameters, there are more complex algorithms, e.g.:</p>
-<p><a href="https://en.wikipedia.org/wiki/Simulated_annealing" class="uri">https://en.wikipedia.org/wiki/Simulated_annealing</a></p>
+<p>And for more complicated problems with many parameters, there are more complex algorithms, e.g.&nbsp;<a href="https://en.wikipedia.org/wiki/Simulated_annealing">simulated annealing</a>.</p>
 </section>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
 <p>Understanding the basics of programming, mathematical modeling, and statistical model fitting are not only the basis to stock assessment, but also yields other transferable skills.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">'imgs/Transferable_skills.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -765,7 +772,6 @@ Estimated Minimizer = 2.285093 </code></pre>
 </div>
 <p>This process can be frustrating as you learn <em>debugging</em>, or quickly learning how to find your own mistakes. Some things to remember as you get better at this:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">'imgs/Debugging.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

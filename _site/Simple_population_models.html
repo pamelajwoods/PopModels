@@ -180,12 +180,9 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#exponential-models" id="toc-exponential-models" class="nav-link" data-scroll-target="#exponential-models">Exponential models</a>
   <ul class="collapse">
-  <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link" data-scroll-target="#exercise-1">Exercise 1</a></li>
-  </ul></li>
-  <li><a href="#logistic-growth" id="toc-logistic-growth" class="nav-link" data-scroll-target="#logistic-growth">Logistic growth</a>
-  <ul class="collapse">
   <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
   </ul></li>
+  <li><a href="#logistic-growth" id="toc-logistic-growth" class="nav-link" data-scroll-target="#logistic-growth">Logistic growth</a></li>
   <li><a href="#further-considerations" id="toc-further-considerations" class="nav-link" data-scroll-target="#further-considerations">Further considerations</a></li>
   </ul></li>
   </ul>
@@ -220,16 +217,24 @@ window.Quarto = {
 <h1>Basic models</h1>
 <section id="exponential-models" class="level2">
 <h2 class="anchored" data-anchor-id="exponential-models">Exponential models</h2>
+<p>The simplest of all population models is that of exponential growth, representing some rate of reproduction.</p>
 <p>Wikipedia example: if a species of bacteria doubles every 10 minutes, starting with 1 bacteria, how many bacteria would there be after 1 hour?</p>
 <p>There are 3 pieces of information here, which we can represent with mathematical notation: <span class="math inline">\(N_0\)</span> = initial population = 1 R = rate of increase = 2 per 10 minutes (or 2/(10 mins/60 mins) in per-hour units) T = time step = 10 minutes (or 10 min/60 mins in per-hour units) t = total number of time steps = 60 mins/10 mins (or 1 hour/ (10/60 hour)) = 6</p>
 <p>Here is an equation that describes the process of increasing over time:</p>
-<p><span class="math inline">\(N_t = N_0*R^t\)</span></p>
+<p><span class="math inline">\(N_t = N_0R^t\)</span></p>
 <p><span class="math inline">\(N_6 = 1*2^6 = 64\)</span></p>
 <p>After one hour, or 6 ten-minute intervals, there would be sixty-four bacteria.</p>
-<p>RExcercies…<span class="math inline">\(N_t = N_0*R^t = R*N_{t-1} = N_{t-1} + r*N_{t-1}\)</span></p>
-<p>Therefore, if <span class="math inline">\(N_t = N_{t-1} + r*N_{t-1}\)</span>, then <span class="math inline">\(dN/dt = r*N\)</span></p>
-<section id="exercise-1" class="level3">
-<h3 class="anchored" data-anchor-id="exercise-1">Exercise 1</h3>
+<p>Exponential growth can be written a variety of ways, all of which are equivalent but allow us to think of the problem a different way.</p>
+<p><span class="math inline">\(N_t = N_0R^t = RN_{t-1} = N_{t-1} + rN_{t-1}\)</span></p>
+<p>The Wikipedia example shows that if the initial population, rate of replication per time step, and the number of time steps are known, then it is possible to calculate <span class="math inline">\(N_t\)</span> as <span class="math inline">\(N_0R^t\)</span>.</p>
+<p>The equation <span class="math inline">\(N_t=RN_{t-1}\)</span> demonstrates how the number at the next time step can be calculated from the value at time step <span class="math inline">\(t\)</span>. The replication rate <span class="math inline">\(R\)</span> is only applied one time because we are only transitioning one time step.</p>
+<p>In the form <span class="math inline">\(N_t = N_{t-1} + rN_{t-1}\)</span>, we can see that, instead of replication being expressed as a multiplier <span class="math inline">\(R\)</span>, it can be expressed as an additive increase when a proportion of last year’s population size is added to it.</p>
+<p>In this additive form <span class="math inline">\(N_t = N_{t-1} + rN_{t-1}\)</span>, we can see that the added term can be separated out as that which goes beyond the same value as last year, or a rate indicating how many are added per time step. That is, the change in <span class="math inline">\(N\)</span> over the change in <span class="math inline">\(t\)</span> can be expressed as <span class="math inline">\(dN/dt = rN\)</span>.</p>
+<section id="exercise" class="level3">
+<h3 class="anchored" data-anchor-id="exercise">Exercise</h3>
+<p>In this exercise, you will demonstrate that the above relationships among the different forms hold true.</p>
+<p>But first, notice in the last two forms that <span class="math inline">\(R\)</span> and <span class="math inline">\(r\)</span> are different and cannot represent the same value. How are they related? Can you do some algebra with the equation below to show what <span class="math inline">\(R\)</span> equals? (hint: isolate <span class="math inline">\(R\)</span> on the left-hand side)</p>
+<p><span class="math inline">\(RN_{t-1} = N_{t-1} + rN_{t-1}\)</span></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Below, TT and PP are storage vectors for your time step (TT) </span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#and your population abundance measure at that time step. So TT[1] shows year 1 </span></span>
@@ -261,35 +266,7 @@ window.Quarto = {
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]   2.718282   7.389056  20.085537  54.598150 148.413159</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(PP<span class="sc">~</span>TT, <span class="at">xlab =</span> <span class="st">"Time"</span>, <span class="at">ylab =</span> <span class="st">"Population N"</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="do">#### Still Other ways to write the exponential model ... </span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">5</span>); PP0<span class="ot">&lt;-</span><span class="dv">1</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">5</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">*</span>RR</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>){ PP[i]<span class="ot">&lt;-</span>RR<span class="sc">*</span>PP[i<span class="dv">-1</span>]} </span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>PP</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1]   2.718282   7.389056  20.085537  54.598150 148.413159</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(PP<span class="sc">~</span>TT, <span class="at">xlab =</span> <span class="st">"Time"</span>, <span class="at">ylab =</span> <span class="st">"Population N"</span>) <span class="co"># same graph</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># If RR = 1 + rr, then this is the same as PP[i]&lt;-(1 + rr)*PP[i-1] = PP[i-1] + rr*PP[i-1].</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  Change the code above to the last form to show this: </span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">5</span>); PP0<span class="ot">&lt;-</span><span class="dv">1</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">5</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>rr <span class="ot">&lt;-</span> RR <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0 <span class="sc">+</span> rr<span class="sc">*</span>PP0</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">*</span>(<span class="dv">1</span> <span class="sc">+</span> rr)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>){ PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>] <span class="sc">+</span> rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]} </span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>){ PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span> <span class="sc">+</span> rr)} </span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>PP</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1]   2.718282   7.389056  20.085537  54.598150 148.413159</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(PP<span class="sc">~</span>TT, <span class="at">xlab =</span> <span class="st">"Time"</span>, <span class="at">ylab =</span> <span class="st">"Population N"</span>) <span class="co"># same graph</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(PP,TT) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(TT,PP)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Population N"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -298,32 +275,17 @@ window.Quarto = {
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="logistic-growth" class="level2">
-<h2 class="anchored" data-anchor-id="logistic-growth">Logistic growth</h2>
-<p><span class="math inline">\(N_t = N_{t-1} + r*N_{t-1}*(1-N_{t-1}/K)\)</span></p>
-<ul>
-<li><p>What is the new parameter?</p></li>
-<li><p>What is dN/dt?</p></li>
-<li><p>What differs from exponential growth?</p></li>
-</ul>
-<section id="exercise" class="level3">
-<h3 class="anchored" data-anchor-id="exercise">Exercise</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add density dependence into the code below to reflect logistic growth. </span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">10</span>); PP0<span class="ot">&lt;-</span><span class="dv">2</span>; rr<span class="ot">&lt;-</span><span class="dv">1</span> ;</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>KK<span class="ot">&lt;-</span><span class="dv">10</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">+</span>rr<span class="sc">*</span>PP0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP0<span class="sc">/</span>KK)</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>){ PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>] <span class="sc">+</span> rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[i<span class="dv">-1</span>]<span class="sc">/</span>KK)} </span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>PP</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">#### Still Other ways to write the exponential model ... </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">5</span>); PP0<span class="ot">&lt;-</span><span class="dv">1</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">5</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">*</span>RR</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>){ PP[i]<span class="ot">&lt;-</span>RR<span class="sc">*</span>PP[i<span class="dv">-1</span>]} </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>PP</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1]  3.600000  5.904000  8.322278  9.718525  9.992077  9.999994 10.000000
- [8] 10.000000 10.000000 10.000000</code></pre>
+<pre><code>[1]   2.718282   7.389056  20.085537  54.598150 148.413159</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(PP<span class="sc">~</span>TT, <span class="at">xlab =</span> <span class="st">"Time"</span>, <span class="at">ylab =</span> <span class="st">"Population N"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">12</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(PP,TT) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(TT,PP)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Population N"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -331,35 +293,105 @@ window.Quarto = {
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now Change rr and K values above to see how they affect the model </span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Q2.0: Try KK between values of 10 and 70. Why does it control?</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">10</span>); PP0<span class="ot">&lt;-</span><span class="dv">2</span>; rr<span class="ot">&lt;-</span><span class="dv">1</span> ;</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>KK<span class="ot">&lt;-</span><span class="dv">70</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">+</span>rr<span class="sc">*</span>PP0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP0<span class="sc">/</span>KK)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>){ PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>] <span class="sc">+</span> rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[i<span class="dv">-1</span>]<span class="sc">/</span>KK)} </span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>PP</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># If RR = 1 + rr, then this is the same as PP[i]&lt;-(1 + rr)*PP[i-1] = PP[i-1] + rr*PP[i-1].</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  Change the code above to the last form to show this: </span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">5</span>); PP0<span class="ot">&lt;-</span><span class="dv">1</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">5</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>rr <span class="ot">&lt;-</span> RR <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0 <span class="sc">+</span> rr<span class="sc">*</span>PP0</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">*</span>(<span class="dv">1</span> <span class="sc">+</span> rr)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>){ PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>] <span class="sc">+</span> rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]} </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>){ PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span> <span class="sc">+</span> rr)} </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>PP</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]   2.718282   7.389056  20.085537  54.598150 148.413159</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(PP,TT) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(TT,PP)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Population N"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Simple_population_models_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="logistic-growth" class="level2">
+<h2 class="anchored" data-anchor-id="logistic-growth">Logistic growth</h2>
+<p>Exponential models are really only useful for very small organisms like bacteria. Logistic growth models are a step closer to representing population dynamics of most other organisms <em>big enough to be visible to the naked eye</em>, such as fish.</p>
+<p>The logistic growth equation contains the exponential growth equation last analyzed in the above section <span class="math inline">\(N_t=N_{t-1} + rN_{t-1}\)</span>. But, it includes another parameter:</p>
+<p><span class="math inline">\(N_t = N_{t-1} + r*N_{t-1}*(1-N_{t-1}/K)\)</span></p>
+<ul>
+<li><p>What differs from the exponential model?</p></li>
+<li><p>What is the new parameter? What is it’s relationship with the idea that it is needed to represent population dynamics of organisms <em>big enough to be visible to the naked eye</em>?</p></li>
+<li><p>Considering the equation for <span class="math inline">\(dN/dt\)</span> in the exponential model, what is the equation for <span class="math inline">\(dN/dt\)</span> in the logistic model?</p></li>
+<li><p>Do a little experiment in your mind. First pick a value for <span class="math inline">\(r\)</span> (which remember is a percentage increase in <span class="math inline">\(N\)</span> over a time step). What happens to <span class="math inline">\(dN/dt\)</span> when</p>
+<ul>
+<li><p><span class="math inline">\(N_{t-1} \sim 0\)</span></p></li>
+<li><p><span class="math inline">\(N_{t-1} \sim K/2\)</span></p></li>
+<li><p><span class="math inline">\(N_{t-1} \sim K\)</span></p></li>
+<li><p>With these values, draw a plot of <span class="math inline">\(dN/dt\)</span> as a function of <span class="math inline">\(N_{t-1}\)</span></p></li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adding density dependence into the code below to reflect logistic growth. </span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># What section fo the code was added?</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">10</span>); PP0<span class="ot">&lt;-</span><span class="dv">2</span>; rr<span class="ot">&lt;-</span><span class="dv">1</span> ;</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>KK<span class="ot">&lt;-</span><span class="dv">10</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">+</span>rr<span class="sc">*</span>PP0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP0<span class="sc">/</span>KK)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>){ PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>] <span class="sc">+</span> rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[i<span class="dv">-1</span>]<span class="sc">/</span>KK)} </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>PP</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  3.600000  5.904000  8.322278  9.718525  9.992077  9.999994 10.000000
+ [8] 10.000000 10.000000 10.000000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(PP,TT) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(TT,PP)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Population N"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Simple_population_models_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now Change rr and K values above to see how they affect the model </span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Q2.0: Try KK between values of 10 and 70. What does it control?</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">10</span>); PP0<span class="ot">&lt;-</span><span class="dv">2</span>; rr<span class="ot">&lt;-</span><span class="dv">1</span> ;</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>KK<span class="ot">&lt;-</span><span class="dv">70</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">+</span>rr<span class="sc">*</span>PP0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP0<span class="sc">/</span>KK)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>){ PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>] <span class="sc">+</span> rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[i<span class="dv">-1</span>]<span class="sc">/</span>KK)} </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>PP</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1]  3.942857  7.663627 14.488237 25.977774 42.314908 59.050510 68.287267
  [8] 69.958093 69.999975 70.000000</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(PP<span class="sc">~</span>TT, <span class="at">xlab =</span> <span class="st">"Time"</span>, <span class="at">ylab =</span> <span class="st">"Population N"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(PP,TT) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(TT,PP)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Population N"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Simple_population_models_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Simple_population_models_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Q2.1: Set KK at 50 and rr at 2. Why do you get strange shapes at higher rr values?</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">1500</span>); PP0<span class="ot">&lt;-</span><span class="dv">2</span>; rr<span class="ot">&lt;-</span><span class="dv">2</span> ;</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">1500</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>KK<span class="ot">&lt;-</span><span class="dv">50</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">+</span>rr<span class="sc">*</span>PP0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP0<span class="sc">/</span>KK)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">1500</span>){ PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>] <span class="sc">+</span> rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[i<span class="dv">-1</span>]<span class="sc">/</span>KK)} </span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>PP</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Q2.1: Set KK at 50 and rr at 2. Why do you get strange shapes at higher rr values?</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">1500</span>); PP0<span class="ot">&lt;-</span><span class="dv">2</span>; rr<span class="ot">&lt;-</span><span class="dv">2</span> ;</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">1500</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>KK<span class="ot">&lt;-</span><span class="dv">50</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">+</span>rr<span class="sc">*</span>PP0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP0<span class="sc">/</span>KK)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">1500</span>){ PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>] <span class="sc">+</span> rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[i<span class="dv">-1</span>]<span class="sc">/</span>KK)} </span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>PP</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   [1]  5.84000 16.15578 38.02696 56.23889 42.20416 55.36484 43.48390 54.81772
    [9] 44.25387 54.42541 44.79122 54.12352 45.19634 53.88066 45.51696 53.67913
@@ -550,24 +582,21 @@ window.Quarto = {
 [1489] 49.53916 50.45235 49.53947 50.45205 49.53978 50.45175 49.54009 50.45145
 [1497] 49.54039 50.45116 49.54070 50.45086</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(PP<span class="sc">~</span>TT, <span class="at">xlab =</span> <span class="st">"Time"</span>, <span class="at">ylab =</span> <span class="st">"Population N"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(PP,TT) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(TT,PP)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Population N"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Simple_population_models_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Simple_population_models_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-</section>
 </section>
 <section id="further-considerations" class="level2">
 <h2 class="anchored" data-anchor-id="further-considerations">Further considerations</h2>
 <ul>
 <li>What biological and ecological factors contribute to r and K?</li>
 <li>What population characteristic is the most important for natural resource management?</li>
-<li>How to detect this without biological/ecological data?</li>
-<li>Draw a graph of how population growth rate (<span class="math inline">\(dN/dt\)</span>) changes over time for the case studies of 1) exponential and 2) logistic growth. How does the density dependent term <span class="math inline">\((1-N/K)\)</span> change over time?</li>
 <li>What species would be difficult to represent with this?</li>
 </ul>
 

@@ -1,5 +1,5 @@
 ---
-title:  "Gró-FTP - Stock assessment line - Simple pop. models"
+title:  "Simple population models"
 format: html
 editor: visual
 ---
@@ -10,13 +10,16 @@ editor: visual
 
 library(tidyverse)
 library(palmerpenguins)
+theme_set(theme_minimal())
 ```
 
-# Simple population models
+# 
 
 # Basic models
 
 ## Exponential models
+
+The simplest of all population models is that of exponential growth, representing some rate of reproduction.
 
 Wikipedia example: if a species of bacteria doubles every 10 minutes, starting with 1 bacteria, how many bacteria would there be after 1 hour?
 
@@ -24,19 +27,33 @@ There are 3 pieces of information here, which we can represent with mathematical
 
 Here is an equation that describes the process of increasing over time:
 
-$N_t = N_0*R^t$
+$N_t = N_0R^t$
 
 $N_6 = 1*2^6 = 64$
 
 After one hour, or 6 ten-minute intervals, there would be sixty-four bacteria.
 
-RExcercies...$N_t = N_0*R^t = R*N_{t-1} = N_{t-1} + r*N_{t-1}$
+Exponential growth can be written a variety of ways, all of which are equivalent but allow us to think of the problem a different way.
 
-Therefore, if $N_t = N_{t-1} + r*N_{t-1}$, then $dN/dt = r*N$
+$N_t = N_0R^t = RN_{t-1} = N_{t-1} + rN_{t-1}$
 
-### Exercise 1
+The Wikipedia example shows that if the initial population, rate of replication per time step, and the number of time steps are known, then it is possible to calculate $N_t$ as $N_0R^t$.
 
-```{r}
+The equation $N_t=RN_{t-1}$ demonstrates how the number at the next time step can be calculated from the value at time step $t$. The replication rate $R$ is only applied one time because we are only transitioning one time step.
+
+In the form $N_t = N_{t-1} + rN_{t-1}$, we can see that, instead of replication being expressed as a multiplier $R$, it can be expressed as an additive increase when a proportion of last year's population size is added to it.
+
+In this additive form $N_t = N_{t-1} + rN_{t-1}$, we can see that the added term can be separated out as that which goes beyond the same value as last year, or a rate indicating how many are added per time step. That is, the change in $N$ over the change in $t$ can be expressed as $dN/dt = rN$.
+
+### Exercise
+
+In this exercise, you will demonstrate that the above relationships among the different forms hold true.
+
+But first, notice in the last two forms that $R$ and $r$ are different and cannot represent the same value. How are they related? Can you do some algebra with the equation below to show what $R$ equals? (hint: isolate $R$ on the left-hand side)
+
+$RN_{t-1} = N_{t-1} + rN_{t-1}$
+
+```{r, echo = TRUE}
 #Below, TT and PP are storage vectors for your time step (TT) 
 #and your population abundance measure at that time step. So TT[1] shows year 1 
 #as your first time step; PP[1] shows your population abundance at TT[1]. 
@@ -59,17 +76,20 @@ for(i in 1:5){ PP[i]<-PP0*exp(TT[i])}
 #Note that the model can also be written as below with the same result.
 for(i in 1:5){ PP[i]<-PP0*RR^TT[i]}
 PP
-par(mfrow = c(1,3))
-plot(PP~TT, xlab = "Time", ylab = "Population N")
+tibble(PP,TT) %>% ggplot(aes(TT,PP)) + geom_point() + xlab("Time") + ylab("Population N")
+```
 
+```{r,echo = TRUE}
 #### Still Other ways to write the exponential model ... 
 PP<-vector(mode = "numeric", length = 5); PP0<-1
 TT<-1:5
 PP[1]<-PP0*RR
 for(i in 2:5){ PP[i]<-RR*PP[i-1]} 
 PP
-plot(PP~TT, xlab = "Time", ylab = "Population N") # same graph
+tibble(PP,TT) %>% ggplot(aes(TT,PP)) + geom_point() + xlab("Time") + ylab("Population N")
+```
 
+```{r, echo = TRUE}
 # If RR = 1 + rr, then this is the same as PP[i]<-(1 + rr)*PP[i-1] = PP[i-1] + rr*PP[i-1].
 #  Change the code above to the last form to show this: 
 
@@ -81,26 +101,36 @@ PP[1]<-PP0*(1 + rr)
 for(i in 2:5){ PP[i]<-PP[i-1] + rr*PP[i-1]} 
 for(i in 2:5){ PP[i]<-PP[i-1]*(1 + rr)} 
 PP
-plot(PP~TT, xlab = "Time", ylab = "Population N") # same graph
-
-
-
+tibble(PP,TT) %>% ggplot(aes(TT,PP)) + geom_point() + xlab("Time") + ylab("Population N")
 ```
 
 ## Logistic growth
 
+Exponential models are really only useful for very small organisms like bacteria. Logistic growth models are a step closer to representing population dynamics of most other organisms *big enough to be visible to the naked eye*, such as fish.
+
+The logistic growth equation contains the exponential growth equation last analyzed in the above section $N_t=N_{t-1} + rN_{t-1}$. But, it includes another parameter:
+
 $N_t = N_{t-1} + r*N_{t-1}*(1-N_{t-1}/K)$
 
--   What is the new parameter?
+-   What differs from the exponential model?
 
--   What is dN/dt?
+-   What is the new parameter? What is it's relationship with the idea that it is needed to represent population dynamics of organisms *big enough to be visible to the naked eye*?
 
--   What differs from exponential growth?
+-   Considering the equation for $dN/dt$ in the exponential model, what is the equation for $dN/dt$ in the logistic model?
 
-### Exercise
+-   Do a little experiment in your mind. First pick a value for $r$ (which remember is a percentage increase in $N$ over a time step). What happens to $dN/dt$ when
+
+    -   $N_{t-1} \sim 0$
+
+    -   $N_{t-1} \sim K/2$
+
+    -   $N_{t-1} \sim K$
+
+    -   With these values, draw a plot of $dN/dt$ as a function of $N_{t-1}$
 
 ```{r}
-# Add density dependence into the code below to reflect logistic growth. 
+# Adding density dependence into the code below to reflect logistic growth. 
+# What section fo the code was added?
 
 PP<-vector(mode = "numeric", length = 10); PP0<-2; rr<-1 ;
 TT<-1:10
@@ -108,10 +138,13 @@ KK<-10
 PP[1]<-PP0+rr*PP0*(1-PP0/KK)
 for(i in 2:10){ PP[i]<-PP[i-1] + rr*PP[i-1]*(1-PP[i-1]/KK)} 
 PP
-plot(PP~TT, xlab = "Time", ylab = "Population N", ylim = c(0,12)) 
+tibble(PP,TT) %>% ggplot(aes(TT,PP)) + geom_point() + xlab("Time") + ylab("Population N")
+```
+
+```{r, echo = TRUE}
 
 # Now Change rr and K values above to see how they affect the model 
-#Q2.0: Try KK between values of 10 and 70. Why does it control?
+#Q2.0: Try KK between values of 10 and 70. What does it control?
 
 PP<-vector(mode = "numeric", length = 10); PP0<-2; rr<-1 ;
 TT<-1:10
@@ -119,9 +152,10 @@ KK<-70
 PP[1]<-PP0+rr*PP0*(1-PP0/KK)
 for(i in 2:10){ PP[i]<-PP[i-1] + rr*PP[i-1]*(1-PP[i-1]/KK)} 
 PP
-plot(PP~TT, xlab = "Time", ylab = "Population N") 
+tibble(PP,TT) %>% ggplot(aes(TT,PP)) + geom_point() + xlab("Time") + ylab("Population N")
+```
 
-
+```{r}
 #Q2.1: Set KK at 50 and rr at 2. Why do you get strange shapes at higher rr values?
 
 PP<-vector(mode = "numeric", length = 1500); PP0<-2; rr<-2 ;
@@ -130,8 +164,7 @@ KK<-50
 PP[1]<-PP0+rr*PP0*(1-PP0/KK)
 for(i in 2:1500){ PP[i]<-PP[i-1] + rr*PP[i-1]*(1-PP[i-1]/KK)} 
 PP
-plot(PP~TT, xlab = "Time", ylab = "Population N") 
-
+tibble(PP,TT) %>% ggplot(aes(TT,PP)) + geom_point() + xlab("Time") + ylab("Population N")
 
 ```
 
@@ -139,6 +172,4 @@ plot(PP~TT, xlab = "Time", ylab = "Population N")
 
 -   What biological and ecological factors contribute to r and K?
 -   What population characteristic is the most important for natural resource management?
--   How to detect this without biological/ecological data?
--   Draw a graph of how population growth rate ($dN/dt$) changes over time for the case studies of 1) exponential and 2) logistic growth. How does the density dependent term $(1-N/K)$ change over time?
 -   What species would be difficult to represent with this?

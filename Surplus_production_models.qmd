@@ -1,0 +1,330 @@
+---
+title:  "Surplus production models"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(palmerpenguins)
+theme_set(theme_minimal())
+```
+
+# 
+
+*Surplus production* is an economic term given to the excess *yield* (i.e., excess after replacement) resulting from a general production process.
+
+In fisheries research, *yield* takes on a specific meaning, which is the surplus resulting from a population under a constant replacement scenario. This constant-replacement-scenario ensures that we are talking about a *long-term* concept, as *catch* fluctuates with error/uncertainty/diversity in the short-term. Therefore, usually when we are talking about *yield* we are talking about a theoretical long-term property of the population, given a constant fishing pressure over time. When we are talking about *catch* it is usually related to the result of fishing activities in a given year.
+
+The amount of *yield* that a fish population produces changes with it's population size. This change is the result of *density dependence* as we saw in logistic growth. That is, when population sizes are close to carrying capacity, they cannot grow as fast. It is also a result of exponential growth: if populations are very small, they amount of fish reproduced the following year is smaller simply because the parental population is smaller.
+
+### Exercise
+
+### 
+
+As a result, yield is maximized at a certain value for population size, usually towards a middle value when assuming a logistic growth process. Population size can change for a variety of reasons, but one major reason in fisheries is the fishing pressure itself. Therefore, if we want higher yield, we want to fish an unfished population down to a size that maximizes (roughly) its yield production.
+
+To understand how much we should fish in order to achieve the 'right' population size, we need three pieces of information:
+
+-   the relationship between fishing activity and population size (effort - biomass).
+
+-   the relationship between population size and growth rate (growth rate - biomass).
+
+-   how growth rate translates into concrete fish removals in terms of tonnes or kg (growth rate and effort - catch).
+
+Production models are useful in that they put these three pieces of information together into the same model, that can be parameterized using data. The Schaeffer model is the simplest form of production models and uses the assumption that catch per unit effort is linearly related to population biomass.
+
+Remember the logistic growth equation:
+
+$N_t=N_{t−1}+r∗N_{t−1}∗(1−N_{t−1}/K)$
+
+Above is enough to understand how growth rate and biomass relate to each other, but understading relationships with catch and effort require us to change this into an economic model including human activities. The first step is adding catch removals on the kg or tonnes scale, as this is the same scale on which population changes occur. To do this, we change from numbers to biomass (by multiplying by an average weight), and insert catch removals ($C_{t-1}$). As removals (\$-\$), catch will decrease the availability of biomass to fish in the next time step.
+
+$B_t=B_{t−1}+r∗B_{t−1}∗(1−B_{t−1}/K)- \bf{C_{t-1}}$
+
+Catch removals can be further related to two properties: the amount of human activity (effort, $E$) and the effectiveness of that activity (catchability, $q$). Here, they can be included by further defining $C_{t-1}$:
+
+$C_t=qEB_t$
+
+Here we see that within a each time step ($t$ or $t-1$), catch is assumed to be linearly related to effort, linearly later to catchability, and linearly related to biomass of the stock. It indicates that as effort increases, catch will increase, also causing a reduction in total biomass (\$B_t\$) in the next time step. It also indicates that if any of these three components of the fishing activity increase (amount of activity, effectiveness of activity, or biomass available to remove), then so will the catch. We may be able to observe effort levels, but as $q$ and $B$ cannot be observed directly, they are *confounded*:
+
+```{r}
+knitr::include_graphics('imgs/Q_question.png')
+```
+
+In addition, this assumption provides for a convenient relationship that is exploited when trying to fit such a model to data. Under this assumption defining catch, we can switch the equation around and also write:
+
+$C_t/E = qN_t$
+
+In this form, it becomes clear that if we have data as a set of observations of catch per unit effort (\$C_t/E\$) and catch (\$C_t\$) over time, *and there is enough contrast in the data*, then we may be able to detect catchability and biomass.
+
+We need contrast in the data to be able to detect population dynamics (i.e., how growth *changes* at different population sizes), because we inherently don't know and can't observe the total population size of fish, and therefore we don't know how catchable they are. If we assume high catchability, then we have to assume low population size, and vice versa. Getting the wrong answer could mean assuming that a large mass of removals can be taken from a small population, causing overfishing. Understanding where the best fishing level is not always easty.
+
+```{r}
+knitr::include_graphics('imgs/Q_answer2.png')
+
+```
+
+What is *contrast* in the data? Having contrast in the data means that the population has been observed at various states, so that it's responses to various conditions have been observed. If we have a CPUE and catch data series, to fit a surplus production model, there must be information in just those two data sources concerning:
+
+-   growth (\$r\$)
+
+-   carrying capacity (\$K\$)
+
+-   catchability (\$q\$)
+
+-   initial population size (\$N\_{t=0}\$)
+
+As you go through the following exercise, think about the different 'experiments' needed to get information about these paramaters. What states of population size (high/low) and fishing (heavy/light) should be observed to get this information at a minimum?
+
+After getting confident estimates of the above parameters, the system can then be analyzed (or simulated) to determine:
+
+-   At what population biomass level is population growth the greatest? (Remember to distinguish between *growth*, which is a rate, and *catch*, which is a single unit of removal in kg or tonnes)
+
+-   At what effort level do you also get the highest yield?
+
+Further considerations include:
+
+-   What is maximum sustainable yield (MSY)? How is this value related to r and K?
+
+-   If cost is linearly related to effort, what is maximum economic yield (MEY)?
+
+-   Fitting a surplus production model is similar to fitting a logistic growth model, as both are non-linear. Unlike in the previous exercise, biomass is unknown in this example, as is normal in fisheries, so CPUE is used as an index (as supported in the above theory). Keep in mind: where is the error (i.e., the statistical model)? What are the parameters? What objective function are we using?
+
+### Exercise
+
+```{r, eval = FALSE}
+######## R Exercise 5 for GROFTP 2022, Lectures 6 - 9 ######
+### Created by Pamela J. Woods ###
+
+###------------------------------Exercise 5: Production functions-----------------------###
+
+### How does amount produced by a population relate to population size? 
+# This is done by: 
+#1) Changing model to have max time = 100, K = 2000, and r = 0.2.
+#2) Saving Population size as a vector, then Amount Produced by that population size as a vector, and plot them.
+#3) Remember that "Amount Produced" by a given population size contributes to the next years population size. 
+#It is not created by next years population size. The "Amount Produced" beyond replacement is also called "Yield."
+
+#Exponential
+
+PP<-vector(mode = "numeric", length = 100); PP0<-1; rr<- 0.2
+DD<-vector(mode = "numeric", length = 100); 
+TT<-1:100 # not actually used within the loop but corresponds with i
+
+DD0<-rr*PP0 # initial population growth - can be small so doesn't really affect model
+PP[1]<-PP0+DD0 # initial population size + growth in first year of model
+
+for(i in 2:100){ 
+  
+  DD[i-1]<-rr*PP[i-1]; 
+
+  PP[i]<-PP[i-1] + DD[i-1] 
+  
+  } #DD is the production added to the previous years population size
+
+DD[100]<-rr*PP[100] # this is just to finish series
+
+par(mfrow = c(1,3))
+plot(DD~PP, ylab = "Increase in N from t to t+1 (dN / dt)", xlab = "Population N") 
+
+#Now do the same for the logistic equation
+
+#Logistic
+PP<-vector(mode = "numeric", length = 100); PP0<-1; rr<- 0.2
+DD<-vector(mode = "numeric", length = 100); 
+# DD is a new storage compoenent. It will store the growth component of the logistic equation.
+TT<-1:100# not actually used within the loop but corresponds with i
+
+KK<-2000 # This is a new parameter - carrying capacity.
+
+#FILL IN CODE BELOW. HINT: LOOK AT HOW DD0 IS DEFINED IN THE FIRST STEP IN COMPARISON
+#WITH HOW DD IS DEFINED INSIDE THE LOOP. THE FORMULA STRUCTURE STAYS THE 
+#SAME BUT THE T SUBSCRIPTS MUST MATCH.
+
+DD0<- rr*PP0*(1-PP0/KK)    # This keeps the equation structure the same. It is the initial DD component for the first year.
+PP[1]<-PP0+DD0
+
+for(i in 2:100){ 
+  
+  DD[i-1]<-rr*PP[i-1]*(1-PP[i-1]/KK); 
+  
+  PP[i]<-PP[i-1] + DD[i-1] 
+  
+  
+  } 
+
+DD[100]<- rr*PP[100]*(1-PP[100]/KK)#FINISH OFF THE LAST STEP HERE
+  
+plot(DD~PP, ylab = "Increase in N  from t to t+1 (dN / dt)", xlab = "Population N") 
+
+#Now graph the population over time alongside the above:
+plot(PP~TT, ylab = "Population N", xlab = "Time")
+
+#Now add population removals - catch, which is a linear function of fishing effort, 
+#catchability, and population size
+
+#Adding fishing makes it a "production" function
+#Here you will run a population for a long time at a certain effort level. 
+#Notice that the value at which the population stabilizes is no longer carrying 
+#capacity, because catch has been removed. Also note how catch is related to 
+#population size. 
+
+PP<-vector(mode = "numeric", length = 500); PP0<-1; rr<- 0.2
+DD<-vector(mode = "numeric", length = 500);
+CC<-vector(mode = "numeric", length = 500); 
+Effort<-0.8; Catchability<-0.1
+TT<-1:500
+KK<-2000
+
+#FILL IN CODE BELOW. HINT: LOOK AT HOW DD0 IS DEFINED ABOVE IN COMPARISON
+#WITH HOW DD IS DEFINED INSIDE THE LOOP. THE FORMULA STRUCTURE STAYS THE 
+#SAME BUT THE T SUBSCRIPTS MUST MATCH.
+
+DD0<-rr*PP0*(1-PP0/KK)
+
+CC0<-PP0*Effort*Catchability; 
+
+PP[1]<-PP0 + DD0 - CC0
+
+for(i in 2:500){ 
+
+  DD[i-1]<- rr*PP[i-1]*(1-PP[i-1]/KK)
+
+  CC[i-1]<- PP[i-1]*Effort*Catchability
+
+  PP[i]<- PP[i-1] + DD[i-1] - CC[i-1]
+  
+  } 
+
+DD[500]<- rr*PP[500]*(1-PP[500]/KK)
+CC[500]<- PP[500]*Effort*Catchability
+
+
+par(mfrow = c(1,2))
+plot(CC~TT, ylab = "Catch", xlab = "Time") 
+plot(PP~TT, ylab = "Population N", xlab = "Time") 
+#This graph just shows you that at a single value of effort, your catch is directly related to your population size. As your population grows, if your effort stays the same,  effort*catchability defines the proportion of the population taken out. Since effort is not at a high value (0.8), it does not affect the population dynamics much, so catch follows the same pattern as population (directly related).
+
+#Q - Find on each graph where MSY is located. How are the last 2 graphs related? To answer the following questions, it helps to mess around with the r and K values. How is MSY related to K and r? At what population size does this occur (Nmsy)? How does this relate to K and r? What does r affect? 
+
+#Now try to find the Effort value that lead to CC = MSY = (rr*KK)/4 in the long term. 
+#[Hint: try looping over values for effort and plotting the results below.]
+
+
+eff<-seq(0,2,0.1) # values of effort to loop over
+YY<-vector(mode = "numeric", length = length(eff))
+XX<-vector(mode = "numeric", length = length(eff))
+
+Catchability<-0.1
+TT<-1:500
+KK<-2000
+PP0<-1; rr<- 0.2
+
+for(j in 1:length(eff)){
+
+  #FILL IN CODE HERE.
+  
+  PP<-vector(mode = "numeric", length = 500); 
+  DD<-vector(mode = "numeric", length = 500);
+  CC<-vector(mode = "numeric", length = 500); 
+  
+  Effort<- eff[j] #WHAT VALUE GOES HERE?
+  
+  DD0<-rr*PP0*(1-PP0/KK)
+  CC0<-PP0*Effort*Catchability; 
+  PP[1]<-PP0 + DD0 - CC0
+  
+  for(i in 2:500){ 
+    
+    DD[i-1]<- rr*PP[i-1]*(1-PP[i-1]/KK)
+    CC[i-1]<- PP[i-1]*Effort*Catchability
+    PP[i]<- PP[i-1] + DD[i-1] - CC[i-1]
+    
+  } 
+  
+  DD[500]<- rr*PP[500]*(1-PP[500]/KK)
+  CC[500]<- PP[500]*Effort*Catchability
+  
+  #SAVE RESULTS: LAST (EQUILIBRIUM) VALUE OF CATCH AND LAST VALUE OF POPULATION 
+  YY[j] <- CC[500] # Equilibrium Yield
+  XX[j] <-  PP[500] #or PP[500] # Equilibrium Population N
+
+  }
+
+par(mfrow = c(1,3))
+plot(YY~eff, ylab = "Yield", xlab = "Effort") 
+plot(XX~eff, ylab = "Population N", xlab = "Effort") 
+plot(YY/eff~eff, ylab = "CPUE", xlab = "Effort") #NOTE THIS IS LINEAR
+
+#Q - Now look up the equation for a Pella-Tomlinson production function and 
+#repeat the above exercise to plot Pella-Tomlinson surplus production function alongside
+#Schaeffer production function on the same figure (hint: Schaeffer is a special case of the
+#Pella-Tomlinson where the extra parameter (exponent) is set to 1).
+#How is the shape of the MSY relationship changed by the extra parmaeter?
+
+
+#Q - Note that these graphs demonstrate the long-term equilibrium results 
+#under different fishing strategies. It is dome-shaped. We saw a graph at the 
+#beginning of this exercise that was also dome-shaped (dn/dt of the population 
+#over population size); however this graph is not based on equilibrium results. 
+#How are these two graphs related?
+
+
+#If cost linearly increases with effort...
+Cost<-eff*40
+#Q - then what is maximum economic yield (MEY)? [Hint: MEY is the yield with the greatest profit; that is, the greatest difference between Yield and cost]
+plot(YY~eff, ylab = "Yield", xlab = "Effort") 
+points(Cost~eff, pch = 2)
+
+
+
+
+
+# MSY = K*r/4
+# Nmsy = K/2
+
+eff[which.max(YY)] #MSY
+eff[which.max(YY - Cost)] #MEY
+
+
+```
+
+## Let's talk about a shortcut
+
+adkfl
+
+```{r, eval = FALSE}
+
+######-------FAO shortcut from http://www.fao.org/3/w5449e/w5449e10.pdf-------########
+
+Yrs <- 1969:1977
+Yield <- c(50, 49, 47.5, 45, 51, 56, 66, 58, 52)
+Effort <- c(623, 628, 520, 513, 661, 919, 1158, 1970, 1317)
+
+length(Yrs); length(Yield); length(Effort)
+
+Schaefer.lm <- lm(Yield/Effort ~ Effort)
+summary(Schaefer.lm)
+
+Schaefer.glm <- glm(Yield/Effort ~ Effort)
+summary(Schaefer.glm)
+
+a <-coef(Schaefer.lm)[1]
+b <-coef(Schaefer.lm)[2]
+MSY <- -0.25*a^2/b
+MSY
+
+Fox.lm <- lm(log(Yield/Effort) ~ Effort)
+summary(Fox.lm)
+
+c <-coef(Fox.lm)[1]
+d <-coef(Fox.lm)[2]
+MSY <- -(1/d)*exp(c-1)
+MSY
+
+
+```

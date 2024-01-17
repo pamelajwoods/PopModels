@@ -1,5 +1,5 @@
 ---
-title: "PopModels"
+title: "GRÓ-FTP ARAM - Population Models"
 ---
 
 ## Prerequisites
@@ -16,7 +16,7 @@ The population dynamics section of teaching is split into roughly 8 half-day ses
 
 [Fitting a logistic growth curve](Fitting_logistic_curve.qmd)
 
-\[Surplus production models\]
+[Surplus production models](Surplus_production_models.qmd)
 
 \[SPICT exercise\]
 

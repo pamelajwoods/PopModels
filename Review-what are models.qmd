@@ -1,5 +1,5 @@
 ---
-title:  "Gró-FTP - Stock assessment line - what are models?"
+title:  "Review - what are models?"
 format: html
 editor: visual
 ---
@@ -10,23 +10,24 @@ editor: visual
 
 library(tidyverse)
 library(palmerpenguins)
+theme_set(theme_minimal())
 ```
 
-# Review - what are models?
+# 
 
 Models are only a representation and simplification of reality. Population dynamics models represent how populations grow or decline over time. They can be **parameterized** by **fitting** models to available data.
 
-In natural resource management of *renewable* resources, predictions from population dynamics models often used to provide advice for near-term removals from a population.
+In natural resource management of *renewable* resources, predictions from population dynamics models often used to provide advice for near-term removals from a population. For example, in fisheries management, usually the advice provides guidance on maximal amounts that can be removed from a fish population (i.e., catch) without depressing its ability to regenerate (i.e., overfishing).
 
 A wide variety of models and types of information can be included, but here we start with some of the most basic models. These are also often used when little detail is known about the population.
 
 ## Parameterization
 
-*Parameterization* is the process of choosing values for *parameters* in an equation. For example, in a line equation:
+*Parameterization* is the process of choosing values for *parameters* in an equation. In a line equation:
 
 $y = a + bx$ ,
 
-the intercept parameter $a$ and the slope parameter $b$ can be chosen to be certain values. For example, what value of $y$ results from $a=0$ and $b=1$? Any two values can be used to create a single line that yields a given set of $x$ and $y$ values. Plotting these yields a line:
+the intercept parameter $a$ and the slope parameter $b$ can be chosen to be certain values. For example, what value of $y$ results from $a=0$ and $b=1$? Any two values can be used to create a single line that yields an infinite set of $x$ and $y$ values along it. Plotting these yields a line:
 
 ```{r, echo=TRUE}
 a <- 0; b<-1; x<-1:10; y<- a + b*x
@@ -36,23 +37,23 @@ tibble(x,y) %>% ggplot(aes(x,y)) + geom_line()
 
 This line is an example of a *mathematical model*:
 
-```{r}
+```{r, echo = FALSE}
 knitr::include_graphics('imgs/Mathematical_Models.png')
 ```
 
 With a linear functional form:
 
-```{r}
+```{r, echo = FALSE}
 knitr::include_graphics('imgs/Linear_Models.png')
 ```
 
 Other functional forms are possible. For example, can you find an equation that roughly represents this process?
 
-```{r}
+```{r, echo = FALSE}
 knitr::include_graphics('imgs/Wave_model.png')
 ```
 
-This is one option, but others exist:
+This is one option, but others exist. Polynomial models for example could replicate this shape, even though they are a class of 'linear' models.
 
 ```{r, echo = TRUE}
 x <- seq(0,3*pi,pi/10); y <- sin(x)
@@ -62,7 +63,7 @@ tibble(x,y) %>% ggplot(aes(x,y)) + geom_line()
 
 Another kind of model could describe circular processes:
 
-```{r}
+```{r, echo = FALSE}
 knitr::include_graphics('imgs/Circular_model.png')
 ```
 
@@ -70,13 +71,13 @@ Mathematical models therefore can have a variety of forms, with specific *parame
 
 ## Statistical models
 
-Instead of describing operational linkages, statistical models describe variation surrounding a central process. The generation of this variation is often itself described of as a process, but it is instead a process describing how chance results in certain numbers more frequently than other numbers, given the type of process. The result of these processes are *distributions* around a central process, such as a binomial, Poisson, Gaussian (normal), or lognormal distributions.
+Instead of describing operational linkages, statistical models describe variation surrounding a central process described by the functional form. The generation of this variation is often itself described of as a process, but it is instead an error process describing how chance results in certain numbers more frequently than other numbers. The result of are *error distributions* around a central process. These are modeled in statistics using equations for various error distributions, such as a binomial, Poisson, Gaussian (normal), or lognormal distributions.
 
-```{r}
+```{r, echo = FALSE}
 knitr::include_graphics('imgs/Statistical models.png')
 ```
 
-Distributions are well-used in the study of biological processes, because they are notoriously imperfect and therefore partially controlled by chance. Growth for example, can be partially determined by age, but is also simply the result of variation:
+Distributions are well-used in the study of biological processes, because biological processes are notoriously imperfect and therefore partially controlled by chance. Growth for example, can be partially determined by age, but is also simply the result of variation:
 
 ```{r}
 age <- 6:115; pred_size <- 6:115; size <-pred_size + rnorm(110, sd = 10)
@@ -99,9 +100,9 @@ test.lm <- lm(size~age)
 summary(test.lm)
 ```
 
-Notice that the fitting process accurately achieved our *simulated* parameters? How did it do that? It used a fitting *algorithm* to find the line that best fit all data points simultaneously. This is done by *minimizing the objective function*.
+Notice that the fitting process accurately achieved our *simulated* parameters? How did it do that? It used a fitting *algorithm* to find the line that best fit all data points simultaneously. The fit is summarised as a single number in an *objective function*. Finding the *best* fit is done iteratively by flipping the sign of an equation that reflects fit to the model (i.e., taking the negative), and then following a routine to *minimize the objective function*. Flipping the sign is done simply because minimizing is computationally easier to handle than maximizing.
 
-A general form for an algorithm goes something like:
+A general form for such an algorithm goes something like:
 
 1 - Pick or jump to new values for parameters (e.g., $a$ and $b$ in a linear model).
 
@@ -140,9 +141,7 @@ obs <- 0 + 2.3*xx + rnorm(length(xx))
 
 pred<-line_f(1)
 
-par(mfrow = c(1,1))
-plot(obs~xx)
-lines(pred~xx)
+tibble(xx, obs, pred) %>% ggplot(aes(xx, obs)) + geom_point() + geom_line(aes(xx,pred))
 
 SS1<- sum((obs-pred)^2)
 
@@ -164,12 +163,23 @@ lines(pred1.5~xx)
 lines(pred2~xx, col = 2)
 lines(pred2.5~xx, col = 3)
 
+tibble(xx, obs, pred = pred1.5) %>%
+  mutate(type = '1.5') %>% 
+  bind_rows(tibble(xx, obs, pred = pred2) %>% 
+              mutate(type='2')) %>% 
+  bind_rows(tibble(xx, obs, pred = pred2.5) %>% 
+              mutate(type='2.5')) %>%
+  group_by(type) %>% 
+  ggplot(aes(xx, obs)) + geom_point() + geom_line(aes(xx, pred, color = type))
+
 pred<-line_f( 3)
 SS3<- sum((obs-pred)^2)
 
 SS1; SS1.5; SS2; SS2.5; SS3
 
-plot(c(SS1, SS1.5, SS2, SS2.5, SS3)~c(1, 1.5, 2, 2.5, 3), type = 'l')
+tibble(SS = c(SS1, SS1.5, SS2, SS2.5, SS3),
+       slope=c(1, 1.5, 2, 2.5, 3)) %>% 
+  ggplot(aes(slope, SS)) + geom_line()
 
 
 SS_f<-function(b, a = 0, obs1 = obs){
@@ -179,14 +189,9 @@ SS_f<-function(b, a = 0, obs1 = obs){
 }
 
 SS_f(2.5)
-
-
-
 ```
 
-There must be a better way to do this... try <https://www.r-bloggers.com/2013/04/the-golden-section-search-method-modifying-the-bisection-method-with-the-golden-ratio-for-numerical-optimization/>
-
-<https://www.youtube.com/watch?v=VBFuqglVW3c>
+Finding the right answer by hand is clearly a very tedious process. There must be a better way to do this, and in fact there are many many different better ways to do this. At \[this web page\](<https://www.r-bloggers.com/2013/04/the-golden-section-search-method-modifying-the-bisection-method-with-the-golden-ratio-for-numerical-optimization/>), one rather easy-to-understand algorithm is described as an example of an efficient search method for finding the minimum. It is called the 'Golden Section search' and is further described in a video \[here\](<https://www.youtube.com/watch?v=hLm8xfwWYPw>).
 
 ```{r, echo = TRUE}
 
@@ -198,27 +203,25 @@ golden.section.search(SS_f, 1, 3, 0.00001)
 ?optim
 ```
 
-And for more complicated problems with many parameters, there are more complex algorithms, e.g.:
-
-<https://en.wikipedia.org/wiki/Simulated_annealing>
+And for more complicated problems with many parameters, there are more complex algorithms, e.g. [simulated annealing](https://en.wikipedia.org/wiki/Simulated_annealing).
 
 ## Conclusion
 
 Understanding the basics of programming, mathematical modeling, and statistical model fitting are not only the basis to stock assessment, but also yields other transferable skills.
 
-```{r}
+```{r, echo = FALSE}
 knitr::include_graphics('imgs/Transferable_skills.png')
 ```
 
 This process can be frustrating as you learn *debugging*, or quickly learning how to find your own mistakes. Some things to remember as you get better at this:
 
-```{r}
+```{r, echo = FALSE}
 knitr::include_graphics('imgs/Debugging.png')
 ```
 
 ### Exercise
 
-This text came with the quarto package. Can you fit linear models to each of the three groups of penguins and add the lines to the plots?
+This text, pictures, and figures came with the Quarto package. Can you fit linear models to each of the three groups of penguins and add the lines to the plots?
 
 ## Meet the penguins
 
