@@ -1,0 +1,42 @@
+---
+title:  "Using SPICT for surplus production model fitting"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(palmerpenguins)
+theme_set(theme_minimal())
+```
+
+# SPICT
+
+SPiCT is a model of 'Surplus Production in Continuous Time', implemented in the 'spict' R package, found [here](https://github.com/DTUAqua/spict). It is relatively easy to implement and comes with a lot of powerful diagnostic tools, but should be used with caution because even if a model is created, it may be unusable due to high levels of uncertainty. In this session, we are mainly going to work from the above web page, and follow instructions there on how to install the package, and follow the vignette to learn its functionality. The website also has a link to [technical guidelines](https://raw.githubusercontent.com/DTUAqua/spict/master/spict/inst/doc/spict_guidelines.pdf) on how to judge whether the model created is trustworthy and informative. Here some points to keep in mind from the technical guidelines:
+
+### Main assumptions and input data 
+
+-   Catch should be representative of total removals from the population and aligned correctly in timing
+
+-   Stock size indices should be in terms of biomass (not numbers) and represent exploitable stock biomass. Timing should be correctly aligned.
+
+Checklist for the acceptance of a SPiCT assessment
+
+-   assessment converged
+
+-   All variance parameters are finite
+
+-   No violation of model assumptions based on one-step-ahead residuals (e.g., no bias or auto-correlation should be present to violate normality assumptions).
+
+-   There should be no tendency of consistent uner- or overestimation of fishing mortality or biomass in successive assessments
+
+-   Realistic production curve (not too skewed)
+
+-   Assessment uncertainty is not too high (not span more than 1 order of magnitude
+
+-   initial values do not influence parameter estimates
+
+With this in mind, let's install and try a vignette.
