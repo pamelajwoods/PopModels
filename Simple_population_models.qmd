@@ -23,7 +23,16 @@ The simplest of all population models is that of exponential growth, representin
 
 Wikipedia example: if a species of bacteria doubles every 10 minutes, starting with 1 bacteria, how many bacteria would there be after 1 hour?
 
-There are 3 pieces of information here, which we can represent with mathematical notation: $N_0$ = initial population = 1 R = rate of increase = 2 per 10 minutes (or 2/(10 mins/60 mins) in per-hour units) T = time step = 10 minutes (or 10 min/60 mins in per-hour units) t = total number of time steps = 60 mins/10 mins (or 1 hour/ (10/60 hour)) = 6
+There are 3 pieces of information here, which we can represent with mathematical notation:
+
+-   $N_0$ = initial population = 1
+
+```{=html}
+<!-- -->
+```
+-   R = rate of increase = 2 per 10 minutes (or 2/(10 mins/60 mins) in per-hour units)
+
+-   t = total number of time steps = 60 mins/10 mins (or 1 hour/ (10/60 hour)) = 6
 
 Here is an equation that describes the process of increasing over time:
 

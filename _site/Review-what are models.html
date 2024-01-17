@@ -185,7 +185,7 @@ window.Quarto = {
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a>
   <ul class="collapse">
-  <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link" data-scroll-target="#exercise-1">Exercise</a></li>
+  <li><a href="#independent-exercise" id="toc-independent-exercise" class="nav-link" data-scroll-target="#independent-exercise">Independent exercise</a></li>
   </ul></li>
   <li><a href="#meet-the-penguins" id="toc-meet-the-penguins" class="nav-link" data-scroll-target="#meet-the-penguins">Meet the penguins</a></li>
   </ul></li>
@@ -344,18 +344,18 @@ lm(formula = size ~ age)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--28.504  -7.939   0.768   6.194  36.925 
+-31.707  -8.035  -0.802   7.076  30.687 
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) -1.68348    2.21435   -0.76    0.449    
-age          1.01615    0.03241   31.36   &lt;2e-16 ***
+(Intercept)   0.6069     2.2411   0.271    0.787    
+age           0.9625     0.0328  29.344   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 10.79 on 108 degrees of freedom
-Multiple R-squared:  0.901, Adjusted R-squared:  0.9001 
-F-statistic: 983.1 on 1 and 108 DF,  p-value: &lt; 2.2e-16</code></pre>
+Residual standard error: 10.92 on 108 degrees of freedom
+Multiple R-squared:  0.8886,    Adjusted R-squared:  0.8875 
+F-statistic: 861.1 on 1 and 108 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <p>Notice that the fitting process accurately achieved our <em>simulated</em> parameters? How did it do that? It used a fitting <em>algorithm</em> to find the line that best fit all data points simultaneously. The fit is summarised as a single number in an <em>objective function</em>. Finding the <em>best</em> fit is done iteratively by flipping the sign of an equation that reflects fit to the model (i.e., taking the negative), and then following a routine to <em>minimize the objective function</em>. Flipping the sign is done simply because minimizing is computationally easier to handle than maximizing.</p>
@@ -440,11 +440,14 @@ F-statistic: 983.1 on 1 and 108 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>SS2<span class="fl">.5</span><span class="ot">&lt;-</span> <span class="fu">sum</span>((obs<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
 <span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>pred2<span class="fl">.5</span><span class="ot">&lt;-</span><span class="fu">line_f</span>(<span class="fl">2.5</span>)</span>
 <span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(obs<span class="sc">~</span>xx)</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(pred1<span class="fl">.5</span><span class="sc">~</span>xx)</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(pred2<span class="sc">~</span>xx, <span class="at">col =</span> <span class="dv">2</span>)</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(pred2<span class="fl">.5</span><span class="sc">~</span>xx, <span class="at">col =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(xx, obs, <span class="at">pred =</span> pred1<span class="fl">.5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">'1.5'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">tibble</span>(xx, obs, <span class="at">pred =</span> pred2) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mutate</span>(<span class="at">type=</span><span class="st">'2'</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">tibble</span>(xx, obs, <span class="at">pred =</span> pred2<span class="fl">.5</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mutate</span>(<span class="at">type=</span><span class="st">'2.5'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(xx, obs)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(xx, pred, <span class="at">color =</span> type))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -452,25 +455,10 @@ F-statistic: 983.1 on 1 and 108 DF,  p-value: &lt; 2.2e-16</code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(xx, obs, <span class="at">pred =</span> pred1<span class="fl">.5</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">'1.5'</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">tibble</span>(xx, obs, <span class="at">pred =</span> pred2) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mutate</span>(<span class="at">type=</span><span class="st">'2'</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">tibble</span>(xx, obs, <span class="at">pred =</span> pred2<span class="fl">.5</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mutate</span>(<span class="at">type=</span><span class="st">'2.5'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(xx, obs)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(xx, pred, <span class="at">color =</span> type))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Review-what-are-models_files/figure-html/unnamed-chunk-11-4.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">&lt;-</span><span class="fu">line_f</span>( <span class="dv">3</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>SS3<span class="ot">&lt;-</span> <span class="fu">sum</span>((obs<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>SS1; SS1<span class="fl">.5</span>; SS2; SS2<span class="fl">.5</span>; SS3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">&lt;-</span><span class="fu">line_f</span>( <span class="dv">3</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>SS3<span class="ot">&lt;-</span> <span class="fu">sum</span>((obs<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>SS1; SS1<span class="fl">.5</span>; SS2; SS2<span class="fl">.5</span>; SS3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 61.30771</code></pre>
 </div>
@@ -486,32 +474,33 @@ F-statistic: 983.1 on 1 and 108 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 21.39458</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">SS =</span> <span class="fu">c</span>(SS1, SS1<span class="fl">.5</span>, SS2, SS2<span class="fl">.5</span>, SS3),</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">slope=</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>, <span class="fl">2.5</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(slope, SS)) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">SS =</span> <span class="fu">c</span>(SS1, SS1<span class="fl">.5</span>, SS2, SS2<span class="fl">.5</span>, SS3),</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">slope=</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>, <span class="fl">2.5</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(slope, SS)) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Review-what-are-models_files/figure-html/unnamed-chunk-11-5.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Review-what-are-models_files/figure-html/unnamed-chunk-11-4.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>SS_f<span class="ot">&lt;-</span><span class="cf">function</span>(b, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">obs1 =</span> obs){</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  pred<span class="ot">&lt;-</span><span class="fu">line_f</span>(b)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  SS<span class="ot">&lt;-</span> <span class="fu">sum</span>((obs1<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(SS)</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="fu">SS_f</span>(<span class="fl">2.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>SS_f<span class="ot">&lt;-</span><span class="cf">function</span>(b, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">obs1 =</span> obs){</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  pred<span class="ot">&lt;-</span><span class="fu">line_f</span>(b)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  SS<span class="ot">&lt;-</span> <span class="fu">sum</span>((obs1<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(SS)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="fu">SS_f</span>(<span class="fl">2.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 5.122861</code></pre>
 </div>
 </div>
 <p>Finding the right answer by hand is clearly a very tedious process. There must be a better way to do this, and in fact there are many many different better ways to do this. At [this web page](<a href="https://www.r-bloggers.com/2013/04/the-golden-section-search-method-modifying-the-bisection-method-with-the-golden-ratio-for-numerical-optimization/" class="uri">https://www.r-bloggers.com/2013/04/the-golden-section-search-method-modifying-the-bisection-method-with-the-golden-ratio-for-numerical-optimization/</a>), one rather easy-to-understand algorithm is described as an example of an efficient search method for finding the minimum. It is called the ‘Golden Section search’ and is further described in a video [here](<a href="https://www.youtube.com/watch?v=hLm8xfwWYPw" class="uri">https://www.youtube.com/watch?v=hLm8xfwWYPw</a>).</p>
+<p>In order to run this script, the ‘golden.section.search’ function must be saved and sourced from [here](<a href="https://chemicalstatistician.wordpress.com/2013/04/22/using-r-to-implement-the-golden-bisection-method/" class="uri">https://chemicalstatistician.wordpress.com/2013/04/22/using-r-to-implement-the-golden-bisection-method/</a>).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'goldensectionsearch.r'</span>)</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">golden.section.search</span>(SS_f, <span class="dv">1</span>, <span class="dv">3</span>, <span class="fl">0.00001</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'goldensectionsearch.r'</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">golden.section.search</span>(SS_f, <span class="dv">1</span>, <span class="dv">3</span>, <span class="fl">0.00001</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> 
 Iteration # 1 
@@ -752,8 +741,8 @@ Final Lower Bound = 2.285089
 Final Upper Bound = 2.285097 
 Estimated Minimizer = 2.285093 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Check out optim function</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>?optim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Check out optim function</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>?optim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And for more complicated problems with many parameters, there are more complex algorithms, e.g.&nbsp;<a href="https://en.wikipedia.org/wiki/Simulated_annealing">simulated annealing</a>.</p>
 </section>
@@ -780,9 +769,9 @@ Estimated Minimizer = 2.285093 </code></pre>
 </div>
 </div>
 </div>
-<section id="exercise-1" class="level3">
-<h3 class="anchored" data-anchor-id="exercise-1">Exercise</h3>
-<p>This text came with the quarto package. Can you fit linear models to each of the three groups of penguins and add the lines to the plots?</p>
+<section id="independent-exercise" class="level3">
+<h3 class="anchored" data-anchor-id="independent-exercise">Independent exercise</h3>
+<p>This text, pictures, and figures came with the Quarto package. Can you fit linear models to each of the three groups of penguins and add the lines to the plots?</p>
 </section>
 </section>
 <section id="meet-the-penguins" class="level2">

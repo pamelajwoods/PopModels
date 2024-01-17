@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>PopModels - Gró-FTP - Stock assessment line - Simple pop. models</title>
+<title>PopModels - Simple population models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -175,7 +175,7 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#simple-population-models" id="toc-simple-population-models" class="nav-link active" data-scroll-target="#simple-population-models">Simple population models</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link active" data-scroll-target="#section"></a></li>
   <li><a href="#basic-models" id="toc-basic-models" class="nav-link" data-scroll-target="#basic-models">Basic models</a>
   <ul class="collapse">
   <li><a href="#exponential-models" id="toc-exponential-models" class="nav-link" data-scroll-target="#exponential-models">Exponential models</a>
@@ -193,7 +193,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Gró-FTP - Stock assessment line - Simple pop. models</h1>
+<h1 class="title">Simple population models</h1>
 </div>
 
 
@@ -210,8 +210,8 @@ window.Quarto = {
 </header>
 
 
-<section id="simple-population-models" class="level1">
-<h1>Simple population models</h1>
+<section id="section" class="level1">
+<h1></h1>
 </section>
 <section id="basic-models" class="level1">
 <h1>Basic models</h1>
@@ -219,7 +219,15 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="exponential-models">Exponential models</h2>
 <p>The simplest of all population models is that of exponential growth, representing some rate of reproduction.</p>
 <p>Wikipedia example: if a species of bacteria doubles every 10 minutes, starting with 1 bacteria, how many bacteria would there be after 1 hour?</p>
-<p>There are 3 pieces of information here, which we can represent with mathematical notation: <span class="math inline">\(N_0\)</span> = initial population = 1 R = rate of increase = 2 per 10 minutes (or 2/(10 mins/60 mins) in per-hour units) T = time step = 10 minutes (or 10 min/60 mins in per-hour units) t = total number of time steps = 60 mins/10 mins (or 1 hour/ (10/60 hour)) = 6</p>
+<p>There are 3 pieces of information here, which we can represent with mathematical notation:</p>
+<ul>
+<li><span class="math inline">\(N_0\)</span> = initial population = 1</li>
+</ul>
+<!-- -->
+<ul>
+<li><p>R = rate of increase = 2 per 10 minutes (or 2/(10 mins/60 mins) in per-hour units)</p></li>
+<li><p>t = total number of time steps = 60 mins/10 mins (or 1 hour/ (10/60 hour)) = 6</p></li>
+</ul>
 <p>Here is an equation that describes the process of increasing over time:</p>
 <p><span class="math inline">\(N_t = N_0R^t\)</span></p>
 <p><span class="math inline">\(N_6 = 1*2^6 = 64\)</span></p>

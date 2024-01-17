@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>PopModels - Gró-FTP - Stock assessment line - Simple pop. models</title>
+<title>PopModels - Surplus production models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -175,11 +175,12 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#surplus-production-models" id="toc-surplus-production-models" class="nav-link active" data-scroll-target="#surplus-production-models">Surplus production models</a>
+  <li><a href="#section" id="toc-section" class="nav-link active" data-scroll-target="#section"></a>
   <ul class="collapse">
   <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  <li><a href="#schaeffer-model" id="toc-schaeffer-model" class="nav-link" data-scroll-target="#schaeffer-model">Schaeffer model</a></li>
   <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link" data-scroll-target="#exercise-1">Exercise</a></li>
+  <li><a href="#independent-exercise" id="toc-independent-exercise" class="nav-link" data-scroll-target="#independent-exercise">Independent exercise</a></li>
   <li><a href="#lets-talk-about-a-shortcut" id="toc-lets-talk-about-a-shortcut" class="nav-link" data-scroll-target="#lets-talk-about-a-shortcut">Let’s talk about a shortcut</a></li>
   </ul></li>
   </ul>
@@ -190,7 +191,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Gró-FTP - Stock assessment line - Simple pop. models</h1>
+<h1 class="title">Surplus production models</h1>
 </div>
 
 
@@ -207,33 +208,127 @@ window.Quarto = {
 </header>
 
 
-<section id="surplus-production-models" class="level1">
-<h1>Surplus production models</h1>
+<section id="section" class="level1">
+<h1></h1>
 <p><em>Surplus production</em> is an economic term given to the excess <em>yield</em> (i.e., excess after replacement) resulting from a general production process.</p>
 <p>In fisheries research, <em>yield</em> takes on a specific meaning, which is the surplus resulting from a population under a constant replacement scenario. This constant-replacement-scenario ensures that we are talking about a <em>long-term</em> concept, as <em>catch</em> fluctuates with error/uncertainty/diversity in the short-term. Therefore, usually when we are talking about <em>yield</em> we are talking about a theoretical long-term property of the population, given a constant fishing pressure over time. When we are talking about <em>catch</em> it is usually related to the result of fishing activities in a given year.</p>
-<p>The amount of <em>yield</em> that a fish population produces changes with it’s population size. This change is the result of <em>density dependence</em> as we saw in logistic growth. That is, when population sizes are close to carrying capacity, they cannot grow as fast. It is also a result of exponential growth: if populations are very small, they amount of fish reproduced the following year is smaller simply because the parental population is smaller.</p>
+<p>The amount of <em>yield</em> that a fish population produces changes with it’s population size. This change is the result of <em>density dependence</em> as we saw in logistic growth. That is, when population sizes are close to carrying capacity, they cannot grow as fast. It is also a result of exponential growth: if populations are very small, they amount of fish reproduced the following year is smaller simply because the parental population is smaller. These properties you will demonstrate just using the logistic growth equation:</p>
 <section id="exercise" class="level3">
 <h3 class="anchored" data-anchor-id="exercise">Exercise</h3>
-</section>
-<section id="section" class="level3">
-<h3 class="anchored" data-anchor-id="section"></h3>
-<p>As a result, yield is maximized at a certain value for population size, usually towards a middle value when assuming a logistic growth process. Population size can change for a variety of reasons, but one major reason in fisheries is the fishing pressure itself. Therefore, if we want higher yield, we want to fish an unfished population down to a size that maximizes (roughly) its yield production.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">### How does amount produced by a population relate to population size? </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This is done by: </span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#1) Changing model to have max time = 100, K = 2000, and r = 0.2.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#2) Saving Population size as a vector, then Amount Produced by that population size as a vector, and plot them.</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#3) Remember that "Amount Produced" by a given population size contributes to the next years population size. </span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#It is not created by next years population size. The "Amount Produced" beyond replacement is also called "Yield."</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#Exponential</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">100</span>); PP0<span class="ot">&lt;-</span><span class="dv">1</span>; rr<span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>DD<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">100</span>); </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">100</span> <span class="co"># not actually used within the loop but corresponds with i</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>DD0<span class="ot">&lt;-</span>rr<span class="sc">*</span>PP0 <span class="co"># initial population growth - can be small so doesn't really affect model</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">+</span>DD0 <span class="co"># initial population size + growth in first year of model</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">100</span>){ </span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  DD[i<span class="dv">-1</span>]<span class="ot">&lt;-</span>rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]; </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>] <span class="sc">+</span> DD[i<span class="dv">-1</span>] </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  } <span class="co">#DD is the production added to the previous years population size</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>DD[<span class="dv">100</span>]<span class="ot">&lt;-</span>rr<span class="sc">*</span>PP[<span class="dv">100</span>] <span class="co"># this is just to finish series</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(PP,DD) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(PP,DD)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Population B"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Increase in B  from t to t+1 (dB / dt)"</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co">#Now do the same for the logistic equation</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co">#Logistic</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">100</span>); PP0<span class="ot">&lt;-</span><span class="dv">1</span>; rr<span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>DD<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">100</span>); </span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co"># DD is a new storage compoenent. It will store the growth component of the logistic equation.</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">100</span><span class="co"># not actually used within the loop but corresponds with i</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>KK<span class="ot">&lt;-</span><span class="dv">2000</span> <span class="co"># This is a new parameter - carrying capacity.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Try filling in the bits of code missing by replacing the text beginning with ‘#&lt;’ and ending with ‘&gt;’.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#FILL IN CODE BELOW. HINT: LOOK AT HOW DD0 IS DEFINED IN THE FIRST STEP IN COMPARISON</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#WITH HOW DD IS DEFINED INSIDE THE LOOP. THE FORMULA STRUCTURE STAYS THE </span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SAME BUT THE T SUBSCRIPTS MUST MATCH.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>DD0<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP0<span class="sc">/</span>KK)    <span class="co"># This keeps the equation structure the same. It is the initial DD component for the first year.</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">+</span>DD0</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">100</span>){ </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  DD[i<span class="dv">-1</span>]<span class="ot">&lt;-</span> <span class="co">#&lt;FILL IN CODE HERE &gt;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>] <span class="sc">+</span> DD[i<span class="dv">-1</span>] </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  } </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>DD[<span class="dv">100</span>]<span class="ot">&lt;-</span> <span class="co">#&lt;FINISH OFF THE LAST STEP HERE&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Are you ready for the answer? See below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#FILL IN CODE BELOW. HINT: LOOK AT HOW DD0 IS DEFINED IN THE FIRST STEP IN COMPARISON</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#WITH HOW DD IS DEFINED INSIDE THE LOOP. THE FORMULA STRUCTURE STAYS THE </span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SAME BUT THE T SUBSCRIPTS MUST MATCH.</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>DD0<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP0<span class="sc">/</span>KK)    <span class="co"># This keeps the equation structure the same. It is the initial DD component for the first year.</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">+</span>DD0</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">100</span>){ </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  DD[i<span class="dv">-1</span>]<span class="ot">&lt;-</span>rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[i<span class="dv">-1</span>]<span class="sc">/</span>KK); </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>] <span class="sc">+</span> DD[i<span class="dv">-1</span>] </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  } </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>DD[<span class="dv">100</span>]<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP[<span class="dv">100</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[<span class="dv">100</span>]<span class="sc">/</span>KK)<span class="co">#FINISH OFF THE LAST STEP HERE</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(PP,DD) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(PP,DD)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Population B"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Increase in N  from t to t+1 (dN / dt)"</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#Now graph the population over time alongside the above:</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(PP,TT) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(TT,PP)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Population B"</span>)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(p1,p2,p3, <span class="at">ncol =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Surplus_production_models_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Yield is maximized at a certain value for population size, usually towards a middle value when assuming a logistic growth process. Population size can change for a variety of reasons, but one major reason in fisheries is the fishing pressure itself. Therefore, if we want higher yield, we want to fish an unfished population down to a size that maximizes (roughly) its yield production.</p>
 <p>To understand how much we should fish in order to achieve the ‘right’ population size, we need three pieces of information:</p>
 <ul>
-<li><p>the relationship between fishing activity and population size (effort - biomass).</p></li>
-<li><p>the relationship between population size and growth rate (growth rate - biomass).</p></li>
-<li><p>how growth rate translates into concrete fish removals in terms of tonnes or kg (growth rate and effort - catch).</p></li>
+<li><p>the relationship between fishing activity and population size (effort x biomass).</p></li>
+<li><p>the relationship between population size and growth rate (growth rate x biomass).</p></li>
+<li><p>how growth rate translates into concrete fish removals in terms of tonnes or kg (growth rate and effort x catch).</p></li>
 </ul>
-<p>Production models are useful in that they put these three pieces of information together into the same model, that can be parameterized using data. The Schaeffer model is the simplest form of production models and uses the assumption that catch per unit effort is linearly related to population biomass.</p>
+<p>These pieces of information are controlled by <em>parameters</em>. Choosing the parameters is done through <em>fitting</em> the model to data in order to have a well-supported <em>parameterization</em>.</p>
+</section>
+<section id="schaeffer-model" class="level3">
+<h3 class="anchored" data-anchor-id="schaeffer-model">Schaeffer model</h3>
+<p>Production models are useful in that they put these three pieces of information together into the same model, that can often be parameterized using data. The Schaeffer model is the simplest form of production models and uses the assumption that catch per unit effort is linearly related to population biomass.</p>
 <p>Remember the logistic growth equation:</p>
 <p><span class="math inline">\(N_t=N_{t−1}+r∗N_{t−1}∗(1−N_{t−1}/K)\)</span></p>
-<p>Above is enough to understand how growth rate and biomass relate to each other, but understading relationships with catch and effort require us to change this into an economic model including human activities. The first step is adding catch removals on the kg or tonnes scale, as this is the same scale on which population changes occur. To do this, we change from numbers to biomass (by multiplying by an average weight), and insert catch removals (<span class="math inline">\(C_{t-1}\)</span>). As removals ($-$), catch will decrease the availability of biomass to fish in the next time step.</p>
+<p>Above is enough to understand how growth rate and biomass relate to each other, but understading relationships with catch and effort require us to change this into an economic model including human activities. The first step is adding catch removals on the kg or tonnes scale, as this is the same scale on which population changes occur. To do this, we change from numbers to biomass (by multiplying by an average weight), and insert catch removals (<span class="math inline">\(C_{t-1}\)</span>). As removals, catch will decrease the availability of biomass to fish in the next time step.</p>
 <p><span class="math inline">\(B_t=B_{t−1}+r∗B_{t−1}∗(1−B_{t−1}/K)- \bf{C_{t-1}}\)</span></p>
 <p>Catch removals can be further related to two properties: the amount of human activity (effort, <span class="math inline">\(E\)</span>) and the effectiveness of that activity (catchability, <span class="math inline">\(q\)</span>). Here, they can be included by further defining <span class="math inline">\(C_{t-1}\)</span>:</p>
 <p><span class="math inline">\(C_t=qEB_t\)</span></p>
 <p>Here we see that within a each time step (<span class="math inline">\(t\)</span> or <span class="math inline">\(t-1\)</span>), catch is assumed to be linearly related to effort, linearly later to catchability, and linearly related to biomass of the stock. It indicates that as effort increases, catch will increase, also causing a reduction in total biomass ($B_t$) in the next time step. It also indicates that if any of these three components of the fishing activity increase (amount of activity, effectiveness of activity, or biomass available to remove), then so will the catch. We may be able to observe effort levels, but as <span class="math inline">\(q\)</span> and <span class="math inline">\(B\)</span> cannot be observed directly, they are <em>confounded</em>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">'imgs/Q_question.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -245,9 +340,8 @@ window.Quarto = {
 <p>In addition, this assumption provides for a convenient relationship that is exploited when trying to fit such a model to data. Under this assumption defining catch, we can switch the equation around and also write:</p>
 <p><span class="math inline">\(C_t/E = qN_t\)</span></p>
 <p>In this form, it becomes clear that if we have data as a set of observations of catch per unit effort ($C_t/E$) and catch ($C_t$) over time, <em>and there is enough contrast in the data</em>, then we may be able to detect catchability and biomass.</p>
-<p>We need contrast in the data to be able to detect population dynamics (i.e., how growth <em>changes</em> at different population sizes), because we inherently don’t know and can’t observe the total population size of fish, and therefore we don’t know how catchable they are. If we assume high catchability, then we have to assume low population size, and vice versa. Getting the wrong answer could mean assuming that a large mass of removals can be taken from a small population, causing overfishing. Understanding where the best fishing level is not always easty.</p>
+<p>We need contrast in the data to be able to detect informative parameter values (i.e., how growth <em>changes</em> at different population sizes and how easy the fish are to catch). Because we inherently don’t know and can’t observe the total population size of fish, we don’t know how catchable they are. If we assume high catchability, then we have to assume low population size, and vice versa. Getting the wrong answer could mean assuming that a large mass of removals can be taken from a small population, causing overfishing. Therefore, understanding where the best fishing level is not always easy or possible if there are not enough contrast in the data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">'imgs/Q_answer2.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -263,10 +357,10 @@ window.Quarto = {
 <li><p>catchability ($q$)</p></li>
 <li><p>initial population size ($N_{t=0}$)</p></li>
 </ul>
-<p>As you go through the following exercise, think about the different ‘experiments’ needed to get information about these paramaters. What states of population size (high/low) and fishing (heavy/light) should be observed to get this information at a minimum?</p>
+<p>As you go through the following exercise, think about the different ‘experiments’ needed to get information about these parameters. What states of population size (high/low) and fishing (heavy/light) should be observed to get this information at a minimum?</p>
 <p>After getting confident estimates of the above parameters, the system can then be analyzed (or simulated) to determine:</p>
 <ul>
-<li><p>At what population biomass level is population growth the greatest? (Remember to distinguish between <em>growth</em>, which is a rate, and <em>catch</em>, which is a single unit of removal in kg or tonnes)</p></li>
+<li><p>At what population biomass level is population growth the greatest? (Remember to distinguish between <em>growth rate</em>, which is in units per time step, and growth amount, <em>catch</em>, which is a single unit of removal in kg or tonnes in a time step)</p></li>
 <li><p>At what effort level do you also get the highest yield?</p></li>
 </ul>
 <p>Further considerations include:</p>
@@ -279,230 +373,299 @@ window.Quarto = {
 <section id="exercise-1" class="level3">
 <h3 class="anchored" data-anchor-id="exercise-1">Exercise</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">######## R Exercise 5 for GROFTP 2022, Lectures 6 - 9 ######</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="do">### Created by Pamela J. Woods </span><span class="al">###</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="do">###------------------------------Exercise 5: Production functions-----------------------</span><span class="al">###</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="do">### How does amount produced by a population relate to population size? </span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># This is done by: </span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#1) Changing model to have max time = 100, K = 2000, and r = 0.2.</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#2) Saving Population size as a vector, then Amount Produced by that population size as a vector, and plot them.</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#3) Remember that "Amount Produced" by a given population size contributes to the next years population size. </span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#It is not created by next years population size. The "Amount Produced" beyond replacement is also called "Yield."</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#Exponential</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">100</span>); PP0<span class="ot">&lt;-</span><span class="dv">1</span>; rr<span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>DD<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">100</span>); </span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">100</span> <span class="co"># not actually used within the loop but corresponds with i</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>DD0<span class="ot">&lt;-</span>rr<span class="sc">*</span>PP0 <span class="co"># initial population growth - can be small so doesn't really affect model</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">+</span>DD0 <span class="co"># initial population size + growth in first year of model</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">100</span>){ </span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  DD[i<span class="dv">-1</span>]<span class="ot">&lt;-</span>rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]; </span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>] <span class="sc">+</span> DD[i<span class="dv">-1</span>] </span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  } <span class="co">#DD is the production added to the previous years population size</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>DD[<span class="dv">100</span>]<span class="ot">&lt;-</span>rr<span class="sc">*</span>PP[<span class="dv">100</span>] <span class="co"># this is just to finish series</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(DD<span class="sc">~</span>PP, <span class="at">ylab =</span> <span class="st">"Increase in N from t to t+1 (dN / dt)"</span>, <span class="at">xlab =</span> <span class="st">"Population N"</span>) </span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="co">#Now do the same for the logistic equation</span></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="co">#Logistic</span></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">100</span>); PP0<span class="ot">&lt;-</span><span class="dv">1</span>; rr<span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>DD<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">100</span>); </span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co"># DD is a new storage compoenent. It will store the growth component of the logistic equation.</span></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">100</span><span class="co"># not actually used within the loop but corresponds with i</span></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>KK<span class="ot">&lt;-</span><span class="dv">2000</span> <span class="co"># This is a new parameter - carrying capacity.</span></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="co">#FILL IN CODE BELOW. HINT: LOOK AT HOW DD0 IS DEFINED IN THE FIRST STEP IN COMPARISON</span></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="co">#WITH HOW DD IS DEFINED INSIDE THE LOOP. THE FORMULA STRUCTURE STAYS THE </span></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="co">#SAME BUT THE T SUBSCRIPTS MUST MATCH.</span></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>DD0<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP0<span class="sc">/</span>KK)    <span class="co"># This keeps the equation structure the same. It is the initial DD component for the first year.</span></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0<span class="sc">+</span>DD0</span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">100</span>){ </span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>  DD[i<span class="dv">-1</span>]<span class="ot">&lt;-</span>rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[i<span class="dv">-1</span>]<span class="sc">/</span>KK); </span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>  PP[i]<span class="ot">&lt;-</span>PP[i<span class="dv">-1</span>] <span class="sc">+</span> DD[i<span class="dv">-1</span>] </span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>  } </span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>DD[<span class="dv">100</span>]<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP[<span class="dv">100</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[<span class="dv">100</span>]<span class="sc">/</span>KK)<span class="co">#FINISH OFF THE LAST STEP HERE</span></span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(DD<span class="sc">~</span>PP, <span class="at">ylab =</span> <span class="st">"Increase in N  from t to t+1 (dN / dt)"</span>, <span class="at">xlab =</span> <span class="st">"Population N"</span>) </span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="co">#Now graph the population over time alongside the above:</span></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(PP<span class="sc">~</span>TT, <span class="at">ylab =</span> <span class="st">"Population N"</span>, <span class="at">xlab =</span> <span class="st">"Time"</span>)</span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="co">#Now add population removals - catch, which is a linear function of fishing effort, </span></span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="co">#catchability, and population size</span></span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="co">#Adding fishing makes it a "production" function</span></span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="co">#Here you will run a population for a long time at a certain effort level. </span></span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="co">#Notice that the value at which the population stabilizes is no longer carrying </span></span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="co">#capacity, because catch has been removed. Also note how catch is related to </span></span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a><span class="co">#population size. </span></span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">500</span>); PP0<span class="ot">&lt;-</span><span class="dv">1</span>; rr<span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>DD<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">500</span>);</span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>CC<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">500</span>); </span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>Effort<span class="ot">&lt;-</span><span class="fl">0.8</span>; Catchability<span class="ot">&lt;-</span><span class="fl">0.1</span></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">500</span></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>KK<span class="ot">&lt;-</span><span class="dv">2000</span></span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a><span class="co">#FILL IN CODE BELOW. HINT: LOOK AT HOW DD0 IS DEFINED ABOVE IN COMPARISON</span></span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="co">#WITH HOW DD IS DEFINED INSIDE THE LOOP. THE FORMULA STRUCTURE STAYS THE </span></span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="co">#SAME BUT THE T SUBSCRIPTS MUST MATCH.</span></span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>DD0<span class="ot">&lt;-</span>rr<span class="sc">*</span>PP0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP0<span class="sc">/</span>KK)</span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>CC0<span class="ot">&lt;-</span>PP0<span class="sc">*</span>Effort<span class="sc">*</span>Catchability; </span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0 <span class="sc">+</span> DD0 <span class="sc">-</span> CC0</span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">500</span>){ </span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>  DD[i<span class="dv">-1</span>]<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[i<span class="dv">-1</span>]<span class="sc">/</span>KK)</span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>  CC[i<span class="dv">-1</span>]<span class="ot">&lt;-</span> PP[i<span class="dv">-1</span>]<span class="sc">*</span>Effort<span class="sc">*</span>Catchability</span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>  PP[i]<span class="ot">&lt;-</span> PP[i<span class="dv">-1</span>] <span class="sc">+</span> DD[i<span class="dv">-1</span>] <span class="sc">-</span> CC[i<span class="dv">-1</span>]</span>
-<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>  } </span>
-<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>DD[<span class="dv">500</span>]<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP[<span class="dv">500</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[<span class="dv">500</span>]<span class="sc">/</span>KK)</span>
-<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>CC[<span class="dv">500</span>]<span class="ot">&lt;-</span> PP[<span class="dv">500</span>]<span class="sc">*</span>Effort<span class="sc">*</span>Catchability</span>
-<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
-<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(CC<span class="sc">~</span>TT, <span class="at">ylab =</span> <span class="st">"Catch"</span>, <span class="at">xlab =</span> <span class="st">"Time"</span>) </span>
-<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(PP<span class="sc">~</span>TT, <span class="at">ylab =</span> <span class="st">"Population N"</span>, <span class="at">xlab =</span> <span class="st">"Time"</span>) </span>
-<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a><span class="co">#This graph just shows you that at a single value of effort, your catch is directly related to your population size. As your population grows, if your effort stays the same,  effort*catchability defines the proportion of the population taken out. Since effort is not at a high value (0.8), it does not affect the population dynamics much, so catch follows the same pattern as population (directly related).</span></span>
-<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a><span class="co">#Q - Find on each graph where MSY is located. How are the last 2 graphs related? To answer the following questions, it helps to mess around with the r and K values. How is MSY related to K and r? At what population size does this occur (Nmsy)? How does this relate to K and r? What does r affect? </span></span>
-<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a><span class="co">#Now try to find the Effort value that lead to CC = MSY = (rr*KK)/4 in the long term. </span></span>
-<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a><span class="co">#[Hint: try looping over values for effort and plotting the results below.]</span></span>
-<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a>eff<span class="ot">&lt;-</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">2</span>,<span class="fl">0.1</span>) <span class="co"># values of effort to loop over</span></span>
-<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a>YY<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="fu">length</span>(eff))</span>
-<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a>XX<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="fu">length</span>(eff))</span>
-<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a>Catchability<span class="ot">&lt;-</span><span class="fl">0.1</span></span>
-<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">500</span></span>
-<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a>KK<span class="ot">&lt;-</span><span class="dv">2000</span></span>
-<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>PP0<span class="ot">&lt;-</span><span class="dv">1</span>; rr<span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
-<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(eff)){</span>
-<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a>  <span class="co">#FILL IN CODE HERE.</span></span>
-<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>  PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">500</span>); </span>
-<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>  DD<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">500</span>);</span>
-<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a>  CC<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">500</span>); </span>
-<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a>  Effort<span class="ot">&lt;-</span> eff[j] <span class="co">#WHAT VALUE GOES HERE?</span></span>
-<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a>  DD0<span class="ot">&lt;-</span>rr<span class="sc">*</span>PP0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP0<span class="sc">/</span>KK)</span>
-<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a>  CC0<span class="ot">&lt;-</span>PP0<span class="sc">*</span>Effort<span class="sc">*</span>Catchability; </span>
-<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a>  PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0 <span class="sc">+</span> DD0 <span class="sc">-</span> CC0</span>
-<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">500</span>){ </span>
-<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a>    DD[i<span class="dv">-1</span>]<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[i<span class="dv">-1</span>]<span class="sc">/</span>KK)</span>
-<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a>    CC[i<span class="dv">-1</span>]<span class="ot">&lt;-</span> PP[i<span class="dv">-1</span>]<span class="sc">*</span>Effort<span class="sc">*</span>Catchability</span>
-<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a>    PP[i]<span class="ot">&lt;-</span> PP[i<span class="dv">-1</span>] <span class="sc">+</span> DD[i<span class="dv">-1</span>] <span class="sc">-</span> CC[i<span class="dv">-1</span>]</span>
-<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a>  } </span>
-<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a>  DD[<span class="dv">500</span>]<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP[<span class="dv">500</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[<span class="dv">500</span>]<span class="sc">/</span>KK)</span>
-<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a>  CC[<span class="dv">500</span>]<span class="ot">&lt;-</span> PP[<span class="dv">500</span>]<span class="sc">*</span>Effort<span class="sc">*</span>Catchability</span>
-<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a>  <span class="co">#SAVE RESULTS: LAST (EQUILIBRIUM) VALUE OF CATCH AND LAST VALUE OF POPULATION </span></span>
-<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a>  YY[j] <span class="ot">&lt;-</span> CC[<span class="dv">500</span>] <span class="co"># Equilibrium Yield</span></span>
-<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a>  XX[j] <span class="ot">&lt;-</span>  PP[<span class="dv">500</span>] <span class="co">#or PP[500] # Equilibrium Population N</span></span>
-<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
-<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(YY<span class="sc">~</span>eff, <span class="at">ylab =</span> <span class="st">"Yield"</span>, <span class="at">xlab =</span> <span class="st">"Effort"</span>) </span>
-<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(XX<span class="sc">~</span>eff, <span class="at">ylab =</span> <span class="st">"Population N"</span>, <span class="at">xlab =</span> <span class="st">"Effort"</span>) </span>
-<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(YY<span class="sc">/</span>eff<span class="sc">~</span>eff, <span class="at">ylab =</span> <span class="st">"CPUE"</span>, <span class="at">xlab =</span> <span class="st">"Effort"</span>) <span class="co">#NOTE THIS IS LINEAR</span></span>
-<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a><span class="co">#Q - Now look up the equation for a Pella-Tomlinson production function and </span></span>
-<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a><span class="co">#repeat the above exercise to plot Pella-Tomlinson surplus production function alongside</span></span>
-<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a><span class="co">#Schaeffer production function on the same figure (hint: Schaeffer is a special case of the</span></span>
-<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a><span class="co">#Pella-Tomlinson where the extra parameter (exponent) is set to 1).</span></span>
-<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a><span class="co">#How is the shape of the MSY relationship changed by the extra parmaeter?</span></span>
-<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a><span class="co">#Q - Note that these graphs demonstrate the long-term equilibrium results </span></span>
-<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a><span class="co">#under different fishing strategies. It is dome-shaped. We saw a graph at the </span></span>
-<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a><span class="co">#beginning of this exercise that was also dome-shaped (dn/dt of the population </span></span>
-<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a><span class="co">#over population size); however this graph is not based on equilibrium results. </span></span>
-<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a><span class="co">#How are these two graphs related?</span></span>
-<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a><span class="co">#If cost linearly increases with effort...</span></span>
-<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>Cost<span class="ot">&lt;-</span>eff<span class="sc">*</span><span class="dv">40</span></span>
-<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a><span class="co">#Q - then what is maximum economic yield (MEY)? [Hint: MEY is the yield with the greatest profit; that is, the greatest difference between Yield and cost]</span></span>
-<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(YY<span class="sc">~</span>eff, <span class="at">ylab =</span> <span class="st">"Yield"</span>, <span class="at">xlab =</span> <span class="st">"Effort"</span>) </span>
-<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(Cost<span class="sc">~</span>eff, <span class="at">pch =</span> <span class="dv">2</span>)</span>
-<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a><span class="co"># MSY = K*r/4</span></span>
-<span id="cb3-189"><a href="#cb3-189" aria-hidden="true" tabindex="-1"></a><span class="co"># Nmsy = K/2</span></span>
-<span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a>eff[<span class="fu">which.max</span>(YY)] <span class="co">#MSY</span></span>
-<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a>eff[<span class="fu">which.max</span>(YY <span class="sc">-</span> Cost)] <span class="co">#MEY</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">###------------------------------Exercise 5: Production functions-----------------------</span><span class="al">###</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Now add population removals - catch, which is a linear function of fishing effort, </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#catchability, and population size</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Here you will run a population for a long time at a certain effort level. </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#Notice that the value at which the population stabilizes is no longer carrying </span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#capacity, because catch has been removed. Also note how catch is related to </span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#population size. </span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">500</span>); PP0<span class="ot">&lt;-</span><span class="dv">1</span>; rr<span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>DD<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">500</span>);</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>CC<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">500</span>); </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>Effort<span class="ot">&lt;-</span><span class="fl">0.8</span>; Catchability<span class="ot">&lt;-</span><span class="fl">0.1</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">500</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>KK<span class="ot">&lt;-</span><span class="dv">2000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Try filling in the bits of code missing by replacing the text beginning with ‘#&lt;’ and ending with ‘&gt;’.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#FILL IN CODE BELOW. HINT: LOOK AT HOW DD0 IS DEFINED ABOVE IN COMPARISON</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#WITH HOW DD IS DEFINED INSIDE THE LOOP. THE FORMULA STRUCTURE STAYS THE </span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SAME BUT THE T SUBSCRIPTS MUST MATCH.</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>DD0<span class="ot">&lt;-</span>rr<span class="sc">*</span>PP0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP0<span class="sc">/</span>KK)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>CC0<span class="ot">&lt;-</span>PP0<span class="sc">*</span>Effort<span class="sc">*</span>Catchability; </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0 <span class="sc">+</span> DD0 <span class="sc">-</span> CC0</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">500</span>){ </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  DD[i<span class="dv">-1</span>]<span class="ot">&lt;-</span>  <span class="co">#&lt;FILL IN CODE HERE &gt;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  CC[i<span class="dv">-1</span>]<span class="ot">&lt;-</span> PP[i<span class="dv">-1</span>]<span class="sc">*</span>Effort<span class="sc">*</span>Catchability</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  PP[i]<span class="ot">&lt;-</span> PP[i<span class="dv">-1</span>] <span class="sc">+</span> DD[i<span class="dv">-1</span>] <span class="sc">-</span> CC[i<span class="dv">-1</span>]</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  } </span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>DD[<span class="dv">500</span>]<span class="ot">&lt;-</span>  <span class="co">#&lt;FINISH OFF THE LAST STEP HERE &gt;</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>CC[<span class="dv">500</span>]<span class="ot">&lt;-</span> PP[<span class="dv">500</span>]<span class="sc">*</span>Effort<span class="sc">*</span>Catchability</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Are you ready for the answer? See below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>DD0<span class="ot">&lt;-</span>rr<span class="sc">*</span>PP0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP0<span class="sc">/</span>KK)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>CC0<span class="ot">&lt;-</span>PP0<span class="sc">*</span>Effort<span class="sc">*</span>Catchability; </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0 <span class="sc">+</span> DD0 <span class="sc">-</span> CC0</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">500</span>){ </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  DD[i<span class="dv">-1</span>]<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[i<span class="dv">-1</span>]<span class="sc">/</span>KK)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  CC[i<span class="dv">-1</span>]<span class="ot">&lt;-</span> PP[i<span class="dv">-1</span>]<span class="sc">*</span>Effort<span class="sc">*</span>Catchability</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  PP[i]<span class="ot">&lt;-</span> PP[i<span class="dv">-1</span>] <span class="sc">+</span> DD[i<span class="dv">-1</span>] <span class="sc">-</span> CC[i<span class="dv">-1</span>]</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  } </span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>DD[<span class="dv">500</span>]<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP[<span class="dv">500</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[<span class="dv">500</span>]<span class="sc">/</span>KK)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>CC[<span class="dv">500</span>]<span class="ot">&lt;-</span> PP[<span class="dv">500</span>]<span class="sc">*</span>Effort<span class="sc">*</span>Catchability</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(CC,TT) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(TT, CC)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Catch"</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(PP,TT) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(TT, PP)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Population Biomass"</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(PP,CC) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(PP, CC)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Catch"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Population Biomass"</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(p1, p2, p3, <span class="at">ncol =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Surplus_production_models_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#This graph just shows you that at a single value of effort, your catch is directly related to your population size. As your population grows, if your effort stays the same,  effort*catchability defines the proportion of the population taken out. Since effort is not at a high value (0.8), it does not affect the population dynamics much, so catch follows the same pattern as population (directly related).</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The above results show a single version of how the population could grow, alongside catch, given that it starts from a low value and is subject to a single effort value. That means this is a single snapshot of the population’s expected dynamics. It shows simulated contrast (not contrast in data) in how the population grows at high and low population levels, and the catch results, but it does not show contrast in high/low fishing effort.</p>
+<p>In this next exercise, we want to determine the level of fishing of effort that leads to the highest annual catch removals in the long-term. Therefore, we:</p>
+<ul>
+<li><p>only consider values at the end of a simulated time series to reflect the <em>equilibrium</em> results (i.e., values when <span class="math inline">\(B_{t-1}=B_t\)</span>). This reflects <em>long-term</em> results of fishing.</p></li>
+<li><p>Experiment with effort levels by trying a variety of them, and looking at equilibrium states as a function of different effort values.</p>
+<h3 id="exercise-2" class="anchored">Exercise</h3></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Now try to find the Effort value that lead to CC = MSY = (rr*KK)/4 in the long term. </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#[Hint: try looping over values for effort and plotting the results below.]</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>eff<span class="ot">&lt;-</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">2</span>,<span class="fl">0.1</span>) <span class="co"># values of effort to loop over</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>YY<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="fu">length</span>(eff))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>XX<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="fu">length</span>(eff))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>Catchability<span class="ot">&lt;-</span><span class="fl">0.1</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>TT<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">500</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>KK<span class="ot">&lt;-</span><span class="dv">2000</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>PP0<span class="ot">&lt;-</span><span class="dv">1</span>; rr<span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(eff)){</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">500</span>); </span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  DD<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">500</span>);</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  CC<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="dv">500</span>); </span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  Effort<span class="ot">&lt;-</span> eff[j] </span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  DD0<span class="ot">&lt;-</span>rr<span class="sc">*</span>PP0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP0<span class="sc">/</span>KK)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  CC0<span class="ot">&lt;-</span>PP0<span class="sc">*</span>Effort<span class="sc">*</span>Catchability; </span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0 <span class="sc">+</span> DD0 <span class="sc">-</span> CC0</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">500</span>){ </span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    DD[i<span class="dv">-1</span>]<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP[i<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[i<span class="dv">-1</span>]<span class="sc">/</span>KK)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    CC[i<span class="dv">-1</span>]<span class="ot">&lt;-</span> PP[i<span class="dv">-1</span>]<span class="sc">*</span>Effort<span class="sc">*</span>Catchability</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    PP[i]<span class="ot">&lt;-</span> PP[i<span class="dv">-1</span>] <span class="sc">+</span> DD[i<span class="dv">-1</span>] <span class="sc">-</span> CC[i<span class="dv">-1</span>]</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  } </span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>  DD[<span class="dv">500</span>]<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP[<span class="dv">500</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[<span class="dv">500</span>]<span class="sc">/</span>KK)</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>  CC[<span class="dv">500</span>]<span class="ot">&lt;-</span> PP[<span class="dv">500</span>]<span class="sc">*</span>Effort<span class="sc">*</span>Catchability</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>  <span class="co">#SAVE RESULTS: LAST (EQUILIBRIUM) VALUE OF CATCH AND LAST VALUE OF POPULATION </span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>  YY[j] <span class="ot">&lt;-</span> CC[<span class="dv">500</span>] <span class="co"># Equilibrium Yield</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>  XX[j] <span class="ot">&lt;-</span>  PP[<span class="dv">500</span>] <span class="co">#or PP[500] # Equilibrium Population B</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(XX,YY,eff) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(eff, YY)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Yield"</span>) <span class="sc">+</span> <span class="fu">xlab</span>( <span class="st">"Effort"</span>)</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(XX,YY,eff) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(eff, XX)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Population B"</span>) <span class="sc">+</span> <span class="fu">xlab</span>( <span class="st">"Effort"</span>)</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(XX,YY,eff) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">CPUE =</span> YY<span class="sc">/</span>eff) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(eff, CPUE)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Effort"</span>) </span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(p1, p2, p3, <span class="at">ncol =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 rows containing missing values (`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Surplus_production_models_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Q - Find on each graph where MSY is located. How are the last 2 graphs related? To answer the following questions, it helps to change the r and K values. How is MSY related to K and r? At what population size does this occur (Nmsy)? How does this relate to K and r? What does r affect? </span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Q - Note that these graphs demonstrate the long-term equilibrium results </span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#under different fishing strategies. It is dome-shaped. We saw a graph at the </span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#beginning of this exercise that was also dome-shaped (dn/dt of the population </span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#over population size); however this graph is not based on equilibrium results. </span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#How are these two graphs related?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here is a demonstration of the difference between maximum sustainable yield (MSY) and maximum economic yield (MEY) concepts.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#If cost linearly increases with effort...</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>Cost<span class="ot">&lt;-</span>eff<span class="sc">*</span><span class="dv">40</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Q - then what is maximum economic yield (MEY)? [Hint: MEY is the yield with the greatest profit; that is, the greatest difference between Yield and cost]</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(YY, eff, Cost) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(eff, YY)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Yield"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Effort"</span>) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(eff, Cost), <span class="at">shape =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Surplus_production_models_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MSY = K*r/4</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Nmsy = K/2</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>eff[<span class="fu">which.max</span>(YY)] <span class="co">#MSY</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>eff[<span class="fu">which.max</span>(YY <span class="sc">-</span> Cost)] <span class="co">#MEY</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8</code></pre>
+</div>
+</div>
+</section>
+<section id="independent-exercise" class="level3">
+<h3 class="anchored" data-anchor-id="independent-exercise">Independent exercise</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Extra - Now look up the equation for a Pella-Tomlinson production function and </span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">#repeat the above exercise to plot Pella-Tomlinson surplus production function alongside</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Schaeffer production function on the same figure (hint: Schaeffer is a special case of the</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Pella-Tomlinson where the extra parameter (exponent) is set to 1).</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">#How is the shape of the MSY relationship changed by the extra parmaeter?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="lets-talk-about-a-shortcut" class="level2">
 <h2 class="anchored" data-anchor-id="lets-talk-about-a-shortcut">Let’s talk about a shortcut</h2>
-<p>adkfl</p>
+<p>Below is a demonstration of a quick-and-dirty shortcut to finding some of the equilibrium properties of production models based on simple linear models fitted to CPUE and effort data. This method was useful when computational speed was an issue and demonstrates further how some of the equilibrium values can be obtained. However, this method is not recommended as it requires the assumption that the values you are observing are long-term results, or equilibrium values, as gathered in the above exercises. This is obviously not a correct assumption, as they are observations taken in consecutive years, although in many of the cases you could argue that they are close to equilibrium values when observed. However, this example, found <a href="http://www.fao.org/3/w5449e/w5449e10.pdf">here</a>, also shows how this assumption is not correct, especially at the initiation of a new fishery when the population is transitioning from an unfished population to a fished one, creating a mismatch between short- and long-term expectations of CPUE. In the earliest years of a fishery, CPUE tends to more greatly exceed long-term expectations for CPUE given a constant effort level, as biomass has not had a chance to decrease over time.</p>
+<p>In addition, another assumption of the Schaeffer model brought up in this example is the assumption that CPUE is directly related to biomass (i.e., CPUE reflects a constant proportion of biomass at all population sizes, determined by catchability <span class="math inline">\(q\)</span>). This is also not always the case, so this example also tests an alternate model of a log-linear relationship, yielding greater CPUE proportion at lower biomass levels.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">######-------FAO shortcut from http://www.fao.org/3/w5449e/w5449e10.pdf-------########</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Yrs <span class="ot">&lt;-</span> <span class="dv">1969</span><span class="sc">:</span><span class="dv">1977</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>Yield <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">49</span>, <span class="fl">47.5</span>, <span class="dv">45</span>, <span class="dv">51</span>, <span class="dv">56</span>, <span class="dv">66</span>, <span class="dv">58</span>, <span class="dv">52</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>Effort <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">623</span>, <span class="dv">628</span>, <span class="dv">520</span>, <span class="dv">513</span>, <span class="dv">661</span>, <span class="dv">919</span>, <span class="dv">1158</span>, <span class="dv">1970</span>, <span class="dv">1317</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(Yrs); <span class="fu">length</span>(Yield); <span class="fu">length</span>(Effort)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>Schaefer.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(Yield<span class="sc">/</span>Effort <span class="sc">~</span> Effort)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Schaefer.lm)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>Schaefer.glm <span class="ot">&lt;-</span> <span class="fu">glm</span>(Yield<span class="sc">/</span>Effort <span class="sc">~</span> Effort)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Schaefer.glm)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span><span class="fu">coef</span>(Schaefer.lm)[<span class="dv">1</span>]</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span><span class="fu">coef</span>(Schaefer.lm)[<span class="dv">2</span>]</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>MSY <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.25</span><span class="sc">*</span>a<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>b</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>MSY</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>Fox.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(Yield<span class="sc">/</span>Effort) <span class="sc">~</span> Effort)</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Fox.lm)</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>c <span class="ot">&lt;-</span><span class="fu">coef</span>(Fox.lm)[<span class="dv">1</span>]</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span><span class="fu">coef</span>(Fox.lm)[<span class="dv">2</span>]</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>MSY <span class="ot">&lt;-</span> <span class="sc">-</span>(<span class="dv">1</span><span class="sc">/</span>d)<span class="sc">*</span><span class="fu">exp</span>(c<span class="dv">-1</span>)</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>MSY</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="do">######-------FAO shortcut from http://www.fao.org/3/w5449e/w5449e10.pdf-------########</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>Yrs <span class="ot">&lt;-</span> <span class="dv">1969</span><span class="sc">:</span><span class="dv">1977</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>Yield <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">49</span>, <span class="fl">47.5</span>, <span class="dv">45</span>, <span class="dv">51</span>, <span class="dv">56</span>, <span class="dv">66</span>, <span class="dv">58</span>, <span class="dv">52</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>Effort <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">623</span>, <span class="dv">628</span>, <span class="dv">520</span>, <span class="dv">513</span>, <span class="dv">661</span>, <span class="dv">919</span>, <span class="dv">1158</span>, <span class="dv">1970</span>, <span class="dv">1317</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(Yrs); <span class="fu">length</span>(Yield); <span class="fu">length</span>(Effort)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>Schaefer.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(Yield<span class="sc">/</span>Effort <span class="sc">~</span> Effort)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Schaefer.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Yield/Effort ~ Effort)
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-0.0104590 -0.0014437  0.0002383  0.0033219  0.0074826 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  1.064e-01  4.655e-03  22.855 7.78e-08 ***
+Effort      -4.285e-05  4.518e-06  -9.486 3.03e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.006199 on 7 degrees of freedom
+Multiple R-squared:  0.9278,    Adjusted R-squared:  0.9175 
+F-statistic: 89.98 on 1 and 7 DF,  p-value: 3.026e-05</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Schaefer.glm <span class="ot">&lt;-</span> <span class="fu">glm</span>(Yield<span class="sc">/</span>Effort <span class="sc">~</span> Effort)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Schaefer.glm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Yield/Effort ~ Effort)
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  1.064e-01  4.655e-03  22.855 7.78e-08 ***
+Effort      -4.285e-05  4.518e-06  -9.486 3.03e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for gaussian family taken to be 3.84281e-05)
+
+    Null deviance: 0.0037268  on 8  degrees of freedom
+Residual deviance: 0.0002690  on 7  degrees of freedom
+AIC: -62.221
+
+Number of Fisher Scoring iterations: 2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span><span class="fu">coef</span>(Schaefer.lm)[<span class="dv">1</span>]</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span><span class="fu">coef</span>(Schaefer.lm)[<span class="dv">2</span>]</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>MSY <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.25</span><span class="sc">*</span>a<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>b</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(MSY) <span class="ot">&lt;-</span> <span class="st">"MSY"</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>MSY</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     MSY 
+66.02075 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>Fox.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(Yield<span class="sc">/</span>Effort) <span class="sc">~</span> Effort)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Fox.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log(Yield/Effort) ~ Effort)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.158062 -0.017854  0.006417  0.054975  0.084179 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -2.040e+00  5.720e-02  -35.66 3.54e-09 ***
+Effort      -7.851e-04  5.551e-05  -14.14 2.10e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.07618 on 7 degrees of freedom
+Multiple R-squared:  0.9662,    Adjusted R-squared:  0.9614 
+F-statistic:   200 on 1 and 7 DF,  p-value: 2.097e-06</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>c <span class="ot">&lt;-</span><span class="fu">coef</span>(Fox.lm)[<span class="dv">1</span>]</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span><span class="fu">coef</span>(Fox.lm)[<span class="dv">2</span>]</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>MSY <span class="ot">&lt;-</span> <span class="sc">-</span>(<span class="dv">1</span><span class="sc">/</span>d)<span class="sc">*</span><span class="fu">exp</span>(c<span class="dv">-1</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(MSY) <span class="ot">&lt;-</span> <span class="st">"MSY"</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>MSY</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     MSY 
+60.93882 </code></pre>
+</div>
 </div>
 
 

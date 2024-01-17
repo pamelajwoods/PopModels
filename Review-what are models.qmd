@@ -157,12 +157,6 @@ pred<-line_f(2.5)
 SS2.5<- sum((obs-pred)^2)
 pred2.5<-line_f(2.5)
 
-par(mfrow = c(1,1))
-plot(obs~xx)
-lines(pred1.5~xx)
-lines(pred2~xx, col = 2)
-lines(pred2.5~xx, col = 3)
-
 tibble(xx, obs, pred = pred1.5) %>%
   mutate(type = '1.5') %>% 
   bind_rows(tibble(xx, obs, pred = pred2) %>% 
@@ -193,6 +187,8 @@ SS_f(2.5)
 
 Finding the right answer by hand is clearly a very tedious process. There must be a better way to do this, and in fact there are many many different better ways to do this. At \[this web page\](<https://www.r-bloggers.com/2013/04/the-golden-section-search-method-modifying-the-bisection-method-with-the-golden-ratio-for-numerical-optimization/>), one rather easy-to-understand algorithm is described as an example of an efficient search method for finding the minimum. It is called the 'Golden Section search' and is further described in a video \[here\](<https://www.youtube.com/watch?v=hLm8xfwWYPw>).
 
+In order to run this script, the 'golden.section.search' function must be saved and sourced from \[here\](<https://chemicalstatistician.wordpress.com/2013/04/22/using-r-to-implement-the-golden-bisection-method/>).
+
 ```{r, echo = TRUE}
 
 source('goldensectionsearch.r')
@@ -219,7 +215,7 @@ This process can be frustrating as you learn *debugging*, or quickly learning ho
 knitr::include_graphics('imgs/Debugging.png')
 ```
 
-### Exercise
+### Independent exercise
 
 This text, pictures, and figures came with the Quarto package. Can you fit linear models to each of the three groups of penguins and add the lines to the plots?
 

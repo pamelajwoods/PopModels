@@ -53,7 +53,7 @@ for(i in 2:100){
 DD[100]<-rr*PP[100] # this is just to finish series
 
 par(mfrow = c(1,3))
-p1 <- tibble(PP,DD) %>% ggplot(aes(PP,DD)) + geom_point() + xlab("Population N") + ylab("Increase in N  from t to t+1 (dN / dt)")
+p1 <- tibble(PP,DD) %>% ggplot(aes(PP,DD)) + geom_point() + xlab("Population B") + ylab("Increase in B  from t to t+1 (dB / dt)")
 
 #Now do the same for the logistic equation
 
@@ -65,6 +65,35 @@ TT<-1:100# not actually used within the loop but corresponds with i
 
 KK<-2000 # This is a new parameter - carrying capacity.
 
+```
+
+Try filling in the bits of code missing by replacing the text beginning with '#\<' and ending with '\>'.
+
+```{r, eval = FALSE, echo = TRUE}
+
+#FILL IN CODE BELOW. HINT: LOOK AT HOW DD0 IS DEFINED IN THE FIRST STEP IN COMPARISON
+#WITH HOW DD IS DEFINED INSIDE THE LOOP. THE FORMULA STRUCTURE STAYS THE 
+#SAME BUT THE T SUBSCRIPTS MUST MATCH.
+
+DD0<- rr*PP0*(1-PP0/KK)    # This keeps the equation structure the same. It is the initial DD component for the first year.
+PP[1]<-PP0+DD0
+
+for(i in 2:100){ 
+  
+  DD[i-1]<- #<FILL IN CODE HERE >
+  
+  PP[i]<-PP[i-1] + DD[i-1] 
+  
+  
+  } 
+
+DD[100]<- #<FINISH OFF THE LAST STEP HERE>
+  
+```
+
+Are you ready for the answer? See below.
+
+```{r, echo = TRUE}
 #FILL IN CODE BELOW. HINT: LOOK AT HOW DD0 IS DEFINED IN THE FIRST STEP IN COMPARISON
 #WITH HOW DD IS DEFINED INSIDE THE LOOP. THE FORMULA STRUCTURE STAYS THE 
 #SAME BUT THE T SUBSCRIPTS MUST MATCH.
@@ -83,15 +112,15 @@ for(i in 2:100){
 
 DD[100]<- rr*PP[100]*(1-PP[100]/KK)#FINISH OFF THE LAST STEP HERE
   
-p2 <- tibble(PP,DD) %>% ggplot(aes(PP,DD)) + geom_point() + xlab("Population N") + ylab("Increase in N  from t to t+1 (dN / dt)")
+p2 <- tibble(PP,DD) %>% ggplot(aes(PP,DD)) + geom_point() + xlab("Population B") + ylab("Increase in N  from t to t+1 (dN / dt)")
 
 #Now graph the population over time alongside the above:
-p3 <- tibble(PP,TT) %>% ggplot(aes(TT,PP)) + geom_point() + xlab("Time") + ylab("Population N")
+p3 <- tibble(PP,TT) %>% ggplot(aes(TT,PP)) + geom_point() + xlab("Time") + ylab("Population B")
 
 gridExtra::grid.arrange(p1,p2,p3, ncol = 3)
 ```
 
-As a result, yield is maximized at a certain value for population size, usually towards a middle value when assuming a logistic growth process. Population size can change for a variety of reasons, but one major reason in fisheries is the fishing pressure itself. Therefore, if we want higher yield, we want to fish an unfished population down to a size that maximizes (roughly) its yield production.
+Yield is maximized at a certain value for population size, usually towards a middle value when assuming a logistic growth process. Population size can change for a variety of reasons, but one major reason in fisheries is the fishing pressure itself. Therefore, if we want higher yield, we want to fish an unfished population down to a size that maximizes (roughly) its yield production.
 
 To understand how much we should fish in order to achieve the 'right' population size, we need three pieces of information:
 
@@ -111,7 +140,7 @@ Remember the logistic growth equation:
 
 $N_t=N_{t−1}+r∗N_{t−1}∗(1−N_{t−1}/K)$
 
-Above is enough to understand how growth rate and biomass relate to each other, but understading relationships with catch and effort require us to change this into an economic model including human activities. The first step is adding catch removals on the kg or tonnes scale, as this is the same scale on which population changes occur. To do this, we change from numbers to biomass (by multiplying by an average weight), and insert catch removals ($C_{t-1}$). As removals (\$-\$), catch will decrease the availability of biomass to fish in the next time step.
+Above is enough to understand how growth rate and biomass relate to each other, but understading relationships with catch and effort require us to change this into an economic model including human activities. The first step is adding catch removals on the kg or tonnes scale, as this is the same scale on which population changes occur. To do this, we change from numbers to biomass (by multiplying by an average weight), and insert catch removals ($C_{t-1}$). As removals, catch will decrease the availability of biomass to fish in the next time step.
 
 $B_t=B_{t−1}+r∗B_{t−1}∗(1−B_{t−1}/K)- \bf{C_{t-1}}$
 
@@ -152,7 +181,7 @@ As you go through the following exercise, think about the different 'experiments
 
 After getting confident estimates of the above parameters, the system can then be analyzed (or simulated) to determine:
 
--   At what population biomass level is population growth the greatest? (Remember to distinguish between *growth rate*, which is a rate, and growth amount, *catch*, which is a single unit of removal in kg or tonnes in a time step)
+-   At what population biomass level is population growth the greatest? (Remember to distinguish between *growth rate*, which is in units per time step, and growth amount, *catch*, which is a single unit of removal in kg or tonnes in a time step)
 
 -   At what effort level do you also get the highest yield?
 
@@ -172,7 +201,6 @@ Further considerations include:
 #Now add population removals - catch, which is a linear function of fishing effort, 
 #catchability, and population size
 
-#Adding fishing makes it a "production" function
 #Here you will run a population for a long time at a certain effort level. 
 #Notice that the value at which the population stabilizes is no longer carrying 
 #capacity, because catch has been removed. Also note how catch is related to 
@@ -184,11 +212,39 @@ CC<-vector(mode = "numeric", length = 500);
 Effort<-0.8; Catchability<-0.1
 TT<-1:500
 KK<-2000
+```
 
+Try filling in the bits of code missing by replacing the text beginning with '#\<' and ending with '\>'.
+
+```{r, eval = FALSE, echo = TRUE}
 #FILL IN CODE BELOW. HINT: LOOK AT HOW DD0 IS DEFINED ABOVE IN COMPARISON
 #WITH HOW DD IS DEFINED INSIDE THE LOOP. THE FORMULA STRUCTURE STAYS THE 
 #SAME BUT THE T SUBSCRIPTS MUST MATCH.
 
+DD0<-rr*PP0*(1-PP0/KK)
+
+CC0<-PP0*Effort*Catchability; 
+
+PP[1]<-PP0 + DD0 - CC0
+
+for(i in 2:500){ 
+
+  DD[i-1]<-  #<FILL IN CODE HERE >
+
+  CC[i-1]<- PP[i-1]*Effort*Catchability
+
+  PP[i]<- PP[i-1] + DD[i-1] - CC[i-1]
+  
+  } 
+
+DD[500]<-  #<FINISH OFF THE LAST STEP HERE >
+CC[500]<- PP[500]*Effort*Catchability
+
+```
+
+Are you ready for the answer? See below.
+
+```{r, eval = TRUE, echo = TRUE}
 DD0<-rr*PP0*(1-PP0/KK)
 
 CC0<-PP0*Effort*Catchability; 
@@ -222,7 +278,7 @@ The above results show a single version of how the population could grow, alongs
 
 In this next exercise, we want to determine the level of fishing of effort that leads to the highest annual catch removals in the long-term. Therefore, we:
 
--   only consider values at the end of a simulated time series to reflect the equilibrium results (i.e., values when $B_{t-1}=B_t$). This reflects *long-term* results of fishing.
+-   only consider values at the end of a simulated time series to reflect the *equilibrium* results (i.e., values when $B_{t-1}=B_t$). This reflects *long-term* results of fishing.
 
 -   Experiment with effort levels by trying a variety of them, and looking at equilibrium states as a function of different effort values.
 
@@ -242,14 +298,12 @@ KK<-2000
 PP0<-1; rr<- 0.2
 
 for(j in 1:length(eff)){
-
-  #FILL IN CODE HERE.
   
   PP<-vector(mode = "numeric", length = 500); 
   DD<-vector(mode = "numeric", length = 500);
   CC<-vector(mode = "numeric", length = 500); 
   
-  Effort<- eff[j] #WHAT VALUE GOES HERE?
+  Effort<- eff[j] 
   
   DD0<-rr*PP0*(1-PP0/KK)
   CC0<-PP0*Effort*Catchability; 
@@ -268,14 +322,16 @@ for(j in 1:length(eff)){
   
   #SAVE RESULTS: LAST (EQUILIBRIUM) VALUE OF CATCH AND LAST VALUE OF POPULATION 
   YY[j] <- CC[500] # Equilibrium Yield
-  XX[j] <-  PP[500] #or PP[500] # Equilibrium Population N
+  XX[j] <-  PP[500] #or PP[500] # Equilibrium Population B
 
   }
 
-par(mfrow = c(1,3))
-plot(YY~eff, ylab = "Yield", xlab = "Effort") 
-plot(XX~eff, ylab = "Population N", xlab = "Effort") 
-plot(YY/eff~eff, ylab = "CPUE", xlab = "Effort") #NOTE THIS IS LINEAR
+
+p1 <- tibble(XX,YY,eff) %>% ggplot(aes(eff, YY)) + geom_point() + ylab("Yield") + xlab( "Effort")
+p2 <- tibble(XX,YY,eff) %>% ggplot(aes(eff, XX)) + geom_point() + ylab("Population B") + xlab( "Effort")
+p3 <- tibble(XX,YY,eff) %>% mutate(CPUE = YY/eff) %>% ggplot(aes(eff, CPUE)) + geom_point() + xlab("Effort") 
+
+gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
 
 #Q - Find on each graph where MSY is located. How are the last 2 graphs related? To answer the following questions, it helps to change the r and K values. How is MSY related to K and r? At what population size does this occur (Nmsy)? How does this relate to K and r? What does r affect? 
 
@@ -290,17 +346,13 @@ plot(YY/eff~eff, ylab = "CPUE", xlab = "Effort") #NOTE THIS IS LINEAR
 
 Here is a demonstration of the difference between maximum sustainable yield (MSY) and maximum economic yield (MEY) concepts.
 
-```{r}
+```{r, echo = TRUE}
 
 
 #If cost linearly increases with effort...
 Cost<-eff*40
 #Q - then what is maximum economic yield (MEY)? [Hint: MEY is the yield with the greatest profit; that is, the greatest difference between Yield and cost]
-plot(YY~eff, ylab = "Yield", xlab = "Effort") 
-points(Cost~eff, pch = 2)
-
-
-
+tibble(YY, eff, Cost) %>% ggplot(aes(eff, YY)) + geom_point() + ylab("Yield") + xlab("Effort") + geom_point(aes(eff, Cost), shape = 2)
 
 
 # MSY = K*r/4
@@ -319,15 +371,15 @@ eff[which.max(YY - Cost)] #MEY
 #Pella-Tomlinson where the extra parameter (exponent) is set to 1).
 #How is the shape of the MSY relationship changed by the extra parmaeter?
 
-
-
 ```
 
 ## Let's talk about a shortcut
 
-adkfl
+Below is a demonstration of a quick-and-dirty shortcut to finding some of the equilibrium properties of production models based on simple linear models fitted to CPUE and effort data. This method was useful when computational speed was an issue and demonstrates further how some of the equilibrium values can be obtained. However, this method is not recommended as it requires the assumption that the values you are observing are long-term results, or equilibrium values, as gathered in the above exercises. This is obviously not a correct assumption, as they are observations taken in consecutive years, although in many of the cases you could argue that they are close to equilibrium values when observed. However, this example, found [here](http://www.fao.org/3/w5449e/w5449e10.pdf), also shows how this assumption is not correct, especially at the initiation of a new fishery when the population is transitioning from an unfished population to a fished one, creating a mismatch between short- and long-term expectations of CPUE. In the earliest years of a fishery, CPUE tends to more greatly exceed long-term expectations for CPUE given a constant effort level, as biomass has not had a chance to decrease over time.
 
-```{r, eval = FALSE}
+In addition, another assumption of the Schaeffer model brought up in this example is the assumption that CPUE is directly related to biomass (i.e., CPUE reflects a constant proportion of biomass at all population sizes, determined by catchability $q$). This is also not always the case, so this example also tests an alternate model of a log-linear relationship, yielding greater CPUE proportion at lower biomass levels.
+
+```{r, eval = TRUE, echo = TRUE}
 
 ######-------FAO shortcut from http://www.fao.org/3/w5449e/w5449e10.pdf-------########
 
@@ -346,6 +398,7 @@ summary(Schaefer.glm)
 a <-coef(Schaefer.lm)[1]
 b <-coef(Schaefer.lm)[2]
 MSY <- -0.25*a^2/b
+names(MSY) <- "MSY"
 MSY
 
 Fox.lm <- lm(log(Yield/Effort) ~ Effort)
@@ -354,6 +407,7 @@ summary(Fox.lm)
 c <-coef(Fox.lm)[1]
 d <-coef(Fox.lm)[2]
 MSY <- -(1/d)*exp(c-1)
+names(MSY) <- "MSY"
 MSY
 
 
