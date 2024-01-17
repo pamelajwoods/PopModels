@@ -28,6 +28,30 @@ The population dynamics section of teaching is split into roughly 8 half-day ses
 
 \[Age-based models 2\]
 
+Uploading material the first time
+
+navigate to
+
+cd /net/hafri/export/home/hafri/pamela/public_html
+
+copy
+
+cp -a \~/Documents/Hafro/UNU/2024/PopModels/\_site .
+
+move
+
+mv \_site population_dynamics
+
+permissions
+
+chmod 777 population_dynamics
+
+check
+
+ls -l
+
+RE-uploading material
+
 Render here, check index.html
 
 rm -r population_dynamics/
