@@ -27,9 +27,8 @@ There are 3 pieces of information here, which we can represent with mathematical
 
 -   $N_0$ = initial population = 1
 
-```{=html}
 <!-- -->
-```
+
 -   R = rate of increase = 2 per 10 minutes (or 2/(10 mins/60 mins) in per-hour units)
 
 -   t = total number of time steps = 60 mins/10 mins (or 1 hour/ (10/60 hour)) = 6

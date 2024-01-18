@@ -17,7 +17,7 @@ theme_set(theme_minimal())
 
 SPiCT is a model of 'Surplus Production in Continuous Time', implemented in the 'spict' R package, found [here](https://github.com/DTUAqua/spict). It is relatively easy to implement and comes with a lot of powerful diagnostic tools, but should be used with caution because even if a model is created, it may be unusable due to high levels of uncertainty. In this session, we are mainly going to work from the above web page, and follow instructions there on how to install the package, and follow the vignette to learn its functionality. The website also has a link to [technical guidelines](https://raw.githubusercontent.com/DTUAqua/spict/master/spict/inst/doc/spict_guidelines.pdf) on how to judge whether the model created is trustworthy and informative. Here some points to keep in mind from the technical guidelines:
 
-### Main assumptions and input data 
+### Main assumptions and input data
 
 -   Catch should be representative of total removals from the population and aligned correctly in timing
 
