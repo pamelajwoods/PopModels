@@ -375,7 +375,11 @@ eff[which.max(YY - Cost)] #MEY
 
 ## Let's talk about a shortcut
 
-Below is a demonstration of a quick-and-dirty shortcut to finding some of the equilibrium properties of production models based on simple linear models fitted to CPUE and effort data. This method was useful when computational speed was an issue and demonstrates further how some of the equilibrium values can be obtained. However, this method is not recommended as it requires the assumption that the values you are observing are long-term results, or equilibrium values, as gathered in the above exercises. This is obviously not a correct assumption, as they are observations taken in consecutive years, although in many of the cases you could argue that they are close to equilibrium values when observed. However, this example, found [here](http://www.fao.org/3/w5449e/w5449e10.pdf), also shows how this assumption is not correct, especially at the initiation of a new fishery when the population is transitioning from an unfished population to a fished one, creating a mismatch between short- and long-term expectations of CPUE. In the earliest years of a fishery, CPUE tends to more greatly exceed long-term expectations for CPUE given a constant effort level, as biomass has not had a chance to decrease over time.
+Below is a demonstration of a quick-and-dirty shortcut to finding some of the equilibrium properties of production models based on simple linear models fitted to CPUE and effort data. This method was useful when computational speed was an issue and demonstrates further how some of the equilibrium values can be obtained, although some assumptions are not easy to uphold, so it is not used much today. This example, found [here](http://www.fao.org/3/w5449e/w5449e10.pdf), and the false assumption explained also below.
+
+```{r}
+
+```
 
 In addition, another assumption of the Schaeffer model brought up in this example is the assumption that CPUE is directly related to biomass (i.e., CPUE reflects a constant proportion of biomass at all population sizes, determined by catchability $q$). This is also not always the case, so this example also tests an alternate model of a log-linear relationship, yielding greater CPUE proportion at lower biomass levels.
 
@@ -411,4 +415,10 @@ names(MSY) <- "MSY"
 MSY
 
 
+```
+
+As mentioned before, this method is not recommended as it requires the assumption that the values you are observing are long-term results, or equilibrium values, as gathered in the above exercises. This is obviously not a correct assumption, as they are observations taken in consecutive years, although in many of the cases you could argue that they are close to equilibrium values when observed. also shows how this assumption is not correct, especially at the initiation of a new fishery when the population is transitioning from an unfished population to a fished one, creating a mismatch between short- and long-term expectations of CPUE. In the earliest years of a fishery, CPUE tends to more greatly exceed long-term expectations for CPUE given a constant effort level, as biomass has not had a chance to decrease over time. See this figure taken directly from the FAO report linked above:
+
+```{r, echo = FALSE}
+knitr::include_graphics('imgs/FAO_T306_1_TransitionFig.png')
 ```
