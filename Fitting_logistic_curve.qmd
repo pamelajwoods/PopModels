@@ -162,7 +162,7 @@ LogisticGrowthModelLag<-function(pars, Years, Numbers, t=0, ReturnResults=F){
 LogisticGrowthModelLag(OptPars1$par, t=3,Yrs, Data, ReturnResults=T)
 LogisticGrowthModelLag(OptPars2$par, t=3,Yrs, Data, ReturnResults=T)
 
-SS1<-SS2<-vector(mode = "numeric", length = 6)
+SS1<-SS2<-vector(mode = "numeric", length = 7)
 OptPars1_list<-OptPars2_list<-NULL
 
 for(i in 0:6){
@@ -172,8 +172,8 @@ for(i in 0:6){
   SS2[i+1]<-try(OptPars2_list[[i+1]]$value/1000000,silent=T )
 }
 
-SS1 %>% head(.)
-SS2 %>% head(.)
+SS1 
+SS2 
 
 ```
 
@@ -203,7 +203,7 @@ OptPars<-optim(c(7500,0.5,1), LogisticGrowthModelLag, t=5, Years = Yrs, Numbers 
 Predictions<-LogisticGrowthModelLag(c(OptPars$par), t=5,Yrs, Data, ReturnResults=T)[[1]]
 Predictions2<-LogisticGrowthModelLag(c(OptPars1_list[[6]]$par), t=6-1,Yrs, Data, ReturnResults=T)[[1]]
 
-L5 <- tibble(Yrs, Data) %>% ggplot(aes(Yrs, Data)) + geom_point(shape = "*", color = "red", size = 5) + ylim(0,9000) + geom_line(aes(Years, Pred), data = Predictions) + ggtitle('Lag 5') + geom_line(aes(Years, Pred), data = Predictions2, lty = 2)
+L5 <- tibble(Yrs, Data) %>% ggplot(aes(Yrs, Data)) + geom_point(shape = "*", color = "red", size = 5) + ylim(-1,9000) + geom_line(aes(Years, Pred), data = Predictions, lty = 2) + ggtitle('Lag 5') + geom_line(aes(Years, Pred), data = Predictions2, lty = 1)
 
 LogisticGrowthModelLag(OptPars2$par, t=5,Yrs, Data, ReturnResults=T)
 
@@ -213,14 +213,14 @@ OptPars<-NULL
 OptPars<-optim(c(7500,0.5,1), LogisticGrowthModelLag, t=3, Years = Yrs, Numbers = Data)
 Predictions<-LogisticGrowthModelLag(c(OptPars$par), t=3,Yrs, Data, ReturnResults=T)[[1]]
 Predictions2<-LogisticGrowthModelLag(c(OptPars1_list[[4]]$par), t=4-1,Yrs, Data, ReturnResults=T)[[1]]
-L3 <- tibble(Yrs,Data) %>% ggplot(aes(Yrs, Data)) + geom_point(shape = "*", color = "red", size = 5) + ylim(0,9000) + geom_line(aes(Years, Pred), data = Predictions) + ggtitle('Lag 3') + geom_line(aes(Years, Pred), data = Predictions2, lty = 2)
+L3 <- tibble(Yrs,Data) %>% ggplot(aes(Yrs, Data)) + geom_point(shape = "*", color = "red", size = 5) + ylim(-1,9000) + geom_line(aes(Years, Pred), data = Predictions, lty = 2) + ggtitle('Lag 3') + geom_line(aes(Years, Pred), data = Predictions2, lty = 1)
 
 #...and no lag = 0
 OptPars<-NULL
 OptPars<-optim(c(7500,0.5,1), LogisticGrowthModelLag, t=0, Years = Yrs, Numbers = Data)
 Predictions<-LogisticGrowthModelLag(c(OptPars$par), t=0,Yrs, Data, ReturnResults=T)[[1]]
 Predictions2<-LogisticGrowthModelLag(c(OptPars1_list[[1]]$par), t=1-1,Yrs, Data, ReturnResults=T)[[1]]
-L0 <- tibble(Yrs, Data) %>% ggplot(aes(Yrs, Data)) + geom_point(shape = "*", color = "red", size = 5) + ylim(0,9000) + geom_line(aes(Years, Pred), data = Predictions) + ggtitle('Lag 0') + geom_line(aes(Years, Pred), data = Predictions2, lty = 2)
+L0 <- tibble(Yrs, Data) %>% ggplot(aes(Yrs, Data)) + geom_point(shape = "*", color = "red", size = 5) + ylim(-1,9000) + geom_line(aes(Years, Pred), data = Predictions, lty = 2) + ggtitle('Lag 0') + geom_line(aes(Years, Pred), data = Predictions2, lty = 1)
 
 
 #Q - Which one fits the data best?
