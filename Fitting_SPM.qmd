@@ -1,0 +1,168 @@
+---
+title:  "Surplus production models"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(palmerpenguins)
+theme_set(theme_minimal())
+```
+
+In this exercise, we take the concepts we learned yesterday regarding equilibrium properties of the Schaeffer surplus production model, and we attempt to apply them using whelk data.
+
+Whelk data you can retrieve by downloading and importing them from the institute advice [webpage](https://dt.hafogvatn.is/astand/2023/45_WHE_en.html).
+
+```{r, echo = TRUE}
+
+WHE_landings <- read_csv('WHE_landings.csv')
+WHE_assessment <- read_csv('WHE_assessment.csv')
+
+whelk.data <- 
+  WHE_landings %>% 
+  group_by(year) %>% 
+  summarise(landings = sum(landings)) %>% 
+  left_join(WHE_assessment) %>% 
+  rename(YY = year, II = cpue, CC = landings) %>% 
+  filter(YY > 2003) %>% 
+  bind_rows(YY=2020, II=NA)
+
+ProductionFunction<-function(rr, KK, qq, PP0=KK, CC){
+  # II = CPUE data; rr, KK, qq, and PP0 are parameters
+  PP<-vector("numeric", length = length(CC)); DD<-PP; Pred<-PP # this just defines the storage vectors beforehand
+  PP[1]<-PP0 #assigns the first year's abundance 
+  for(ii in 2:length(CC)){ #then for every other year,
+    DD[ii-1]<- rr*PP[ii-1]*(1-PP[ii-1]/KK) # calculate the growth of the population based on rr and KK
+    PP[ii]<-PP[ii-1] + DD[ii-1] - CC[ii-1] # and add that growth to that year's population, remove the catch, and update population levels for next year
+  }
+  Pred <- qq*PP #calculate the Predictions for the index of abundance by translating the model population by catchability
+  return(Pred) # this function returns predictions
+}
+
+#rr is intrinsic growth rate
+#KK is carrying capacity
+#qq is catchability
+#PP0 is initial population size
+#note that KK and PP0 reflect the absolute abundance level of the population, which can be 
+#difficult to detect if the data don't have much contrast 
+#(i.e., they don't go up AND down a lot over time)
+
+#Note the scale of q, KK, and PP0 should be roughly right for nls to work. If not, try multiplying
+#or dividing by 10 or 100 or 1000
+#c(rr = 0.25, KK = 9000, qq = 0.01)
+Whelk.nls <- nls(II ~ ProductionFunction(rr=rr, KK=KK, qq=qq, CC=CC), 
+               data = list(CC = whelk.data$CC, II = whelk.data$II), 
+               start = c(rr = 0.15, KK = 10000, qq = 0.00008), 
+               control = list(maxiter = 10000, minFactor=0.000001))
+
+summary(Whelk.nls)
+
+best_pars <- coef(Whelk.nls) #extract best-fit parameters
+best_pred <- ProductionFunction(rr=best_pars[1], 
+                                KK=best_pars[2], 
+                                qq=best_pars[3], 
+                                CC=whelk.data$CC) # create predictions
+
+
+tibble(YY=whelk.data$YY, II = whelk.data$II, best_pred) %>% ggplot(aes(YY, best_pred)) + geom_line() + geom_point(aes(YY, II)) + xlab("Time") + ylab("Observed (points) and Predicted (line) CPUE")
+
+
+```
+
+Now try changing the starting values for parameters (especially KK and PP0) to see whether they affect results (if they do, that means the data don't carry much info)
+
+```{r, echo = TRUE}
+Whelk.nls <- nls(II ~ ProductionFunction(rr=rr, KK=KK, qq=qq, CC=CC), 
+               data = list(CC = whelk.data$CC, II = whelk.data$II), 
+               start = c(rr = 1, KK = 5000, qq = 0.08), 
+               control = list(maxiter = 10000, minFactor=0.000001))
+
+summary(Whelk.nls)
+
+best_pars2 <- coef(Whelk.nls) #extract best-fit parameters
+best_pred2 <- ProductionFunction(rr=best_pars2[1], 
+                                KK=best_pars2[2], 
+                                qq=best_pars2[3], 
+                                CC=whelk.data$CC) # create predictions
+
+tibble(YY=whelk.data$YY, II = whelk.data$II, best_pred, best_pred2) %>% ggplot(aes(YY, best_pred)) + geom_line() + geom_point(aes(YY, II)) + xlab("Time") + ylab("Observed (points) and Predicted (line) CPUE") + geom_line(aes(YY, best_pred2), color='red', linetype = 2)
+```
+
+Which do you think is closer to the real biological scenario?
+
+```{r, echo = TRUE}
+best_pars
+```
+
+```{r, echo = TRUE}
+best_pars2
+```
+
+Now calculate MSY and Bmsy according to your model.
+
+```{r, echo = TRUE}
+
+#MSY = r*K / 4
+#Bmsy = K / 2
+
+MSY <- best_pars[1]*best_pars[2]/4
+Bmsy <- best_pars[2]/2
+
+MSY; Bmsy
+```
+
+Now, we would like to loosen the assumption that the population is starting out at carrying capacity. This adds a parameter, so makes the estimation more difficult.
+
+```{r}
+
+ProductionFunction2<-function(rr, KK, qq, a = 1, CC = CC){
+  # II = CPUE data; rr, KK, qq, and PP0 are parameters
+  PP0 <- a*KK
+  PP<-vector("numeric", length = length(CC)); DD<-PP; Pred<-PP # this just defines the storage vectors beforehand
+  PP[1]<-PP0 #assigns the first year's abundance 
+  for(ii in 2:length(CC)){ #then for every other year,
+    DD[ii-1]<- rr*PP[ii-1]*(1-PP[ii-1]/KK) # calculate the growth of the population based on rr and KK
+    PP[ii]<-PP[ii-1] + DD[ii-1] - CC[ii-1] # and add that growth to that year's population, remove the catch, and update population levels for next year
+  }
+  Pred <- qq*PP #calculate the Predictions for the index of abundance by translating the model population by catchability
+  return(Pred) # this function returns predictions
+}
+ProductionFunction2(rr = 0.27, KK = 7000, qq = 0.006, CC = CC)
+
+Whelk.nls2<-nls(II ~ ProductionFunction2(rr=rr, KK=KK, qq=qq, a = a, CC = CC), 
+               algorithm = 'port',
+               data = list(CC = whelk.data$CC), 
+               start = c(rr = 0.27, KK = 7000, qq = 0.006, a = 0.8),
+               lower = c(rr = 0.01, KK = 1000, qq = 0.0001, a = 0.9),
+               upper = c(rr = 1, KK = 30000, qq = 0.1, a = 1),
+               control = list(maxiter = 100000, minFactor=0.000001), 
+               trace = TRUE)
+
+summary(Whelk.nls2)
+
+best_pars2 <- coef(Whelk.nls2) #extract best-fit parameters
+best_pred2 <- ProductionFunction2(rr=best_pars2[1], 
+                                KK=best_pars2[2], 
+                                qq=best_pars2[3], 
+                                a=best_pars2[4], 
+                                CC=CC) # create predictions
+
+
+par(mfrow = c(1,1))
+plot(best_pred2 ~ YY, ylim = c(0, 60), 
+     ylab = 'Predicted CPUE', 
+     xlab = 'Time', 
+     type = 'l') #plot predictions
+points(II~YY, pch = 19, col = 'red') #add data points
+
+MSY <- best_pars2[1]*best_pars2[2]/4
+Bmsy <- best_pars2[2]/2
+
+MSY; Bmsy
+```
+
+### 
