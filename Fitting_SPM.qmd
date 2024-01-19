@@ -29,7 +29,7 @@ whelk.data <-
   left_join(WHE_assessment) %>% 
   rename(YY = year, II = cpue, CC = landings) %>% 
   filter(YY > 2003) %>% 
-  bind_rows(YY=2020, II=NA)
+  bind_rows(tibble(YY=2020, II=NA))
 
 ProductionFunction<-function(rr, KK, qq, PP0=KK, CC){
   # II = CPUE data; rr, KK, qq, and PP0 are parameters
@@ -73,7 +73,7 @@ tibble(YY=whelk.data$YY, II = whelk.data$II, best_pred) %>% ggplot(aes(YY, best_
 
 ```
 
-Now try changing the starting values for parameters (especially KK and PP0) to see whether they affect results (if they do, that means the data don't carry much info)
+Now try changing the starting values for parameters (especially KK and PP0) to see whether they affect results. If they do, that means the data don't carry much information, we need a better estimation method, or we need to rule out some local minima external to the modeling.
 
 ```{r, echo = TRUE}
 Whelk.nls <- nls(II ~ ProductionFunction(rr=rr, KK=KK, qq=qq, CC=CC), 
@@ -89,7 +89,7 @@ best_pred2 <- ProductionFunction(rr=best_pars2[1],
                                 qq=best_pars2[3], 
                                 CC=whelk.data$CC) # create predictions
 
-tibble(YY=whelk.data$YY, II = whelk.data$II, best_pred, best_pred2) %>% ggplot(aes(YY, best_pred)) + geom_line() + geom_point(aes(YY, II)) + xlab("Time") + ylab("Observed (points) and Predicted (line) CPUE") + geom_line(aes(YY, best_pred2), color='red', linetype = 2)
+tibble(YY=whelk.data$YY, II = whelk.data$II, best_pred, best_pred2) %>% ggplot(aes(YY, best_pred)) + geom_line() + geom_point(aes(YY, II)) + xlab("Time") + ylab("Observed (points) and Predicted (lines) CPUE") + geom_line(aes(YY, best_pred2), color='red', linetype = 2)
 ```
 
 Which do you think is closer to the real biological scenario?
@@ -117,7 +117,7 @@ MSY; Bmsy
 
 Now, we would like to loosen the assumption that the population is starting out at carrying capacity. This adds a parameter, so makes the estimation more difficult.
 
-```{r}
+```{r, echo = TRUE}
 
 ProductionFunction2<-function(rr, KK, qq, a = 1, CC = CC){
   # II = CPUE data; rr, KK, qq, and PP0 are parameters
@@ -131,38 +131,54 @@ ProductionFunction2<-function(rr, KK, qq, a = 1, CC = CC){
   Pred <- qq*PP #calculate the Predictions for the index of abundance by translating the model population by catchability
   return(Pred) # this function returns predictions
 }
-ProductionFunction2(rr = 0.27, KK = 7000, qq = 0.006, CC = CC)
+ProductionFunction2(rr = 0.27, KK = 7000, qq = 0.006, CC = whelk.data$CC)
 
-Whelk.nls2<-nls(II ~ ProductionFunction2(rr=rr, KK=KK, qq=qq, a = a, CC = CC), 
+
+```
+
+Below, the model fitting process is written twice so that you can play around with the parameter starting values and lower and upper bounds of the second version while remembering which parameters you tried last in the first version. Can you find a solution that converges? Use your best solution to check how MSY and $B_{MSY}$ values have changed from the other version.
+
+```{r, echo = TRUE}
+
+Whelk.nls3.1<-nls(II ~ ProductionFunction2(rr=rr, KK=KK, qq=qq, a = a, CC = CC), 
                algorithm = 'port',
-               data = list(CC = whelk.data$CC), 
-               start = c(rr = 0.27, KK = 7000, qq = 0.006, a = 0.8),
-               lower = c(rr = 0.01, KK = 1000, qq = 0.0001, a = 0.9),
+               data = list(CC = whelk.data$CC, II = whelk.data$II), 
+               start = c(rr = 0.15, KK = 10000, qq = 0.00008, a = 0.8),
+               lower = c(rr = 0.01, KK = 1000, qq = 0.000001, a = 0.1),
                upper = c(rr = 1, KK = 30000, qq = 0.1, a = 1),
                control = list(maxiter = 100000, minFactor=0.000001), 
                trace = TRUE)
 
-summary(Whelk.nls2)
-
-best_pars2 <- coef(Whelk.nls2) #extract best-fit parameters
-best_pred2 <- ProductionFunction2(rr=best_pars2[1], 
-                                KK=best_pars2[2], 
-                                qq=best_pars2[3], 
-                                a=best_pars2[4], 
-                                CC=CC) # create predictions
+summary(Whelk.nls3.1)
 
 
-par(mfrow = c(1,1))
-plot(best_pred2 ~ YY, ylim = c(0, 60), 
-     ylab = 'Predicted CPUE', 
-     xlab = 'Time', 
-     type = 'l') #plot predictions
-points(II~YY, pch = 19, col = 'red') #add data points
 
-MSY <- best_pars2[1]*best_pars2[2]/4
-Bmsy <- best_pars2[2]/2
+Whelk.nls3.2<-nls(II ~ ProductionFunction2(rr=rr, KK=KK, qq=qq, a = a, CC = CC), 
+               algorithm = 'port',
+               data = list(CC = whelk.data$CC, II = whelk.data$II), 
+               start = c(rr = 1, KK = 5000, qq = 0.08, a = 0.8),
+               lower = c(rr = 0.01, KK = 1000, qq = 0.000001, a = 0.1),
+               upper = c(rr = 1, KK = 30000, qq = 0.1, a = 1),
+               control = list(maxiter = 100000, minFactor=0.000001), 
+               trace = TRUE)
+
+summary(Whelk.nls3.2)
+
+# insert either Whelk.nls3.1 or Whelk.nls3.2 into the coef() function below, 
+# whichever one you found as the best model you could come up with.
+best_pars3 <- coef(Whelk.nls3.1) #extract best-fit parameters
+
+best_pred3 <- ProductionFunction2(rr=best_pars3[1], 
+                                KK=best_pars3[2], 
+                                qq=best_pars3[3], 
+                                a=best_pars3[4], 
+                                CC=whelk.data$CC) # create predictions
+
+
+tibble(YY=whelk.data$YY, II = whelk.data$II, best_pred3) %>% ggplot(aes(YY, best_pred)) + geom_line() + geom_point(aes(YY, II)) + xlab("Time") + ylab("Observed (points) and Predicted (lines) CPUE") + geom_line(aes(YY, best_pred2), color='red', linetype = 2)
+
+MSY <- best_pars3[1]*best_pars3[2]/4
+Bmsy <- best_pars3[2]/2
 
 MSY; Bmsy
 ```
-
-### 
