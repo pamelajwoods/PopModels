@@ -167,7 +167,9 @@ p1 <- tibble(year = YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults,
 
 p2 <- tibble(year = YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(N, C)) + geom_line() 
 
-gridExtra::grid.arrange(p1, p2, ncol = 2)
+p3 <- tibble(R=NumbersResults[,1], N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(R, N)) + geom_line() 
+
+gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
 
 
 ```
