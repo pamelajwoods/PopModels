@@ -70,6 +70,131 @@ This incorporates body growth, but does not need to be part of the statistical m
 
 ```{r}
 #age-based model simulation
+
+###-----------------------Exercise 6: Put it all together into an age-structured model---------------------------
+###------DO NOT INCLUDE CATCH yet
+
+#First set the model structure
+#100 years, ages 0-10
+YY <- 100
+AA <- 10
 ```
+
+Now set the growth and mortality parameters in numbers occurs through adding individuals (i.e., recruitment while ignoring immigration). Mortality is set to $M=0.2$, assuming no fishing mortality at first.
+
+```{r}
+#natural mortality - these values should be positive
+MM <- 0.2
+
+set.seed(100)
+Rec <- 1000*rlnorm(n = YY) 
+Rec
+set.seed(100)
+exp(log(1000) + rnorm(n = YY)) #notice that this form of the equation is the same as above
+
+hist(Rec)
+
+tibble(year = 1:YY, recruitment = Rec) %>%  ggplot(aes(year, recruitment)) + geom_col()
+
+```
+
+```{r}
+
+#Set total mortality
+ZZ <- MM
+#define empty matrix in the right dimensions for saving results
+NumbersM<-matrix(nrow = YY, ncol = AA + 1)
+
+#run loop through all ages and years. Each of the 3 types of equations are used.
+for(i in 2:YY){
+	#fishes are born
+	  NumbersM[i,1] <- Rec[i]
+	for(j in 2:(AA)){
+	#fishes die
+	NumbersM[i, j]<-NumbersM[i-1, j-1]*exp(-ZZ*1) #*1 is here because it is one time step
+	}
+	NumbersM[i, AA+1]<-NumbersM[i-1, j-1]*exp(-ZZ*1) + NumbersM[i, AA+1]*exp(-ZZ*1)
+}
+
+View(NumbersM)
+
+```
+
+```{r}
+
+### Now: Include Baranov Catch equation:
+#F = selectivity*q*effort
+#Catch(1979,1980) = N(1979)*F/Z*(1 – exp(-Z*(1980 – 1979)) 
+NumbersM<-matrix(nrow = YY, ncol = AA+1)
+CatchNM<-matrix(nrow = YY, ncol = AA+1, data = 0)
+
+AgeStructModel<-function(Rec, AA, Effort = rep(1, length(Rec)), q=1, Sel = c(0,0,rep(1,AA-1))){
+	YY <- 1:length(Rec)
+	FF<-matrix(Sel, nrow = YY, ncol = AA + 1, byrow = TRUE)*qq*matrix(Effort, nrow = YY, ncol = AA + 1)
+	ZZ <-FF+MM
+	
+#define empty matrix in the right dimensions for saving results
+NumbersM<-matrix(nrow = YY, ncol = AA + 1)
+
+#run loop through all ages and years. Each of the 3 types of equations are used.
+
+	for(i in 2:YY){
+	  
+	 #calculate fishing on previous year
+	 #because all ages are not available until after the 11th year, we begin calculating catch then
+	  if(YY> 11){CatchNM[i-1,]<-NumbersM[i-1,]*FF[i-1,]/ZZ[i-1,]*(1-exp(-ZZ[i-1,]))}
+
+	#fishes are born
+	  NumbersM[i,1] <- Rec[i] - CatchNM[i-1,1]
+	for(j in 2:(AA)){
+
+	  	NumbersM[i, j]<-NumbersM[i-1, j-1]*exp(-ZZ)  - CatchNM[i-1,j]
+	}
+	  
+	  NumbersM[i, AA+1]<-NumbersM[i-1, AA]*exp(-ZZ) + NumbersM[i, AA+1]*exp(-ZZ) - CatchNM[i-1,AA+1]
+	  
+
+
+			}
+
+	return(list(NumbersM, CatchNM))
+	}
+NumbersResults<-AgeStructModel(0.5)[[1]]
+CatchResults<-AgeStructModel(0.5)[[2]]
+plot(apply(NumbersResults*WeightM*MatM, 1, sum))
+
+Efforts<-seq(0, 2, 0.05)
+EquilCatch<-vector(length = length(Efforts), mode = "numeric")
+for(j in 1:length(Efforts)){
+	results<-AgeStructModel(Efforts[j])
+	NumbersResults<-results[[1]]
+	CatchResults<-apply(results[[2]], 1, sum, na.rm=T)
+	EquilCatch[j]<-CatchResults[99]
+	}
+
+plot(EquilCatch~Efforts)
+
+#Q6.1 How does the inclusion of a stock-recruitment model affect the relationship between Fmax and Fmsy?
+
+#Q6.2 We made this model piecewise - by estimating relationships separately, then putting them into a model. The other method would be to estimate all parameters at once, given you have enough data. List the parameters you might expect to estimate in a statistical catch-at-age model.
+```
+
+```{r}
+    SSB<-sum(NumbersM[i-1,]*c(0,WeightatAge)*c(0,PredMat))
+
+	Rec<-alpha*SSB/(1+(alpha*SSB/beta))
+	alpha<-79
+beta<-2609
+
+#Last piece of age-specific information missing:
+PredLengthatAge<-VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], 1:10)
+WeightatAge<-exp(coef(HxW.lm)[1]+coef(HxW.lm)[2]*log(PredLengthatAge))
+
+MM <-abs(MM)
+
+WeightM<-matrix(rep(c(0,WeightatAge), 100), nrow = 100, ncol = 11, byrow = T)
+MatM<-matrix(rep(c(0,PredMat), 100), nrow = 100, ncol = 11, byrow = T)
+```
+
 
 
