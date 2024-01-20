@@ -125,43 +125,56 @@ View(NumbersM)
 ### Now: Include Baranov Catch equation:
 #F = selectivity*q*effort
 #Catch(1979,1980) = N(1979)*F/Z*(1 – exp(-Z*(1980 – 1979)) 
-NumbersM<-matrix(nrow = YY, ncol = AA+1)
-CatchNM<-matrix(nrow = YY, ncol = AA+1, data = 0)
 
-AgeStructModel<-function(Rec, AA, Effort = rep(1, length(Rec)), q=1, Sel = c(0,0,rep(1,AA-1))){
+AgeStructModel<-function(Rec, AA=10, Effort = rep(0.2, length(Rec)), qq=1, Sel = c(0,0,rep(1,AA-1))){
 	YY <- 1:length(Rec)
-	FF<-matrix(Sel, nrow = YY, ncol = AA + 1, byrow = TRUE)*qq*matrix(Effort, nrow = YY, ncol = AA + 1)
+	FF<-matrix(Sel, nrow = length(YY), ncol = AA + 1, byrow = TRUE)*qq*matrix(Effort, nrow = length(YY), ncol = AA + 1)
 	ZZ <-FF+MM
 	
 #define empty matrix in the right dimensions for saving results
-NumbersM<-matrix(nrow = YY, ncol = AA + 1)
+NumbersM<-matrix(nrow = length(YY), ncol = AA + 1, data = 0)
+CatchNM<-matrix(nrow = length(YY), ncol = AA+1, data = 0)
 
 #run loop through all ages and years. Each of the 3 types of equations are used.
 
-	for(i in 2:YY){
+	#fishes are born
+  NumbersM[1,1] <- Rec[1]
+
+  for(i in 2:12){#length(YY)
 	  
 	 #calculate fishing on previous year
 	 #because all ages are not available until after the 11th year, we begin calculating catch then
-	  if(YY> 11){CatchNM[i-1,]<-NumbersM[i-1,]*FF[i-1,]/ZZ[i-1,]*(1-exp(-ZZ[i-1,]))}
+	  CatchNM[i-1,]<-NumbersM[i-1,]*FF[i-1,]/ZZ[i-1,]*(1-exp(-ZZ[i-1,]))
 
 	#fishes are born
-	  NumbersM[i,1] <- Rec[i] - CatchNM[i-1,1]
-	for(j in 2:(AA)){
+	  NumbersM[i,1] <- Rec[i] 
+	
+	  for(j in 2:(AA)){
 
-	  	NumbersM[i, j]<-NumbersM[i-1, j-1]*exp(-ZZ)  - CatchNM[i-1,j]
+	  	NumbersM[i, j]<-NumbersM[i-1, j-1]*exp(-ZZ[i-1,j])  
 	}
 	  
-	  NumbersM[i, AA+1]<-NumbersM[i-1, AA]*exp(-ZZ) + NumbersM[i, AA+1]*exp(-ZZ) - CatchNM[i-1,AA+1]
+	  NumbersM[i, AA+1]<-NumbersM[i-1, AA]*exp(-ZZ[i-1,j]) + NumbersM[i, AA+1]*exp(-ZZ[i-1,AA+1]) 
 	  
-
-
 			}
 
 	return(list(NumbersM, CatchNM))
 	}
-NumbersResults<-AgeStructModel(0.5)[[1]]
-CatchResults<-AgeStructModel(0.5)[[2]]
-plot(apply(NumbersResults*WeightM*MatM, 1, sum))
+NumbersResults<-AgeStructModel(Rec)[[1]]
+CatchResults<-AgeStructModel(Rec)[[2]]
+
+p1 <- tibble(year = YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(year, N)) + geom_line() + geom_line(aes(year, C), color = 'red')
+
+p2 <- tibble(year = YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(N, C)) + geom_line() 
+
+gridExtra::grid.arrange(p1, p2, ncol = 2)
+
+
+```
+
+Now let's do the same experiment as we did with the surplus production model and try a variety of effort values to determine the fishing mortality that leads to maximum sustainable yield.
+
+```{r}
 
 Efforts<-seq(0, 2, 0.05)
 EquilCatch<-vector(length = length(Efforts), mode = "numeric")
@@ -177,7 +190,9 @@ plot(EquilCatch~Efforts)
 #Q6.1 How does the inclusion of a stock-recruitment model affect the relationship between Fmax and Fmsy?
 
 #Q6.2 We made this model piecewise - by estimating relationships separately, then putting them into a model. The other method would be to estimate all parameters at once, given you have enough data. List the parameters you might expect to estimate in a statistical catch-at-age model.
+
 ```
+
 
 ```{r}
     SSB<-sum(NumbersM[i-1,]*c(0,WeightatAge)*c(0,PredMat))
@@ -194,6 +209,8 @@ MM <-abs(MM)
 
 WeightM<-matrix(rep(c(0,WeightatAge), 100), nrow = 100, ncol = 11, byrow = T)
 MatM<-matrix(rep(c(0,PredMat), 100), nrow = 100, ncol = 11, byrow = T)
+plot(apply(NumbersResults*WeightM*MatM, 1, sum))
+
 ```
 
 
