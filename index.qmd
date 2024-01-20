@@ -20,12 +20,12 @@ The population dynamics section of teaching is split into roughly 8 half-day ses
 
 [Fitting a surplus production model](Fitting_SPM.qmd)
 
-[SPiCT exercise](SSPICT_ex.qmd)
+[SPiCT exercise](SPICT_ex.qmd)
 
-\[Components of an age-based model 1\](
+[Age-based concepts](Age_based_concepts.qmd)
 
-\[Components of an age-based model 2\]
+[Catch curve analysis](Catch_curve_analysis.qmd)
 
-\[Age-based models 1\]
+[Age-based models 1]
 
-\[Age-based models 2\]
+[Age-based models 2]

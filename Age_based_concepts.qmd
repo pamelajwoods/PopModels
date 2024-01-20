@@ -1,0 +1,71 @@
+---
+title:  "Age-based Concepts"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(palmerpenguins)
+theme_set(theme_minimal())
+```
+
+## Introduction to age-based concepts
+
+In surplus production models, the exploitable portion of the population is modeled as a single blob of biomass that grows and declines over time according to some rules (i.e., parameters). These properties of growth and decline determine the amount of sustainable catch removals (e.g., $MSY = Kr/4$ for a Schaefer model). Using production models simplifies the biological processes greatly, and therefore cannot track true population dynamics when fitted to data as closely as more complex models that contain more parameters designed to track individual cohorts or year classes. The trade-off with adding more parameters is that more data and different types of data are needed to capture age-based dynamics.
+
+In age-based models, the number of individuals in a cohort is estimated by tracking the numbers observed each year through time. As in production models, these numbers may on average grown or declined, but this change is dependent on biological processes that are explicitly modeled, like mortality, reproduction, and body growth. Therefore, the intrinsic growth rate in a surplus production model reflects the combined effects of these factors over all cohorts observed a certain time.
+
+To track cohorts, first we need age information, and second we need estimates of numbers at that age in a given year $N_{a,t}$ and then compare them to previous years numbers at the previous $N_{a-1,t-1}$. If we assume for now that there is no migration and the ages we are referring to are greater than the recruitment age, then these numbers should always decline in consecutive years due to mortality. This decline is applied as an exponential decline so that the same proportion of $N_{t-1}$ is removed every year. The rate of this exponential decline $Z$ is a new parameter.
+
+$N_{a,t} = N_{a-1,t-1}e^{-Z}$
+
+If we left the equation like this, the population could never grow, but rather only decline over time. To reflect growth, we need to introduce another parameter, which describes the recruitment process. This means we first need to define recruitment age, usually the first age that is observed with decent confidence in the data. Let's call this recruitment age $r$ and call the recruitment number $N_0$. This is similar to the initial population size parameter estimated in a surplus production model, except that it occurs every year at the same age.
+
+$N_{a=r, t} = N_{0,t}$
+
+Now, if we want to understand how the dynamics change over time, all the numbers at a certain time, then we must sum over all ages to get the total numbers. To do this, however, we need to define what the maximum age of the population we want to consider will be. We then have two options for determining numbers at the maximum population age. The first option is to leave the equation as is, and just assume that there are no fish above a certain age. This option may not be realistic in many cases because the older fish may simply be unobserved rather than dead. If they were dead, they would also not be able to be fished, causing a mismatch between the model and reality if older fish come occasionally into the catch. Therefore, the more often used approach is to create a 'plus group' for numbers at maximal ages, where numbers greater than or equal to the age accumulate and are tracked, with mortality and fishing still applied. This requires a new equation for the plus group that includes mortality applied to both fish aging into this final age, as well as the ages already present, allowing numbers to accumulate in this bin. If we set the maximal age to be $a_{max}$, then this equation is:
+
+$N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}$
+
+Now we can sum over all numbers to get the total numbers in a given year:
+
+$$
+\sum_{n=r}^{a_{max}} N_t = \Bigg\{ 
+\begin{array}{ll}
+N_{a=r, t} = N_{0,t},  & a = r\\
+N_{a,t} = N_{a-1,t-1}e^{-Z}, & a = r+1, ..., a_{max}-1\\
+N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}, & a = a_{max}
+\end{array}
+$$
+
+
+
+Now that we have growth and death incorporated into the model, we can add fishing activity. This is done by modifying Z, total mortality, to include natural mortality $M$ and fishing mortality $F$ components:
+
+$Z=F+M$
+
+To be able to track cohorts accurately, it would be best to be able to track each cohort through time. This can be done because if we have age samples from the commercial catches, we will have estimates of the relative proportion of each age in the catch. However, the same does not apply to natural mortality because natural mortality is very difficult to observe and track to begin with:
+
+$Z_{a,t}=M+F_{a,t}$
+
+Fishing mortality $F_{a,t}$ can then also be broken down into separate parameters that separately track overall effort $E$ from the relative proportions of ages expected to be caught by the gear. These proportions are referred to as selectivity at age $S_{a,t}$:
+
+$F_{a,t}=E_t*S_{a,t}$
+
+By applying the fishing mortality to the population biomass, then the Baranov catch equation can be used to reflect the expected catches in numbers at age observed $C_{N,a,t}$:
+
+$C_{N,a,t}=\frac{F_{a,t}}{F_{a,t}+M}(1-e^{-(F_{a,t}+M)})$
+
+Finally, all the dynamics are described here in terms of numbers, but they can always be converted to biomass to facilitate comparisons to data by defining biomass as the product of numbers and weight: 
+
+where $B_{a,t}=N_{a,t}W_{a,t}$. 
+
+This incorporates body growth, but does not need to be part of the statistical modeling process unless it is not possible to back-calculate ages from observed biomasses.
+
+
+
+

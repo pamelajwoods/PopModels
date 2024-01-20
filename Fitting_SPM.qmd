@@ -13,7 +13,7 @@ library(palmerpenguins)
 theme_set(theme_minimal())
 ```
 
-In this exercise, we take the concepts we learned yesterday regarding equilibrium properties of the Schaeffer surplus production model, and we attempt to apply them using whelk data.
+In this exercise, we take the concepts we learned yesterday regarding equilibrium properties of the Schaefer surplus production model, and we attempt to apply them using whelk data.
 
 Whelk data you can retrieve by downloading and importing them from the institute advice [webpage](https://dt.hafogvatn.is/astand/2023/45_WHE_en.html).
 

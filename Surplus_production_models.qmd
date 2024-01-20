@@ -132,9 +132,9 @@ To understand how much we should fish in order to achieve the 'right' population
 
 These pieces of information are controlled by *parameters*. Choosing the parameters is done through *fitting* the model to data in order to have a well-supported *parameterization*.
 
-### Schaeffer model
+### Schaefer model
 
-Production models are useful in that they put these three pieces of information together into the same model, that can often be parameterized using data. The Schaeffer model is the simplest form of production models and uses the assumption that catch per unit effort is linearly related to population biomass.
+Production models are useful in that they put these three pieces of information together into the same model, that can often be parameterized using data. The Schaefer model is the simplest form of production models and uses the assumption that catch per unit effort is linearly related to population biomass.
 
 Remember the logistic growth equation:
 
@@ -156,7 +156,7 @@ knitr::include_graphics('imgs/Q_question.png')
 
 In addition, this assumption provides for a convenient relationship that is exploited when trying to fit such a model to data. Under this assumption defining catch, we can switch the equation around and also write:
 
-$C_t/E = qN_t$
+$C_t/E = qB_t$
 
 In this form, it becomes clear that if we have data as a set of observations of catch per unit effort (\$C_t/E\$) and catch (\$C_t\$) over time, *and there is enough contrast in the data*, then we may be able to detect catchability and biomass.
 
@@ -169,13 +169,13 @@ knitr::include_graphics('imgs/Q_answer2.png')
 
 What is *contrast* in the data? Having contrast in the data means that the population has been observed at various states, so that it's responses to various conditions have been observed. If we have a CPUE and catch data series, to fit a surplus production model, there must be information in just those two data sources concerning:
 
--   growth (\$r\$)
+-   growth ($r$)
 
--   carrying capacity (\$K\$)
+-   carrying capacity ($K$)
 
--   catchability (\$q\$)
+-   catchability ($q$)
 
--   initial population size (\$N\_{t=0}\$)
+-   initial population size ($N_{t=0}$)
 
 As you go through the following exercise, think about the different 'experiments' needed to get information about these parameters. What states of population size (high/low) and fishing (heavy/light) should be observed to get this information at a minimum?
 
@@ -367,7 +367,7 @@ eff[which.max(YY - Cost)] #MEY
 ```{r}
 #Extra - Now look up the equation for a Pella-Tomlinson production function and 
 #repeat the above exercise to plot Pella-Tomlinson surplus production function alongside
-#Schaeffer production function on the same figure (hint: Schaeffer is a special case of the
+#Schaefer production function on the same figure (hint: Schaefer is a special case of the
 #Pella-Tomlinson where the extra parameter (exponent) is set to 1).
 #How is the shape of the MSY relationship changed by the extra parmaeter?
 
@@ -381,7 +381,7 @@ Below is a demonstration of a quick-and-dirty shortcut to finding some of the eq
 
 ```
 
-In addition, another assumption of the Schaeffer model brought up in this example is the assumption that CPUE is directly related to biomass (i.e., CPUE reflects a constant proportion of biomass at all population sizes, determined by catchability $q$). This is also not always the case, so this example also tests an alternate model of a log-linear relationship, yielding greater CPUE proportion at lower biomass levels.
+In addition, another assumption of the Schaefer model brought up in this example is the assumption that CPUE is directly related to biomass (i.e., CPUE reflects a constant proportion of biomass at all population sizes, determined by catchability $q$). This is also not always the case, so this example also tests an alternate model of a log-linear relationship, yielding greater CPUE proportion at lower biomass levels.
 
 ```{r, eval = TRUE, echo = TRUE}
 
