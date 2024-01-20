@@ -13,7 +13,7 @@ library(palmerpenguins)
 theme_set(theme_minimal())
 ```
 
-## Introduction to age-based concepts
+## Age-based population dynamics
 
 In surplus production models, the exploitable portion of the population is modeled as a single blob of biomass that grows and declines over time according to some rules (i.e., parameters). These properties of growth and decline determine the amount of sustainable catch removals (e.g., $MSY = Kr/4$ for a Schaefer model). Using production models simplifies the biological processes greatly, and therefore cannot track true population dynamics when fitted to data as closely as more complex models that contain more parameters designed to track individual cohorts or year classes. The trade-off with adding more parameters is that more data and different types of data are needed to capture age-based dynamics.
 
@@ -42,7 +42,7 @@ N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}, & a = a_{max}
 \end{array}
 $$
 
-
+## Adding catch to age-based population dynamics
 
 Now that we have growth and death incorporated into the model, we can add fishing activity. This is done by modifying Z, total mortality, to include natural mortality $M$ and fishing mortality $F$ components:
 
@@ -66,6 +66,10 @@ where $B_{a,t}=N_{a,t}W_{a,t}$.
 
 This incorporates body growth, but does not need to be part of the statistical modeling process unless it is not possible to back-calculate ages from observed biomasses.
 
+### Exercise
 
+```{r}
+#age-based model simulation
+```
 
 
