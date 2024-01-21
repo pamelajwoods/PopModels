@@ -1,0 +1,59 @@
+---
+title:  "Transitioning toward fitting age-based models"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(palmerpenguins)
+theme_set(theme_minimal())
+```
+
+## Transitioning toward fitting age-based models
+
+When dealing with age-based models, there are a lot of smaller pieces of information that need support for chosen parameter values or input data. Sometimes this requires some supporting statistical analyses to provide basic biological properties (e.g., growth and maturity), and sometimes this requires some data pre-processing and basic assumptions.
+
+## Data used to fit an age-based model
+
+Just like in surplus production models, there are two basic observation data series that are needed to fit the model based by comparing these data to model predictions. Just like in surplus production models, these are 1) catches over time and 2) population abundance indices over time. Just like in surplus production models, contrast in the data are needed to parameterize the model well and provide an informative stock assessment model. However, *unlike* in surplus production models, the sources of data are age-structured, so that catches *at age* and population abundance indices *at age* are needed. This structure provides both a challenge and an opportunity. The opportunity is that with so many time series, it is more likely that contrast will be available with which parameters can be fitted. The challenge is that this contrast must be informative, and based on age data, which must be both available for a wide enough variety of ages and of high enough quality to track the data.
+
+Because age data are relatively expensive to collect and process, we only usually have subsets of age data, but much more length data available as samples, both from commercial catches and surveys. As a result, a method is needed to extrapolate numbers-at-age, both in catches and abundance indices, from length distributions and a sample of age readings. The tool used for extrapolation is called an **age-length key**.
+
+## Creating age length keys
+
+An age-length key is a simple matrix of probabilities that lists probabilities of a fish observed to be a certain length actually belonging to a certain age group.
+
+## Catch curve analysis
+
+## Catch curve analysis is a method for estimating mortality
+
+```{r}
+install.packages(boot)
+
+PredLengthatAge<-VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], 1:10)
+WeightatAge<-exp(coef(HxW.lm)[1]+coef(HxW.lm)[2]*log(PredLengthatAge))
+
+MM <-abs(MM)
+
+WeightM<-matrix(rep(c(0,WeightatAge), 100), nrow = 100, ncol = 11, byrow = T)
+MatM<-matrix(rep(c(0,PredMat), 100), nrow = 100, ncol = 11, byrow = T)
+plot(apply(NumbersResults*WeightM*MatM, 1, sum))
+
+```
+
+```{r}
+	
+#Last piece of age-specific information missing:
+PredLengthatAge<-VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], 1:10)
+WeightatAge<-exp(coef(HxW.lm)[1]+coef(HxW.lm)[2]*log(PredLengthatAge))
+
+MM <-abs(MM)
+
+WeightM<-matrix(rep(c(0,WeightatAge), 100), nrow = 100, ncol = 11, byrow = T)
+MatM<-matrix(rep(c(0,PredMat), 100), nrow = 100, ncol = 11, byrow = T)
+plot(apply(NumbersResults*WeightM*MatM, 1, sum))
+```

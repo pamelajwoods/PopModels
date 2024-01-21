@@ -196,7 +196,68 @@ p3 <- tibble(R=NumbersResults[,1], N=apply(NumbersResults, 1, sum), C = apply(Ca
 gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
 ```
 
+### Long-term properties of age-based models
+
 Now let's do the same experiment as we did with the surplus production model and try a variety of effort values to determine the fishing mortality that leads to maximum sustainable yield.
+
+```{r}
+
+Efforts<-seq(0, 2, 0.05)
+EquilCatch<-vector(length = length(Efforts), mode = "numeric")
+for(j in 1:length(Efforts)){
+	results<-AgeStructModel(Rec, Effort = Efforts[j])
+	CatchResults<-apply(results[[2]], 1, sum, na.rm=T)
+	EquilCatch[j]<-CatchResults[99]
+	}
+
+tibble(EquilCatch, Efforts) %>% ggplot(aes(Efforts, EquilCatch)) + geom_point() + ylab("Equilibrium Catch")
+
+#We made this model piecewise - by estimating relationships separately, then putting them into a model. The other method would be to estimate all parameters at once, given you have enough data. List the parameters you might expect to estimate in a statistical catch-at-age model. What data could be used to compare to the predictions?
+
+
+```
+
+Age based models are non-linear and also not differentiable, requiring numerical solutions rather than analytical solutions to derive their long-term properties. What this means is that MSY values have to be derived using the kind of experiments conducted above.
+
+One more type of result is useful to consider at this point. What does the distribution of ages look like at equilibrium after fishing the population at a variety of effort values? To check this out, we need to save the age distribution at a variety of effort values and plot them.
+
+```{r}
+Efforts<-seq(0, 2, 0.05)
+NumberResults <- NULL
+EquilCatch<-vector(length = length(Efforts), mode = "numeric")
+for(j in 1:length(Efforts)){
+	results<-AgeStructModel(Rec, Effort = Efforts[j])
+	NumbersResults[[j]]<-results[[1]][99,]
+	CatchResults<-apply(results[[2]], 1, sum, na.rm=T)
+	EquilCatch[j]<-CatchResults[99]
+	}
+
+NumbersResults %>% 
+  bind_rows(NumberResults, .id = 'id') %>%
+  mutate(effort = Efforts) %>% 
+  gather(value = 'numbers', key = 'effort') %>% 
+  filter(effort %in% c(0.1, 0.5, 1, 1.5, 1.9)) %>% 
+  group_by(effort) %>% 
+  ggplot(aes(numbers)) + geom_col() + ylab("Equilibrium Catch") + facet_wrap(~effort)
+
+#What happens to the age distributions as effort increases?
+```
+
+The shape of the age distributions you see here can be translated into length distributions using an age-length distribution. Given a single perfect age-length distribution, a single length distribution can be observed. In reality, this translation is a handy property used in may data-limited methods, because length distributions are much more easily observed and easy to obtain than age distributions. Assuming that the length-age translation is reasonably well known (and some other assumptions, e.g., regarding natural mortality) this allows a snapshot of whether effort levels that produced that length distribution are more likely to be too high or too low. For situations in which there is no reliable time series that can be used for modeling, or there is a time series with unknown quality, the length distributions can be a powerful property for understanding how past fishing has affected its current status.
+
+If growth were perfectly linear, these length distributions would look the same. However, in most cases, linear growth is only observed at younger ages and growth slows at higher ages, so instead what is observed is that the right side of the distributions would get shorter and squeezed toward the middle. In addition, the process of growth usually happens in reality with some amount of error, as well as seasonality and year-to-year variation. Therefore the translation between the two needs to be carefully done, and some careful statistical modeling of growth relationships is needed.
+
+### Exercise
+
+Now try changing properties of the model above to see how they affect the model results in terms of MSY and length distributions. Try changing for example:
+
+-   Recruitment properties
+
+-   Selectivity
+
+-   Catchability
+
+-   Natural mortality
 
 ```{r}
 
@@ -215,6 +276,8 @@ tibble(EquilCatch, Efforts) %>% ggplot(aes(Efforts, EquilCatch)) + geom_point() 
 
 
 ```
+
+### 
 
 ### Exercise
 
@@ -250,7 +313,6 @@ Depending on the amount of contrast in the data, it may also be able to detect a
 	p2 <- tibble(SSB, RickerRec) %>%  ggplot(aes(SSB, RickerRec)) + geom_point()
 
 gridExtra::grid.arrange(p1, p2, ncol = 2)
-
 
 ```
 
