@@ -105,50 +105,121 @@ VonBertalanffy<-function(Linf = 100, K = 0.5, t0 = 0, Age){
 # This first example resembles haddock
 Age <- rep(1:10, each = 10)
 
-L <- VonBertalanffy(Age = Age, K = 0.5, Linf = 83, t0=0.1) + rnorm(length(age), sd = 5)
+L <- VonBertalanffy(Age = Age, K = 0.5, Linf = 83, t0=0.1) + rnorm(length(Age), sd = 5)
 
 LxA.nls<-nls(Length~VonBertalanffy(Linf, K, t0, Age), data = tibble(Age, Length = L), start = c(Linf = 80, K = 0.2, t0 = 0))
 
 summary(LxA.nls)
 
-p_VB<- tibble(Age, Length = L, Pred = VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], Age)) %>% 
+p_VB_haddock<- tibble(Age, Length = L, Pred = VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], Age)) %>% 
   ggplot(aes(Age, Length)) + geom_point() + geom_line(aes(Age, Pred))
+
+# This second example resembles Golden redfish
+Age <- rep(6:60, each = 3)
+
+L <- VonBertalanffy(Age = Age, K = 0.2, Linf = 83, t0=0.1) + rnorm(length(Age), sd = 5)
+
+LxA.nls<-nls(Length~VonBertalanffy(Linf, K, t0, Age), data = tibble(Age, Length = L), start = c(Linf = 80, K = 0.2, t0 = 0))
+
+summary(LxA.nls)
+
+p_VB_redfish<- tibble(Age, Length = L, Pred = VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], Age)) %>% 
+  ggplot(aes(Age, Length)) + geom_point() + geom_line(aes(Age, Pred))
+       
+
+gridExtra::grid.arrange(p_VB_haddock, p_VB_redfish, ncol = 2)
        
 
 ```
 
-## Catch curve analysis as a method for estimating mortality
+Let's look at the assessment reports for haddock and golden redfish, found on the [hafogvatn.is](hafogvatn.is) advice webpage. Age-based models are fit to both. In particular, pay close attention to the age and length distributions and any model diagnostics in the reports. For each one, can you see cohorts transitioning through the population?
+
+## Catch curve analysis - method for estimating mortality
 
 ```{r}
 install.packages(boot)
+#Below is age frequency data on whelk caught in 1993 during a survey at Hrappsey. Fishing began in 1996, so this population is thought to be pristine. 
+#Q1 What is a) number of recruits at birth (age 0); b) mortality rate Z; c) the proportion of the population that dies each year, and d) the number of recruits at age 3?
+HrappseyCatch<-c(15, 11, 20, 16, 14, 10, 12);
+HrappseyAge<-3:9 
 
-PredLengthatAge<-VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], 1:10)
-WeightatAge<-exp(coef(HxW.lm)[1]+coef(HxW.lm)[2]*log(PredLengthatAge))
+tibble(Catch = HrappseyCatch, Age = HrappseyAge) %>% 
+  ggplot(aes(Age,Catch)) + geom_col()
+par(mfrow = c(1,2))
 
-MM <-abs(MM)
+# the first two years are not fully selected, so are removed
+Hrapp.lm<-lm(log(HrappseyCatch[-c(1,2)])~HrappseyAge[-c(1,2)])
+#a,b
+N0_Hxv <- exp(coef(Hrapp.lm)[1]); ZZ_H <- -coef(Hrapp.lm)[2]
+#c
+1 - exp(-ZZ_H)
 
-WeightM<-matrix(rep(c(0,WeightatAge), 100), nrow = 100, ncol = 11, byrow = T)
-MatM<-matrix(rep(c(0,PredMat), 100), nrow = 100, ncol = 11, byrow = T)
-plot(apply(NumbersResults*WeightM*MatM, 1, sum))
+#Q2. Recently, another survey was done. Calculate fishing mortality based on the new data. What proportion of the population decreases due to fishing each year?
 
+BrjanCatch<-c(76,  85, 213, 161,  85,  46,  48,  17 )
+BrjanAge<-3:10
+
+tibble(Catch = BrjanCatch, Age = BrjanAge) %>% 
+  ggplot(aes(Age,Catch)) + geom_col()
+
+Brjan.lm<-lm(log(BrjanCatch[-c(1,2)])~BrjanAge[-c(1,2)])
+N0_Bxv <- exp(coef(Brjan.lm)[1]); ZZ_B <- -coef(Brjan.lm)[2]
+
+MM <- ZZ_H
+FF <- ZZ_B - MM
+1-exp(-FF)
 ```
 
-```{r}
-	
-#Last piece of age-specific information missing:
-PredLengthatAge<-VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], 1:10)
-WeightatAge<-exp(coef(HxW.lm)[1]+coef(HxW.lm)[2]*log(PredLengthatAge))
+This version of a catch curve analysis is very simple. If mortality rates are in reality applied to cohorts, what is the major flaw with the way that this catch curve is applied? What does it assume about recruitment amounts entering the population?
 
-MM <-abs(MM)
-
-WeightM<-matrix(rep(c(0,WeightatAge), 100), nrow = 100, ncol = 11, byrow = T)
-MatM<-matrix(rep(c(0,PredMat), 100), nrow = 100, ncol = 11, byrow = T)
-plot(apply(NumbersResults*WeightM*MatM, 1, sum))
-```
-
-### Maturation
+## Maturation and spawning stock biomass
 
 Finally, if a stock-recruitment relationship is needed, then we need to estimate maturity-at-age ogives to create spawning stock biomass estimates. Even if stock-recruitment relationships are not used, estimates of spawning stock biomass are often used for visually assessing the stocks, or for creating reference points.
+
+```{r, eval = FALSE}
+
+LM_Ices<-read.csv("LMIces.csv")
+
+pred<-seq(10,100,5)
+
+sub1<-LM_Ices[LM_Ices$Loc=="Flikrusker" & LM_Ices$Depth==18,]
+sub<-data.frame(rbind(sub1, data.frame(ShellLength=pred, PenisLength=rep(0, length(pred)), Loc = rep("A", length(pred)), Depth = rep(0, length(pred)))), Weight=c(rep(1, dim(sub1)[1]), rep(0, length(pred))))
+plot(PenisLength/ShellLength~ShellLength,data=sub); abline(h=0.5)
+Mat.glm<-glm(as.numeric(sub$PenisLength/sub$ShellLength>0.3)~sub$ShellLength, family = binomial(logit), weights = Weight, data = sub); summary(Mat.glm); fits<-fitted(Mat.glm); names(fits)<-1:length(fits)
+plot(fits~sub$ShellLength)
+
+#Q3.1 What is L50? (look at the web page for the equation)
+
+L50<- -(coef(Mat.glm)[1])/coef(Mat.glm)[2]
+
+#Q3.2: What age does L50 correspond with? Hint: to do this, you need to figure out how does length relates to age.
+VonBertalanffy<-function(Linf = 100, K = 0.5, t0 = 0, Age){
+	pred <- Linf*(1-exp(-K*(Age - t0)))
+	return(pred) }
+LxA.nls<-nls(Length~VonBertalanffy(Linf, K, t0, Age), data = LxA_Ices, start = c(Linf = 80, K = 0.5, t0 = 0))
+summary(LxA.nls)
+plot(1:10, VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], 1:10))
+abline(h = L50)
+
+
+#Q3.3: What is the spawning stock biomass with the following population structure?
+Biomass<-seq(50, 140, 10)
+StockAges<-1:10
+PredLength<-VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], StockAges)
+B<-data.frame(StockAges, Biomass)
+Int<-as.numeric(coef(Mat.glm)[1])
+Slope<-as.numeric(coef(Mat.glm)[2])
+LogitPred<-Int+Slope*PredLength
+PredMat<-boot::inv.logit(LogitPred)
+SSB<-sum(B$Biomass*PredMat)
+
+
+
+
+WeightM<-matrix(rep(c(0,WeightatAge), 100), nrow = 100, ncol = 11, byrow = T)
+MatM<-matrix(rep(c(0,PredMat), 100), nrow = 100, ncol = 11, byrow = T)
+plot(apply(NumbersResults*WeightM*MatM, 1, sum))
+```
 
 link to ICES guidelines
 
