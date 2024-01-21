@@ -167,7 +167,7 @@ gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
 
 ```
 
-Let's try to repeat the same figure but with variability implemented:
+Let's try to repeat the same figure but with variability in Recruitment implemented:
 
 ```{r}
 set.seed(100)
@@ -180,13 +180,22 @@ p1 <- tibble(Rec) %>% ggplot(aes(Rec)) + geom_histogram()
 
 p2 <- tibble(year = 1:YY, recruitment = Rec) %>%  ggplot(aes(year, recruitment)) + geom_col()
 
+
 gridExtra::grid.arrange(p1, p2, ncol = 2)
 ```
+
+Notice that individual cohorts can be tracked through the numbers matrices in both the population and the Catches.
 
 ```{r}
 NumbersResults<-AgeStructModel(Rec)[[1]]
 CatchResults<-AgeStructModel(Rec)[[2]]
 
+View(NumberResults)
+View(CatchResults)
+
+```
+
+```{r}
 p1 <- tibble(year = 1:YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(year, N)) + geom_line() + geom_line(aes(year, C), color = 'red')
 
 p2 <- tibble(year = 1:YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(N, C)) + geom_line() 
@@ -195,6 +204,8 @@ p3 <- tibble(R=NumbersResults[,1], N=apply(NumbersResults, 1, sum), C = apply(Ca
 
 gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
 ```
+
+When we try to fit these types of models to data observations, this is the major source of variation needed for the model to track population dynamics and estimate the recruitment series. Keep this in mind when we start talking about transitioning toward fitting age-based models.
 
 ### Long-term properties of age-based models
 

@@ -24,8 +24,6 @@ The population dynamics section of teaching is split into roughly 8 half-day ses
 
 [Age-based concepts](Age_based_concepts.qmd)
 
-[Transitioning toward fitting age-based models](Catch_curve_analysis.qmd)
+[Transitioning toward fitting age-based mode](Trans_toward_ABM_Fitting.qmd)
 
-[Age-based models 1]
-
-[Age-based models 2]
+[FLR exercise]

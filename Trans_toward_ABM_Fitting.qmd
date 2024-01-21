@@ -25,11 +25,59 @@ Because age data are relatively expensive to collect and process, we only usuall
 
 ## Creating age length keys
 
-An age-length key is a simple matrix of probabilities that lists probabilities of a fish observed to be a certain length actually belonging to a certain age group.
+An age-length key is a simple matrix that lists probabilities of a fish observed to be a certain length actually belonging to a certain age group. For example, let's consider a population with only 3 ages and 5 length groups. Which ALK do you think is more informative?
 
-## Catch curve analysis
+```{r}
+ALK1 <- 
+  tibble(length=1:5,
+         age1 = c(1, 0.5, 0.2,   0, 0),
+         age2 = c(0, 0.5, 0.6, 0.5, 0),
+         age3 = c(0,   0, 0.2, 0.5, 1))
+ALK1 %>% mutate(total=age1+age2+age3)
 
-## Catch curve analysis is a method for estimating mortality
+```
+
+```{r}
+
+ALK1 %>% gather(key = age, value = p) %>% ggplot(aes(length, age)) + geom_tile(aes(fill=p))
+
+```
+
+```{r}
+ALK2 <- 
+  tibble(length=1:5,
+         age1 = c(0.5, 0.2, 0.1,   0, 0),
+         age2 = c(0.5, 0.6, 0.5, 0.5, 0.4),
+         age3 = c(0,   0.2, 0.4, 0.5, 0.6))
+ALK2 %>% mutate(total=age1+age2+age3)
+```
+
+```{r}
+ALK2 %>% gather(key = age, value = p) %>% ggplot(aes(length, age)) + geom_tile(aes(fill=p))
+
+```
+
+In addition to time series of length distributions, ALKs are needed both from survey data and commercial data to create time series of estimates of numbers-at-age used for model fitting. Creating ALKs from data are straightforward given enough paired and length distributions. Care in sampling must be given to ensure that rare ages are sampled frequently enough to get accurate estimates of proportions.
+
+If length-at-age is expected to differ based on different components of the population or sampling types (e.g., between gears, or between spatial areas sampled), then ALKs created from these subcomponents should be applied to length data collected within these sub-components. This substantially increases the sampling needed to cover create reliable indices but avoids bias.
+
+## Weight-at-length relationships
+
+Frequently, sampling and extrapolation is based on catch or survey weight measurements. In these cases, we also need to use weight-length relationships to translate a total catch into numbers at length, given the expected weight-at-length relationship. In many species, this is quite a stable relationship, so is fitted to data once and then the predictions used when needed. However, due to changes in condition over time or spatially, this assumption should be checked periodically. Here is a basic example for fitting a length-weight relationship:
+
+```{r}
+dkalfdakld
+```
+
+## Length-at-age relationships
+
+Even though growth is obviously a very important biological relationship, and body growth is an important process, it is not incorporated directly into age-based modeling, and therefore never estimated. Growth processes are implicitly included in the creation of the ALK. Therefore, by plotting and fitting for example, a Von Bertalanffy growth curve, we can gain a better understanding of our data and biological processes, even if it is not directly incorporated into the modeling framework. For example, let's consider two growth curves that look very different. They are intended to reflect growth similar to haddock versus golden redfish.
+
+```{r}
+afkls
+```
+
+## Catch curve analysis as a method for estimating mortality
 
 ```{r}
 install.packages(boot)
@@ -57,3 +105,9 @@ WeightM<-matrix(rep(c(0,WeightatAge), 100), nrow = 100, ncol = 11, byrow = T)
 MatM<-matrix(rep(c(0,PredMat), 100), nrow = 100, ncol = 11, byrow = T)
 plot(apply(NumbersResults*WeightM*MatM, 1, sum))
 ```
+
+### Maturation
+
+Finally, if a stock-recruitment relationship is needed, then we need to estimate maturity-at-age ogives to create spawning stock biomass estimates. Even if stock-recruitment relationships are not used, estimates of spawning stock biomass are often used for visually assessing the stocks, or for creating reference points.
+
+link to ICES guidelines
