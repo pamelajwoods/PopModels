@@ -26,4 +26,26 @@ In surplus production models, the exploitable portion of the population is model
 ```{r}
 install.packages(boot)
 
+PredLengthatAge<-VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], 1:10)
+WeightatAge<-exp(coef(HxW.lm)[1]+coef(HxW.lm)[2]*log(PredLengthatAge))
+
+MM <-abs(MM)
+
+WeightM<-matrix(rep(c(0,WeightatAge), 100), nrow = 100, ncol = 11, byrow = T)
+MatM<-matrix(rep(c(0,PredMat), 100), nrow = 100, ncol = 11, byrow = T)
+plot(apply(NumbersResults*WeightM*MatM, 1, sum))
+
+```
+
+```{r}
+	
+#Last piece of age-specific information missing:
+PredLengthatAge<-VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], 1:10)
+WeightatAge<-exp(coef(HxW.lm)[1]+coef(HxW.lm)[2]*log(PredLengthatAge))
+
+MM <-abs(MM)
+
+WeightM<-matrix(rep(c(0,WeightatAge), 100), nrow = 100, ncol = 11, byrow = T)
+MatM<-matrix(rep(c(0,PredMat), 100), nrow = 100, ncol = 11, byrow = T)
+plot(apply(NumbersResults*WeightM*MatM, 1, sum))
 ```

@@ -60,9 +60,9 @@ By applying the fishing mortality to the population biomass, then the Baranov ca
 
 $C_{N,a,t}=\frac{F_{a,t}}{F_{a,t}+M}(1-e^{-(F_{a,t}+M)})$
 
-Finally, all the dynamics are described here in terms of numbers, but they can always be converted to biomass to facilitate comparisons to data by defining biomass as the product of numbers and weight: 
+Finally, all the dynamics are described here in terms of numbers, but they can always be converted to biomass to facilitate comparisons to data by defining biomass as the product of numbers and weight:
 
-where $B_{a,t}=N_{a,t}W_{a,t}$. 
+where $B_{a,t}=N_{a,t}W_{a,t}$.
 
 This incorporates body growth, but does not need to be part of the statistical modeling process unless it is not possible to back-calculate ages from observed biomasses.
 
@@ -86,15 +86,7 @@ Now set the growth and mortality parameters in numbers occurs through adding ind
 #natural mortality - these values should be positive
 MM <- 0.2
 
-set.seed(100)
-Rec <- 1000*rlnorm(n = YY) 
-Rec
-set.seed(100)
-exp(log(1000) + rnorm(n = YY)) #notice that this form of the equation is the same as above
-
-hist(Rec)
-
-tibble(year = 1:YY, recruitment = Rec) %>%  ggplot(aes(year, recruitment)) + geom_col()
+Rec <- rep(1000,YY)
 
 ```
 
@@ -120,27 +112,28 @@ View(NumbersM)
 
 ```
 
-```{r}
+```{r, echo = TRUE}
 
 ### Now: Include Baranov Catch equation:
 #F = selectivity*q*effort
 #Catch(1979,1980) = N(1979)*F/Z*(1 – exp(-Z*(1980 – 1979)) 
 
 AgeStructModel<-function(Rec, AA=10, Effort = rep(0.2, length(Rec)), qq=1, Sel = c(0,0,rep(1,AA-1))){
-	YY <- 1:length(Rec)
-	FF<-matrix(Sel, nrow = length(YY), ncol = AA + 1, byrow = TRUE)*qq*matrix(Effort, nrow = length(YY), ncol = AA + 1)
-	ZZ <-FF+MM
+	
+  FF<-matrix(Sel, nrow = length(Rec), ncol = AA + 1, byrow = TRUE)*qq*matrix(Effort, nrow = length(Rec), ncol = AA + 1)
+	
+  ZZ <-FF+MM
 	
 #define empty matrix in the right dimensions for saving results
-NumbersM<-matrix(nrow = length(YY), ncol = AA + 1, data = 0)
-CatchNM<-matrix(nrow = length(YY), ncol = AA+1, data = 0)
+NumbersM<-matrix(nrow = length(Rec), ncol = AA + 1, data = 0)
+CatchNM<-matrix(nrow = length(Rec), ncol = AA+1, data = 0)
 
 #run loop through all ages and years. Each of the 3 types of equations are used.
 
 	#fishes are born
   NumbersM[1,1] <- Rec[1]
 
-  for(i in 2:12){#length(YY)
+  for(i in 2:length(Rec)){
 	  
 	 #calculate fishing on previous year
 	 #because all ages are not available until after the 11th year, we begin calculating catch then
@@ -157,21 +150,50 @@ CatchNM<-matrix(nrow = length(YY), ncol = AA+1, data = 0)
 	  NumbersM[i, AA+1]<-NumbersM[i-1, AA]*exp(-ZZ[i-1,j]) + NumbersM[i, AA+1]*exp(-ZZ[i-1,AA+1]) 
 	  
 			}
-
+	  CatchNM[i,]<-NumbersM[i,]*FF[i,]/ZZ[i,]*(1-exp(-ZZ[i,]))
 	return(list(NumbersM, CatchNM))
 	}
 NumbersResults<-AgeStructModel(Rec)[[1]]
 CatchResults<-AgeStructModel(Rec)[[2]]
 
-p1 <- tibble(year = YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(year, N)) + geom_line() + geom_line(aes(year, C), color = 'red')
+p1 <- tibble(year = 1:YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(year, N)) + geom_line() + geom_line(aes(year, C), color = 'red')
 
-p2 <- tibble(year = YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(N, C)) + geom_line() 
+p2 <- tibble(year = 1:YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(N, C)) + geom_line() 
 
 p3 <- tibble(R=NumbersResults[,1], N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(R, N)) + geom_line() 
 
 gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
 
 
+```
+
+Let's try to repeat the same figure but with variability implemented:
+
+```{r}
+set.seed(100)
+Rec <- rep(1000,YY)*rlnorm(n = YY) 
+Rec
+set.seed(100)
+exp(log(1000) + rnorm(n = YY)) #notice that this form of the equation is the same as above
+
+p1 <- tibble(Rec) %>% ggplot(aes(Rec)) + geom_histogram()
+
+p2 <- tibble(year = 1:YY, recruitment = Rec) %>%  ggplot(aes(year, recruitment)) + geom_col()
+
+gridExtra::grid.arrange(p1, p2, ncol = 2)
+```
+
+```{r}
+NumbersResults<-AgeStructModel(Rec)[[1]]
+CatchResults<-AgeStructModel(Rec)[[2]]
+
+p1 <- tibble(year = 1:YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(year, N)) + geom_line() + geom_line(aes(year, C), color = 'red')
+
+p2 <- tibble(year = 1:YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(N, C)) + geom_line() 
+
+p3 <- tibble(R=NumbersResults[,1], N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(R, N)) + geom_line() 
+
+gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
 ```
 
 Now let's do the same experiment as we did with the surplus production model and try a variety of effort values to determine the fishing mortality that leads to maximum sustainable yield.
@@ -181,39 +203,61 @@ Now let's do the same experiment as we did with the surplus production model and
 Efforts<-seq(0, 2, 0.05)
 EquilCatch<-vector(length = length(Efforts), mode = "numeric")
 for(j in 1:length(Efforts)){
-	results<-AgeStructModel(Efforts[j])
+	results<-AgeStructModel(Rec, Effort = Efforts[j])
 	NumbersResults<-results[[1]]
 	CatchResults<-apply(results[[2]], 1, sum, na.rm=T)
 	EquilCatch[j]<-CatchResults[99]
 	}
 
-plot(EquilCatch~Efforts)
+tibble(EquilCatch, Efforts) %>% ggplot(aes(Efforts, EquilCatch)) + geom_point() + ylab("Equilibrium Catch")
 
-#Q6.1 How does the inclusion of a stock-recruitment model affect the relationship between Fmax and Fmsy?
+#We made this model piecewise - by estimating relationships separately, then putting them into a model. The other method would be to estimate all parameters at once, given you have enough data. List the parameters you might expect to estimate in a statistical catch-at-age model. What data could be used to compare to the predictions?
 
-#Q6.2 We made this model piecewise - by estimating relationships separately, then putting them into a model. The other method would be to estimate all parameters at once, given you have enough data. List the parameters you might expect to estimate in a statistical catch-at-age model.
 
 ```
 
+### Exercise
 
-```{r}
+```{r, eval = FALSE, echo = TRUE}
+#How would you change the catch equation to reflect biomass rather than numbers? Fill in the weights below
+
+	 CatchWM[i,]<-
+
+#If you want to calculate spawning stock biomass, and you have numbers at age and weight at age, what is the third piece of information needed to calculate it? Can you write the equations here?
+  
+  SSB[i,] <- 
+	    
+```
+
+## Stock-recruitment relationships
+
+In the above example, recruitment was simulated as a series of noise, with no trends over time. Statistical catch-at-age models normally estimate this time series of recruitment directly. The time series above was simulated with no autocorrelation, although autocorrelation is often observed in recruitment time series.
+
+Depending on the amount of contrast in the data, it may also be able to detect a relationship between recruitment and spawning stock biomass. This is usually done using the results of a statistical catch-at-age model, although it can be done during the model's estimation as well. Fitting a stock-recruitment relationship does not help with model estimation, but instead provides a convenient way to predict recruitment from the current state of the population. This is useful for projections such as the one done above with the simple series of recruitment made with lognormal noise and no relationship to spawning stock biomass. Below are some examples of stock-recruitment relationships.
+
+```{r, echo = TRUE}
     SSB<-sum(NumbersM[i-1,]*c(0,WeightatAge)*c(0,PredMat))
 
-	Rec<-alpha*SSB/(1+(alpha*SSB/beta))
-	alpha<-79
-beta<-2609
+	alpha<-0.632
+	beta<-0.059
+	SSB <- seq(0,500,10)
+	BevHoltRec<-alpha*SSB/(1+beta*SSB)
+	p1 <- tibble(SSB, BevHoltRec) %>%  ggplot(aes(SSB, BevHoltRec)) + geom_point()
 
-#Last piece of age-specific information missing:
-PredLengthatAge<-VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], 1:10)
-WeightatAge<-exp(coef(HxW.lm)[1]+coef(HxW.lm)[2]*log(PredLengthatAge))
+	alpha<-0.39
+	beta<-0.015
+	RickerRec<-alpha*SSB*exp(-beta*SSB)
+	p2 <- tibble(SSB, RickerRec) %>%  ggplot(aes(SSB, RickerRec)) + geom_point()
 
-MM <-abs(MM)
+gridExtra::grid.arrange(p1, p2, ncol = 2)
 
-WeightM<-matrix(rep(c(0,WeightatAge), 100), nrow = 100, ncol = 11, byrow = T)
-MatM<-matrix(rep(c(0,PredMat), 100), nrow = 100, ncol = 11, byrow = T)
-plot(apply(NumbersResults*WeightM*MatM, 1, sum))
 
 ```
 
+### Further considerations
 
+-   What data are necessary to fit an statistical catch-at-age model?
 
+-   How would you get the data needed to fill in this information?
+
+-   What would the sampling scheme look like?
