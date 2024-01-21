@@ -15,8 +15,6 @@ theme_set(theme_minimal())
 
 ## Transitioning toward fitting age-based models
 
-In surplus production models, the exploitable portion of the population is modeled as a single blob of biomass that grows and declines over time according to some rules (i.e., parameters). These properties of growth and decline determine the amount of sustainable catch removals (e.g., $MSY = Kr/4$ for a Schaefer model). Using production models simplifies the biological processes greatly, and therefore cannot track true population dynamics when fitted to dataas closely as more complex models that contain more parameters designed to track individual cohorts or year classes. The trade-off with adding more parameters is that more data and different types of data are needed.
-
 ## Creating age length keys
 
 ## Catch curve analysis
