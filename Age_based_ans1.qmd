@@ -1,5 +1,5 @@
 ---
-title:  "Using SPICT for surplus production model fitting"
+title:  "Exercise answer"
 format: html
 editor: visual
 ---
@@ -12,8 +12,6 @@ library(tidyverse)
 library(palmerpenguins)
 theme_set(theme_minimal())
 ```
-
-
 
 ```{r, eval = FALSE}
 #CONSTANT RECRUITMENT

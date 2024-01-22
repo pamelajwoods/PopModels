@@ -1,5 +1,5 @@
 ---
-title:  "Using SPICT for surplus production model fitting"
+title:  "Exercise answer"
 format: html
 editor: visual
 ---
@@ -16,6 +16,7 @@ theme_set(theme_minimal())
 
 
 ```{r}
+
 # 1- define model dimensions # ages and # years
 YY <- 200
 AA <- 20
@@ -27,6 +28,26 @@ AA <- 20
 
 #we will need weight and maturity now to calculate SSB within the function. 
 #weights is a two-step process from our fitted models, although you could also use raw data means
+library(AquaticLifeHistory)
+data("maturity_data")
+
+#define models needed that we used on the main page
+
+VonBertalanffy<-function(Linf = 100, K = 0.5, t0 = 0, Age){
+	pred <- Linf*(1-exp(-K*(Age - t0)))
+	return(pred) }
+
+LxA.nls<-nls(Length~VonBertalanffy(Linf, K, t0, Age), data = maturity_data, start = c(Linf = 80, K = 0.2, t0 = 0))
+
+set.seed(100)
+a <- runif(1); b <- 3*rlnorm(1, sdlog = 0.1)
+L <- 21:100 
+W <- exp(a + b*log(L)) + rnorm(80,sd = exp(a + b*log(L))/5)
+LxW.lm<-lm(log(W)~log(L), data = tibble(L,W))
+
+Mat.glm<-glm(Maturity~Age, family = binomial(logit), data = maturity_data)
+
+#define weight and maturity inputs
 weights <- 
   maturity_data %>% 
   select(Age) %>% 
@@ -43,6 +64,7 @@ weights <-
 Wmat <- matrix(weights, ncol = 21, nrow = YY, byrow = T)
 
 #maturity can be taken from the fitted maturity ogive
+
 mats <- 
   maturity_data %>% 
   mutate(fits=fitted(Mat.glm)) %>% 

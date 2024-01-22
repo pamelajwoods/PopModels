@@ -210,7 +210,7 @@ p2 <- maturity_data %>%
 #Above we used fitted values from the model object to represent model predictions. However, this only works if all ages are present in the dataset. If some are missing, it might be better to use true predictions:
 Int<-as.numeric(coef(Mat.glm)[1])
 Slope<-as.numeric(coef(Mat.glm)[2])
-LogitPred<-Int+Slope*PredLength
+LogitPred<-Int+Slope*c(0:20)
 PredMat<-boot::inv.logit(LogitPred)
 
 

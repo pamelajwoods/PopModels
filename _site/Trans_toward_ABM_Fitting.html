@@ -152,7 +152,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#weight-at-length-relationships" id="toc-weight-at-length-relationships" class="nav-link" data-scroll-target="#weight-at-length-relationships">Weight-at-length relationships</a></li>
   <li><a href="#length-at-age-relationships" id="toc-length-at-age-relationships" class="nav-link" data-scroll-target="#length-at-age-relationships">Length-at-age relationships</a></li>
   <li><a href="#catch-curve-analysis---method-for-estimating-mortality" id="toc-catch-curve-analysis---method-for-estimating-mortality" class="nav-link" data-scroll-target="#catch-curve-analysis---method-for-estimating-mortality">Catch curve analysis - method for estimating mortality</a></li>
-  <li><a href="#maturation-and-spawning-stock-biomass" id="toc-maturation-and-spawning-stock-biomass" class="nav-link" data-scroll-target="#maturation-and-spawning-stock-biomass">Maturation and spawning stock biomass</a></li>
+  <li><a href="#maturation-and-spawning-stock-biomass" id="toc-maturation-and-spawning-stock-biomass" class="nav-link" data-scroll-target="#maturation-and-spawning-stock-biomass">Maturation and spawning stock biomass</a>
+  <ul class="collapse">
+  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
+  </ul></li>
   <li><a href="#age-based-assessment-demonstrations" id="toc-age-based-assessment-demonstrations" class="nav-link" data-scroll-target="#age-based-assessment-demonstrations">Age-based assessment demonstrations</a></li>
   </ul>
 </nav>
@@ -443,53 +446,129 @@ Achieved convergence tolerance: 2.789e-06</code></pre>
 <h2 class="anchored" data-anchor-id="maturation-and-spawning-stock-biomass">Maturation and spawning stock biomass</h2>
 <p>Finally, if a stock-recruitment relationship is needed, then we need to estimate maturity-at-age ogives to create spawning stock biomass estimates. Even if stock-recruitment relationships are not used, estimates of spawning stock biomass are often used for visually assessing the stocks, or for creating reference points.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>    SSB<span class="ot">&lt;-</span><span class="fu">sum</span>(NumbersM[i<span class="dv">-1</span>,]<span class="sc">*</span><span class="fu">c</span>(<span class="dv">0</span>,WeightatAge)<span class="sc">*</span><span class="fu">c</span>(<span class="dv">0</span>,PredMat))</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>LM_Ices<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"LMIces.csv"</span>)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">&lt;-</span><span class="fu">seq</span>(<span class="dv">10</span>,<span class="dv">100</span>,<span class="dv">5</span>)</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>sub1<span class="ot">&lt;-</span>LM_Ices[LM_Ices<span class="sc">$</span>Loc<span class="sc">==</span><span class="st">"Flikrusker"</span> <span class="sc">&amp;</span> LM_Ices<span class="sc">$</span>Depth<span class="sc">==</span><span class="dv">18</span>,]</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>sub<span class="ot">&lt;-</span><span class="fu">data.frame</span>(<span class="fu">rbind</span>(sub1, <span class="fu">data.frame</span>(<span class="at">ShellLength=</span>pred, <span class="at">PenisLength=</span><span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">length</span>(pred)), <span class="at">Loc =</span> <span class="fu">rep</span>(<span class="st">"A"</span>, <span class="fu">length</span>(pred)), <span class="at">Depth =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">length</span>(pred)))), <span class="at">Weight=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">dim</span>(sub1)[<span class="dv">1</span>]), <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">length</span>(pred))))</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(PenisLength<span class="sc">/</span>ShellLength<span class="sc">~</span>ShellLength,<span class="at">data=</span>sub); <span class="fu">abline</span>(<span class="at">h=</span><span class="fl">0.5</span>)</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>Mat.glm<span class="ot">&lt;-</span><span class="fu">glm</span>(<span class="fu">as.numeric</span>(sub<span class="sc">$</span>PenisLength<span class="sc">/</span>sub<span class="sc">$</span>ShellLength<span class="sc">&gt;</span><span class="fl">0.3</span>)<span class="sc">~</span>sub<span class="sc">$</span>ShellLength, <span class="at">family =</span> <span class="fu">binomial</span>(logit), <span class="at">weights =</span> Weight, <span class="at">data =</span> sub); <span class="fu">summary</span>(Mat.glm); fits<span class="ot">&lt;-</span><span class="fu">fitted</span>(Mat.glm); <span class="fu">names</span>(fits)<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(fits)</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fits<span class="sc">~</span>sub<span class="sc">$</span>ShellLength)</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co">#Q3.1 What is L50? (look at the web page for the equation)</span></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>L50<span class="ot">&lt;-</span> <span class="sc">-</span>(<span class="fu">coef</span>(Mat.glm)[<span class="dv">1</span>])<span class="sc">/</span><span class="fu">coef</span>(Mat.glm)[<span class="dv">2</span>]</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="co">#Q3.2: What age does L50 correspond with? Hint: to do this, you need to figure out how does length relates to age.</span></span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>VonBertalanffy<span class="ot">&lt;-</span><span class="cf">function</span>(<span class="at">Linf =</span> <span class="dv">100</span>, <span class="at">K =</span> <span class="fl">0.5</span>, <span class="at">t0 =</span> <span class="dv">0</span>, Age){</span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    pred <span class="ot">&lt;-</span> Linf<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">exp</span>(<span class="sc">-</span>K<span class="sc">*</span>(Age <span class="sc">-</span> t0)))</span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(pred) }</span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>LxA.nls<span class="ot">&lt;-</span><span class="fu">nls</span>(Length<span class="sc">~</span><span class="fu">VonBertalanffy</span>(Linf, K, t0, Age), <span class="at">data =</span> LxA_Ices, <span class="at">start =</span> <span class="fu">c</span>(<span class="at">Linf =</span> <span class="dv">80</span>, <span class="at">K =</span> <span class="fl">0.5</span>, <span class="at">t0 =</span> <span class="dv">0</span>))</span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(LxA.nls)</span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="fu">VonBertalanffy</span>(<span class="at">Linf =</span> <span class="fu">coef</span>(LxA.nls)[<span class="dv">1</span>], <span class="at">K =</span> <span class="fu">coef</span>(LxA.nls)[<span class="dv">2</span>], <span class="at">t0=</span><span class="fu">coef</span>(LxA.nls)[<span class="dv">3</span>], <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>))</span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> L50)</span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="co">#Q3.3: What is the spawning stock biomass with the following population structure?</span></span>
-<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>Biomass<span class="ot">&lt;-</span><span class="fu">seq</span>(<span class="dv">50</span>, <span class="dv">140</span>, <span class="dv">10</span>)</span>
-<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>StockAges<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
-<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>PredLength<span class="ot">&lt;-</span><span class="fu">VonBertalanffy</span>(<span class="at">Linf =</span> <span class="fu">coef</span>(LxA.nls)[<span class="dv">1</span>], <span class="at">K =</span> <span class="fu">coef</span>(LxA.nls)[<span class="dv">2</span>], <span class="at">t0=</span><span class="fu">coef</span>(LxA.nls)[<span class="dv">3</span>], StockAges)</span>
-<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>B<span class="ot">&lt;-</span><span class="fu">data.frame</span>(StockAges, Biomass)</span>
-<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>Int<span class="ot">&lt;-</span><span class="fu">as.numeric</span>(<span class="fu">coef</span>(Mat.glm)[<span class="dv">1</span>])</span>
-<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>Slope<span class="ot">&lt;-</span><span class="fu">as.numeric</span>(<span class="fu">coef</span>(Mat.glm)[<span class="dv">2</span>])</span>
-<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>LogitPred<span class="ot">&lt;-</span>Int<span class="sc">+</span>Slope<span class="sc">*</span>PredLength</span>
-<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>PredMat<span class="ot">&lt;-</span>boot<span class="sc">::</span><span class="fu">inv.logit</span>(LogitPred)</span>
-<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>SSB<span class="ot">&lt;-</span><span class="fu">sum</span>(B<span class="sc">$</span>Biomass<span class="sc">*</span>PredMat)</span>
-<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>WeightM<span class="ot">&lt;-</span><span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>,WeightatAge), <span class="dv">100</span>), <span class="at">nrow =</span> <span class="dv">100</span>, <span class="at">ncol =</span> <span class="dv">11</span>, <span class="at">byrow =</span> T)</span>
-<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a>MatM<span class="ot">&lt;-</span><span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>,PredMat), <span class="dv">100</span>), <span class="at">nrow =</span> <span class="dv">100</span>, <span class="at">ncol =</span> <span class="dv">11</span>, <span class="at">byrow =</span> T)</span>
-<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">apply</span>(NumbersResults<span class="sc">*</span>WeightM<span class="sc">*</span>MatM, <span class="dv">1</span>, sum))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("AquaticLifeHistory")</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AquaticLifeHistory)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"maturity_data"</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(maturity_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Tag Age Length Maturity
+1 10001  12    178        0
+2 10004  10    165        0
+3 10011   9    140        0
+4 10013   8    144        0
+5 10016   0     91        0
+6 10019  10    158        0</code></pre>
 </div>
-<p>link to ICES guidelines</p>
-<p>add L50 to age length plot</p>
-<p>abline(h = L50)</p>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(maturity_data<span class="sc">$</span>Maturity)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>Mat.glm<span class="ot">&lt;-</span><span class="fu">glm</span>(Maturity<span class="sc">~</span>Age, <span class="at">family =</span> <span class="fu">binomial</span>(logit), <span class="at">data =</span> maturity_data)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Mat.glm) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Maturity ~ Age, family = binomial(logit), data = maturity_data)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -15.9025     2.7826  -5.715 1.10e-08 ***
+Age           1.1399     0.1971   5.782 7.38e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 297.003  on 247  degrees of freedom
+Residual deviance:  56.909  on 246  degrees of freedom
+AIC: 60.909
+
+Number of Fisher Scoring iterations: 8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Q3.1 What is L50? (look at the web page for the equation)</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>A50<span class="ot">&lt;-</span> <span class="sc">-</span>(<span class="fu">coef</span>(Mat.glm)[<span class="dv">1</span>])<span class="sc">/</span><span class="fu">coef</span>(Mat.glm)[<span class="dv">2</span>]</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> maturity_data <span class="sc">%&gt;%</span> </span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fits =</span> <span class="fu">fitted</span>(Mat.glm)) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Age, Maturity)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(Age, fits))  <span class="sc">+</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> A50, <span class="at">color =</span> <span class="st">'red'</span>)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> maturity_data <span class="sc">%&gt;%</span> </span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Age) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Maturity =</span> <span class="fu">sum</span>(Maturity)<span class="sc">/</span><span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(maturity_data <span class="sc">%&gt;%</span> </span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mutate</span>(<span class="at">fits=</span><span class="fu">fitted</span>(Mat.glm)) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(Age, fits) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>              <span class="fu">distinct</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>              <span class="fu">arrange</span>(Age)) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Age, Maturity)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(Age, fits))  <span class="sc">+</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> A50, <span class="at">color =</span> <span class="st">'red'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(Age)`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Above we used fitted values from the model object to represent model predictions. However, this only works if all ages are present in the dataset. If some are missing, it might be better to use true predictions:</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>Int<span class="ot">&lt;-</span><span class="fu">as.numeric</span>(<span class="fu">coef</span>(Mat.glm)[<span class="dv">1</span>])</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>Slope<span class="ot">&lt;-</span><span class="fu">as.numeric</span>(<span class="fu">coef</span>(Mat.glm)[<span class="dv">2</span>])</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>LogitPred<span class="ot">&lt;-</span>Int<span class="sc">+</span>Slope<span class="sc">*</span><span class="fu">c</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">20</span>)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>PredMat<span class="ot">&lt;-</span>boot<span class="sc">::</span><span class="fu">inv.logit</span>(LogitPred)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co"># At what age does 50% maturity occur?</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>LxA.nls<span class="ot">&lt;-</span><span class="fu">nls</span>(Length<span class="sc">~</span><span class="fu">VonBertalanffy</span>(Linf, K, t0, Age), <span class="at">data =</span> maturity_data, <span class="at">start =</span> <span class="fu">c</span>(<span class="at">Linf =</span> <span class="dv">80</span>, <span class="at">K =</span> <span class="fl">0.2</span>, <span class="at">t0 =</span> <span class="dv">0</span>))</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(LxA.nls)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Formula: Length ~ VonBertalanffy(Linf, K, t0, Age)
+
+Parameters:
+       Estimate Std. Error t value Pr(&gt;|t|)    
+Linf 340.233434  22.253726  15.289  &lt; 2e-16 ***
+K      0.045208   0.005983   7.556 8.28e-13 ***
+t0    -5.489552   0.546709 -10.041  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 13.82 on 245 degrees of freedom
+
+Number of iterations to convergence: 8 
+Achieved convergence tolerance: 4.437e-06</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>p_VB<span class="ot">&lt;-</span> </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  maturity_data <span class="sc">%&gt;%</span> </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Pred =</span> <span class="fu">VonBertalanffy</span>(<span class="at">Linf =</span> <span class="fu">coef</span>(LxA.nls)[<span class="dv">1</span>], <span class="at">K =</span> <span class="fu">coef</span>(LxA.nls)[<span class="dv">2</span>], <span class="at">t0=</span><span class="fu">coef</span>(LxA.nls)[<span class="dv">3</span>], Age)) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Age, Length)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(Age, Pred)) <span class="sc">+</span> </span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> A50, <span class="at">col =</span> <span class="st">'red'</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(p1, p2, p_VB, <span class="at">ncol =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Trans_toward_ABM_Fitting_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="exercise" class="level3">
+<h3 class="anchored" data-anchor-id="exercise">Exercise</h3>
+<p>Now let’s use the model from yesterday to create a simulation of the above population to plot a stock-recruitment relationship. To implement dependence of the recruitment on the spawning stock biomass, we will use the Ricker function. Follow the steps described below. Look at the plot and compare it to plots used in guidelines for Category 1 stock assessements found <a href="https://ices-library.figshare.com/articles/report/Technical_Guidelines_-ICES_fisheries_management_reference_points_for_category_1_and_2_stocks_2021/18638150">here</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1- define model dimensions # ages and # years</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2 - define the model function (copy-paste from yesterday)</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 3 - modify the function to include a recruitment prediction from a stock-recruit relationship. Hint: copy and paste the stock-recruit relationship function and use the predictions from that function to determint a later year's recruitment value. Try adding some error to the predicted recruitment result.</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 4 - define a vector of effort values reflecting fishing history. We are NOT analyzing equilibrium values, we just want contrast in fishing history (effort levels) so we can observe population growth (recruitment) at various population states (low and high).</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 5 - run the model and plot recruitment as a function of SSB. Compare to ICES plots in the guidelines.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>See an example of how to do this <a href="./Age_based_ans3.html">here</a> .</p>
+</section>
 </section>
 <section id="age-based-assessment-demonstrations" class="level2">
 <h2 class="anchored" data-anchor-id="age-based-assessment-demonstrations">Age-based assessment demonstrations</h2>
