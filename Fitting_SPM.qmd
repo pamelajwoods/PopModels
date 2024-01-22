@@ -25,11 +25,11 @@ WHE_assessment <- read_csv('WHE_assessment.csv')
 whelk.data <- 
   WHE_landings %>% 
   group_by(year) %>% 
-  summarise(landings = sum(landings)) %>% 
+  summarise(landings = sum(landings))  %>% 
+  bind_rows(tibble(year=2020, landings=NA)) %>%  
   left_join(WHE_assessment) %>% 
   rename(YY = year, II = cpue, CC = landings) %>% 
-  filter(YY > 2003) %>% 
-  bind_rows(tibble(YY=2020, II=NA))
+  filter(YY > 2003) 
 
 ProductionFunction<-function(rr, KK, qq, PP0=KK, CC){
   # II = CPUE data; rr, KK, qq, and PP0 are parameters

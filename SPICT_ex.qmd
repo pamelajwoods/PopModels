@@ -40,3 +40,29 @@ SPiCT is a model of 'Surplus Production in Continuous Time', implemented in the 
 -   initial values do not influence parameter estimates
 
 With this in mind, let's install and try a vignette.
+
+### Independent exercise
+
+Want to try fitting a SPiCT model on your own? Here are some data from our whelk example and how to format them so that they can be used in with spict package functions. Then just run the model and plot!
+
+```{r, echo = TRUE}
+#### whelk ex.
+
+WHE_landings <- read_csv('WHE_landings.csv')
+WHE_assessment <- read_csv('WHE_assessment.csv')
+
+whelk.data <- 
+  WHE_landings %>% 
+  group_by(year) %>% 
+  summarise(landings = sum(landings))  %>% 
+  bind_rows(tibble(year=2020, landings=NA)) %>%  
+  left_join(WHE_assessment) %>% 
+  rename(YY = year, II = cpue, CC = landings) %>% 
+  filter(YY > 2003) 
+
+whelk <- NULL
+whelk$obsC <- whelk.data$CC
+whelk$timeC <- whelk$timeI <- whelk.data$YY
+whelk$obsI <- whelk.data$II
+
+```
