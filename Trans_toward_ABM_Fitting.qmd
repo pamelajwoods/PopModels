@@ -39,7 +39,7 @@ ALK1 %>% mutate(total=age1+age2+age3)
 
 ```{r}
 
-ALK1 %>% gather(key = age, value = p) %>% ggplot(aes(length, age)) + geom_tile(aes(fill=p))
+ALK1 %>% gather(key = age, value = p, -length) %>% mutate(age=gsub('age','',age) %>% as.numeric(.)) %>% ggplot(aes(length,age)) + geom_tile(aes(fill=p))
 
 ```
 
@@ -53,7 +53,7 @@ ALK2 %>% mutate(total=age1+age2+age3)
 ```
 
 ```{r}
-ALK2 %>% gather(key = age, value = p) %>% ggplot(aes(length, age)) + geom_tile(aes(fill=p))
+ALK2 %>% gather(key = age, value = p, -length) %>% mutate(age=gsub('age','',age) %>% as.numeric(.)) %>% ggplot(aes(length,age)) + geom_tile(aes(fill=p))
 
 ```
 
@@ -137,7 +137,6 @@ Let's look at the assessment reports for haddock and golden redfish, found on th
 ## Catch curve analysis - method for estimating mortality
 
 ```{r}
-install.packages(boot)
 #Below is age frequency data on whelk caught in 1993 during a survey at Hrappsey. Fishing began in 1996, so this population is thought to be pristine. 
 #Q1 What is a) number of recruits at birth (age 0); b) mortality rate Z; c) the proportion of the population that dies each year, and d) the number of recruits at age 3?
 HrappseyCatch<-c(15, 11, 20, 16, 14, 10, 12);
@@ -177,6 +176,8 @@ This version of a catch curve analysis is very simple. If mortality rates are in
 Finally, if a stock-recruitment relationship is needed, then we need to estimate maturity-at-age ogives to create spawning stock biomass estimates. Even if stock-recruitment relationships are not used, estimates of spawning stock biomass are often used for visually assessing the stocks, or for creating reference points.
 
 ```{r, eval = FALSE}
+
+    SSB<-sum(NumbersM[i-1,]*c(0,WeightatAge)*c(0,PredMat))
 
 LM_Ices<-read.csv("LMIces.csv")
 
@@ -226,3 +227,7 @@ link to ICES guidelines
 add L50 to age length plot
 
 abline(h = L50)
+
+## Age-based assessment demonstrations
+
+Age-based assessments are data-intensive and often take several months to develop. Many software packages are available but should be used with caution. We don't have time in this course to go through a full example of fitting an age-based assessment, but it is based on the same principles as fitting a surplus production model. The largest difference is that because there are several more parameters and possibly multiple sources of data, the objective function used to fit the model, most often a likelihood, can get rather complex. For a good R-based vignette on fitting an age-based statistical catch-at-age model, refer to the FLR set of packages found [here](https://flr-project.org/).

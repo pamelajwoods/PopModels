@@ -69,7 +69,7 @@ KK<-2000 # This is a new parameter - carrying capacity.
 
 Try filling in the bits of code missing by replacing the text beginning with '#\<' and ending with '\>'.
 
-```{r, echo = TRUE}
+```{r, echo = TRUE, eval = FALSE}
 
 #FILL IN CODE BELOW. HINT: LOOK AT HOW DD0 IS DEFINED IN THE FIRST STEP IN COMPARISON
 #WITH HOW DD IS DEFINED INSIDE THE LOOP. THE FORMULA STRUCTURE STAYS THE 

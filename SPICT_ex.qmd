@@ -23,7 +23,7 @@ SPiCT is a model of 'Surplus Production in Continuous Time', implemented in the 
 
 -   Stock size indices should be in terms of biomass (not numbers) and represent exploitable stock biomass. Timing should be correctly aligned.
 
-Checklist for the acceptance of a SPiCT assessment
+### Checklist for the acceptance of a SPiCT assessment
 
 -   assessment converged
 

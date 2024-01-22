@@ -86,11 +86,11 @@ Now set the growth and mortality parameters in numbers occurs through adding ind
 #natural mortality - these values should be positive
 MM <- 0.2
 
-Rec <- rep(1000,YY)
+RecC <- rep(1000,YY)
 
 ```
 
-```{r}
+```{r, echo = TRUE}
 
 #Set total mortality
 ZZ <- MM
@@ -100,7 +100,7 @@ NumbersM<-matrix(nrow = YY, ncol = AA + 1)
 #run loop through all ages and years. Each of the 3 types of equations are used.
 for(i in 2:YY){
 	#fishes are born
-	  NumbersM[i,1] <- Rec[i]
+	  NumbersM[i,1] <- RecC[i]
 	for(j in 2:(AA)){
 	#fishes die
 	NumbersM[i, j]<-NumbersM[i-1, j-1]*exp(-ZZ*1) #*1 is here because it is one time step
@@ -153,8 +153,8 @@ CatchNM<-matrix(nrow = length(Rec), ncol = AA+1, data = 0)
 	  CatchNM[i,]<-NumbersM[i,]*FF[i,]/ZZ[i,]*(1-exp(-ZZ[i,]))
 	return(list(NumbersM, CatchNM))
 	}
-NumbersResults<-AgeStructModel(Rec)[[1]]
-CatchResults<-AgeStructModel(Rec)[[2]]
+NumbersResults<-AgeStructModel(RecC)[[1]]
+CatchResults<-AgeStructModel(RecC)[[2]]
 
 p1 <- tibble(year = 1:YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(year, N)) + geom_line() + geom_line(aes(year, C), color = 'red')
 
@@ -169,7 +169,7 @@ gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
 
 Let's try to repeat the same figure but with variability in Recruitment implemented:
 
-```{r}
+```{r, echo = TRUE}
 set.seed(100)
 Rec <- rep(1000,YY)*rlnorm(n = YY) 
 Rec
@@ -190,7 +190,7 @@ Notice that individual cohorts can be tracked through the numbers matrices in bo
 NumbersResults<-AgeStructModel(Rec)[[1]]
 CatchResults<-AgeStructModel(Rec)[[2]]
 
-View(NumberResults)
+View(NumbersResults)
 View(CatchResults)
 
 ```
@@ -213,6 +213,18 @@ Now let's do the same experiment as we did with the surplus production model and
 
 ```{r}
 
+#CONSTANT RECRUITMENT
+Efforts<-seq(0, 2, 0.05)
+EquilCatchC<-vector(length = length(Efforts), mode = "numeric")
+for(j in 1:length(Efforts)){
+	results<-AgeStructModel(RecC, Effort = Efforts[j])
+	CatchResults<-apply(results[[2]], 1, sum, na.rm=T)
+	EquilCatchC[j]<-CatchResults[99]
+	}
+
+p_RecC <- tibble(EquilCatchC, Efforts) %>% ggplot(aes(Efforts, EquilCatchC)) + geom_point() + ylab("Equilibrium Catch")
+
+#Variable RECRUITMENT
 Efforts<-seq(0, 2, 0.05)
 EquilCatch<-vector(length = length(Efforts), mode = "numeric")
 for(j in 1:length(Efforts)){
@@ -221,7 +233,9 @@ for(j in 1:length(Efforts)){
 	EquilCatch[j]<-CatchResults[99]
 	}
 
-tibble(EquilCatch, Efforts) %>% ggplot(aes(Efforts, EquilCatch)) + geom_point() + ylab("Equilibrium Catch")
+p_Rec <- tibble(EquilCatch, Efforts) %>% ggplot(aes(Efforts, EquilCatch)) + geom_point() + ylab("Equilibrium Catch")
+
+gridExtra::grid.arrange(p_RecC, p_Rec, ncol = 2)
 
 #We made this model piecewise - by estimating relationships separately, then putting them into a model. The other method would be to estimate all parameters at once, given you have enough data. List the parameters you might expect to estimate in a statistical catch-at-age model. What data could be used to compare to the predictions?
 
@@ -233,25 +247,51 @@ Age based models are non-linear and also not differentiable, requiring numerical
 One more type of result is useful to consider at this point. What does the distribution of ages look like at equilibrium after fishing the population at a variety of effort values? To check this out, we need to save the age distribution at a variety of effort values and plot them.
 
 ```{r}
+
+#CONSTANT RECRUITMENT
+Efforts<-seq(0, 2, 0.05)
+NumberResults <- NULL
+EquilCatch<-vector(length = length(Efforts), mode = "numeric")
+for(j in 1:length(Efforts)){
+	results<-AgeStructModel(RecC, Effort = Efforts[j])
+	NumberResults[[j]]<-results[[1]][99,] %>% as.matrix() %>% t(.) %>% as.data.frame()
+	CatchResults<-apply(results[[2]], 1, sum, na.rm=T)
+	EquilCatch[j]<-CatchResults[99]
+	}
+
+bind_rows(NumberResults) %>%
+  mutate(effort = Efforts) %>% 
+  gather(value = 'numbers', key = 'age', -effort) %>% 
+  mutate(age = gsub('V','',age) %>% as.numeric(.)-1 ) %>% 
+  filter(effort %in% c(0.1, 0.5, 1, 1.5, 1.9)) %>% 
+  group_by(effort) %>% 
+  ggplot(aes(age,numbers)) + geom_col() + ylab("Equilibrium Catch") + facet_wrap(~effort)
+
+#What happens to the age distributions as effort increases?
+```
+
+```{r}
+
+#VARIABLE RECRUITMENT
 Efforts<-seq(0, 2, 0.05)
 NumberResults <- NULL
 EquilCatch<-vector(length = length(Efforts), mode = "numeric")
 for(j in 1:length(Efforts)){
 	results<-AgeStructModel(Rec, Effort = Efforts[j])
-	NumbersResults[[j]]<-results[[1]][99,]
+	NumberResults[[j]]<-results[[1]][99,] %>% as.matrix() %>% t(.) %>% as.data.frame()
 	CatchResults<-apply(results[[2]], 1, sum, na.rm=T)
 	EquilCatch[j]<-CatchResults[99]
 	}
 
-NumbersResults %>% 
-  bind_rows(NumberResults, .id = 'id') %>%
+bind_rows(NumberResults) %>%
   mutate(effort = Efforts) %>% 
-  gather(value = 'numbers', key = 'effort') %>% 
+  gather(value = 'numbers', key = 'age', -effort) %>% 
+  mutate(age = gsub('V','',age) %>% as.numeric(.)-1 ) %>% 
   filter(effort %in% c(0.1, 0.5, 1, 1.5, 1.9)) %>% 
   group_by(effort) %>% 
-  ggplot(aes(numbers)) + geom_col() + ylab("Equilibrium Catch") + facet_wrap(~effort)
+  ggplot(aes(age,numbers)) + geom_col() + ylab("Equilibrium Catch") + facet_wrap(~effort)
 
-#What happens to the age distributions as effort increases?
+#Does high recruitment variability have an effect on our interpretation?
 ```
 
 The shape of the age distributions you see here can be translated into length distributions using an age-length distribution. Given a single perfect age-length distribution, a single length distribution can be observed. In reality, this translation is a handy property used in may data-limited methods, because length distributions are much more easily observed and easy to obtain than age distributions. Assuming that the length-age translation is reasonably well known (and some other assumptions, e.g., regarding natural mortality) this allows a snapshot of whether effort levels that produced that length distribution are more likely to be too high or too low. For situations in which there is no reliable time series that can be used for modeling, or there is a time series with unknown quality, the length distributions can be a powerful property for understanding how past fishing has affected its current status.
@@ -272,16 +312,28 @@ Now try changing properties of the model above to see how they affect the model 
 
 ```{r}
 
+#CONSTANT RECRUITMENT
 Efforts<-seq(0, 2, 0.05)
+NumberResults <- NULL
 EquilCatch<-vector(length = length(Efforts), mode = "numeric")
 for(j in 1:length(Efforts)){
-	results<-AgeStructModel(Rec, Effort = Efforts[j])
-	NumbersResults<-results[[1]]
+	results<-AgeStructModel(RecC, Effort = Efforts[j])
+	NumberResults[[j]]<-results[[1]][99,] %>% as.matrix() %>% t(.) %>% as.data.frame()
 	CatchResults<-apply(results[[2]], 1, sum, na.rm=T)
 	EquilCatch[j]<-CatchResults[99]
 	}
 
-tibble(EquilCatch, Efforts) %>% ggplot(aes(Efforts, EquilCatch)) + geom_point() + ylab("Equilibrium Catch")
+pdist <- bind_rows(NumberResults) %>%
+  mutate(effort = Efforts) %>% 
+  gather(value = 'numbers', key = 'age', -effort) %>% 
+  mutate(age = gsub('V','',age) %>% as.numeric(.)-1 ) %>% 
+  filter(effort %in% c(0.5)) %>% 
+  group_by(effort) %>% 
+  ggplot(aes(age,numbers)) + geom_col() + ylab("Equilibrium Catch")# + facet_wrap(~effort)
+
+pc <- tibble(EquilCatch, Efforts) %>% ggplot(aes(Efforts, EquilCatch)) + geom_point() + ylab("Equilibrium Catch")
+
+gridExtra::grid.arrange(pdist,pc,ncol = 2)
 
 #We made this model piecewise - by estimating relationships separately, then putting them into a model. The other method would be to estimate all parameters at once, given you have enough data. List the parameters you might expect to estimate in a statistical catch-at-age model. What data could be used to compare to the predictions?
 
@@ -310,7 +362,6 @@ In the above example, recruitment was simulated as a series of noise, with no tr
 Depending on the amount of contrast in the data, it may also be able to detect a relationship between recruitment and spawning stock biomass. This is usually done using the results of a statistical catch-at-age model, although it can be done during the model's estimation as well. Fitting a stock-recruitment relationship does not help with model estimation, but instead provides a convenient way to predict recruitment from the current state of the population. This is useful for projections such as the one done above with the simple series of recruitment made with lognormal noise and no relationship to spawning stock biomass. Below are some examples of stock-recruitment relationships.
 
 ```{r, echo = TRUE}
-    SSB<-sum(NumbersM[i-1,]*c(0,WeightatAge)*c(0,PredMat))
 
 	alpha<-0.632
 	beta<-0.059

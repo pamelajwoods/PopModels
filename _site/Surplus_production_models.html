@@ -178,7 +178,7 @@ window.Quarto = {
   <li><a href="#section" id="toc-section" class="nav-link active" data-scroll-target="#section"></a>
   <ul class="collapse">
   <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
-  <li><a href="#schaeffer-model" id="toc-schaeffer-model" class="nav-link" data-scroll-target="#schaeffer-model">Schaeffer model</a></li>
+  <li><a href="#schaefer-model" id="toc-schaefer-model" class="nav-link" data-scroll-target="#schaefer-model">Schaefer model</a></li>
   <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link" data-scroll-target="#exercise-1">Exercise</a></li>
   <li><a href="#independent-exercise" id="toc-independent-exercise" class="nav-link" data-scroll-target="#independent-exercise">Independent exercise</a></li>
   <li><a href="#lets-talk-about-a-shortcut" id="toc-lets-talk-about-a-shortcut" class="nav-link" data-scroll-target="#lets-talk-about-a-shortcut">Let’s talk about a shortcut</a></li>
@@ -318,9 +318,9 @@ window.Quarto = {
 </ul>
 <p>These pieces of information are controlled by <em>parameters</em>. Choosing the parameters is done through <em>fitting</em> the model to data in order to have a well-supported <em>parameterization</em>.</p>
 </section>
-<section id="schaeffer-model" class="level3">
-<h3 class="anchored" data-anchor-id="schaeffer-model">Schaeffer model</h3>
-<p>Production models are useful in that they put these three pieces of information together into the same model, that can often be parameterized using data. The Schaeffer model is the simplest form of production models and uses the assumption that catch per unit effort is linearly related to population biomass.</p>
+<section id="schaefer-model" class="level3">
+<h3 class="anchored" data-anchor-id="schaefer-model">Schaefer model</h3>
+<p>Production models are useful in that they put these three pieces of information together into the same model, that can often be parameterized using data. The Schaefer model is the simplest form of production models and uses the assumption that catch per unit effort is linearly related to population biomass.</p>
 <p>Remember the logistic growth equation:</p>
 <p><span class="math inline">\(N_t=N_{t−1}+r∗N_{t−1}∗(1−N_{t−1}/K)\)</span></p>
 <p>Above is enough to understand how growth rate and biomass relate to each other, but understading relationships with catch and effort require us to change this into an economic model including human activities. The first step is adding catch removals on the kg or tonnes scale, as this is the same scale on which population changes occur. To do this, we change from numbers to biomass (by multiplying by an average weight), and insert catch removals (<span class="math inline">\(C_{t-1}\)</span>). As removals, catch will decrease the availability of biomass to fish in the next time step.</p>
@@ -338,7 +338,7 @@ window.Quarto = {
 </div>
 </div>
 <p>In addition, this assumption provides for a convenient relationship that is exploited when trying to fit such a model to data. Under this assumption defining catch, we can switch the equation around and also write:</p>
-<p><span class="math inline">\(C_t/E = qN_t\)</span></p>
+<p><span class="math inline">\(C_t/E = qB_t\)</span></p>
 <p>In this form, it becomes clear that if we have data as a set of observations of catch per unit effort ($C_t/E$) and catch ($C_t$) over time, <em>and there is enough contrast in the data</em>, then we may be able to detect catchability and biomass.</p>
 <p>We need contrast in the data to be able to detect informative parameter values (i.e., how growth <em>changes</em> at different population sizes and how easy the fish are to catch). Because we inherently don’t know and can’t observe the total population size of fish, we don’t know how catchable they are. If we assume high catchability, then we have to assume low population size, and vice versa. Getting the wrong answer could mean assuming that a large mass of removals can be taken from a small population, causing overfishing. Therefore, understanding where the best fishing level is not always easy or possible if there are not enough contrast in the data.</p>
 <div class="cell">
@@ -352,10 +352,10 @@ window.Quarto = {
 </div>
 <p>What is <em>contrast</em> in the data? Having contrast in the data means that the population has been observed at various states, so that it’s responses to various conditions have been observed. If we have a CPUE and catch data series, to fit a surplus production model, there must be information in just those two data sources concerning:</p>
 <ul>
-<li><p>growth ($r$)</p></li>
-<li><p>carrying capacity ($K$)</p></li>
-<li><p>catchability ($q$)</p></li>
-<li><p>initial population size ($N_{t=0}$)</p></li>
+<li><p>growth (<span class="math inline">\(r\)</span>)</p></li>
+<li><p>carrying capacity (<span class="math inline">\(K\)</span>)</p></li>
+<li><p>catchability (<span class="math inline">\(q\)</span>)</p></li>
+<li><p>initial population size (<span class="math inline">\(N_{t=0}\)</span>)</p></li>
 </ul>
 <p>As you go through the following exercise, think about the different ‘experiments’ needed to get information about these parameters. What states of population size (high/low) and fishing (heavy/light) should be observed to get this information at a minimum?</p>
 <p>After getting confident estimates of the above parameters, the system can then be analyzed (or simulated) to determine:</p>
@@ -556,7 +556,7 @@ window.Quarto = {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Extra - Now look up the equation for a Pella-Tomlinson production function and </span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">#repeat the above exercise to plot Pella-Tomlinson surplus production function alongside</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Schaeffer production function on the same figure (hint: Schaeffer is a special case of the</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Schaefer production function on the same figure (hint: Schaefer is a special case of the</span></span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Pella-Tomlinson where the extra parameter (exponent) is set to 1).</span></span>
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">#How is the shape of the MSY relationship changed by the extra parmaeter?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -564,7 +564,7 @@ window.Quarto = {
 <section id="lets-talk-about-a-shortcut" class="level2">
 <h2 class="anchored" data-anchor-id="lets-talk-about-a-shortcut">Let’s talk about a shortcut</h2>
 <p>Below is a demonstration of a quick-and-dirty shortcut to finding some of the equilibrium properties of production models based on simple linear models fitted to CPUE and effort data. This method was useful when computational speed was an issue and demonstrates further how some of the equilibrium values can be obtained, although some assumptions are not easy to uphold, so it is not used much today. This example, found <a href="http://www.fao.org/3/w5449e/w5449e10.pdf">here</a>, and the false assumption explained also below.</p>
-<p>In addition, another assumption of the Schaeffer model brought up in this example is the assumption that CPUE is directly related to biomass (i.e., CPUE reflects a constant proportion of biomass at all population sizes, determined by catchability <span class="math inline">\(q\)</span>). This is also not always the case, so this example also tests an alternate model of a log-linear relationship, yielding greater CPUE proportion at lower biomass levels.</p>
+<p>In addition, another assumption of the Schaefer model brought up in this example is the assumption that CPUE is directly related to biomass (i.e., CPUE reflects a constant proportion of biomass at all population sizes, determined by catchability <span class="math inline">\(q\)</span>). This is also not always the case, so this example also tests an alternate model of a log-linear relationship, yielding greater CPUE proportion at lower biomass levels.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="do">######-------FAO shortcut from http://www.fao.org/3/w5449e/w5449e10.pdf-------########</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
