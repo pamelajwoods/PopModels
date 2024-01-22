@@ -1,0 +1,36 @@
+---
+title:  "Using SPICT for surplus production model fitting"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(palmerpenguins)
+theme_set(theme_minimal())
+```
+
+
+
+```{r, eval = FALSE}
+#i index is years; j index is ages
+CN <- results[[2]]
+W <- matrix((c(0,1, 10, 30, 40, 45, 50, 50, 50, 50, 50))^3, ncol=11, nrow=YY, byrow = T)
+CatchWM<-CN*W
+  
+tibble(age=0:10, W=W[1,]) %>% ggplot(aes(age, W)) + geom_line() + ylab('Weight (kg)')
+
+
+  #If you want to calculate spawning stock biomass, and you have numbers at age and weight at age, what is the third piece of information needed to calculate it? Can you write the equations here?
+  
+N <- results[[1]]
+#add maturity values here by age
+M <- matrix(c(0,0, 0.05, 0.15, 0.4, 0.5, 0.6, 0.85, 0.95, 1,1,1), ncol=11, nrow=YY, byrow = T)
+tibble(age=0:10, M=M[1,]) %>% ggplot(aes(age, M)) + geom_line() + ylab('Probability mature')
+
+  SSB <- N*M*W
+
+```

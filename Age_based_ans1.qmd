@@ -1,0 +1,52 @@
+---
+title:  "Using SPICT for surplus production model fitting"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(palmerpenguins)
+theme_set(theme_minimal())
+```
+
+
+
+```{r, eval = FALSE}
+#CONSTANT RECRUITMENT
+Efforts<-seq(0, 2, 0.05)
+NumberResults <- NULL
+EquilCatch<-vector(length = length(Efforts), mode = "numeric")
+
+RecT <- rep(100, YY)
+
+Sel_test <- c(0,0.1,0.5,0.9, 1, 0.9, 0.5, 0.4, 0.3, 0.2, 0.2)
+
+Sel_test2 <- c(0,0.1,0.5,0.9, 1, 1,1,1,1,1,1)
+
+tibble(age=0:10, Sel_test) %>% ggplot(aes(age,Sel_test)) + geom_col()
+
+
+for(j in 1:length(Efforts)){
+  results<-AgeStructModel(RecT, Effort = Efforts[j], Sel = Sel_test, M = 0.1)
+  NumberResults[[j]]<-results[[1]][99,] %>% as.matrix() %>% t(.) %>% as.data.frame()
+  CatchResults<-apply(results[[2]], 1, sum, na.rm=T)
+  EquilCatch[j]<-CatchResults[99]
+}
+
+pdist <- bind_rows(NumberResults) %>%
+  mutate(effort = Efforts) %>% 
+  gather(value = 'numbers', key = 'age', -effort) %>% 
+  mutate(age = gsub('V','',age) %>% as.numeric(.)-1 ) %>% 
+  filter(effort %in% c(0.5)) %>% 
+  group_by(effort) %>% 
+  ggplot(aes(age,numbers)) + geom_col() + ylab("Equilibrium Catch")# + facet_wrap(~effort)
+
+pc <- tibble(EquilCatch, Efforts) %>% ggplot(aes(Efforts, EquilCatch)) + geom_point() + ylab("Equilibrium Catch")
+
+gridExtra::grid.arrange(pdist,pc,ncol = 2)
+
+```

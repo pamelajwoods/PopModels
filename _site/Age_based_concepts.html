@@ -181,7 +181,6 @@ window.Quarto = {
   <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
   <li><a href="#long-term-properties-of-age-based-models" id="toc-long-term-properties-of-age-based-models" class="nav-link" data-scroll-target="#long-term-properties-of-age-based-models">Long-term properties of age-based models</a></li>
   <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link" data-scroll-target="#exercise-1">Exercise</a></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
   <li><a href="#exercise-2" id="toc-exercise-2" class="nav-link" data-scroll-target="#exercise-2">Exercise</a></li>
   </ul></li>
   <li><a href="#stock-recruitment-relationships" id="toc-stock-recruitment-relationships" class="nav-link" data-scroll-target="#stock-recruitment-relationships">Stock-recruitment relationships</a>
@@ -225,7 +224,7 @@ window.Quarto = {
 <p><span class="math inline">\(N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}\)</span></p>
 <p>Now we can sum over all numbers to get the total numbers in a given year:</p>
 <p><span class="math display">\[
-\sum_{n=r}^{a_{max}} N_t = \Bigg\{
+N_t = \sum_{n=r}^{a_{max}} \Bigg\{
 \begin{array}{ll}
 N_{a=r, t} = N_{0,t},  &amp; a = r\\
 N_{a,t} = N_{a-1,t-1}e^{-Z}, &amp; a = r+1, ..., a_{max}-1\\
@@ -323,7 +322,7 @@ N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}, &amp; a = a_{max}
 <span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>      </span>
 <span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(i<span class="sc">&gt;</span><span class="dv">12</span>){NumbersM[i, AA<span class="sc">+</span><span class="dv">1</span>]<span class="ot">&lt;-</span>NumbersM[i<span class="dv">-1</span>, AA]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ[i<span class="dv">-1</span>,j]) <span class="sc">+</span> NumbersM[i<span class="dv">-1</span>, AA<span class="sc">+</span><span class="dv">1</span>]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ[i<span class="dv">-1</span>,AA<span class="sc">+</span><span class="dv">1</span>])} </span>
 <span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(i<span class="sc">&gt;</span><span class="dv">12</span>){CatchNM[i,]<span class="ot">&lt;-</span>NumbersM[i,]<span class="sc">*</span>FF[i,]<span class="sc">/</span>ZZ[i,]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ[i,]))}</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>      CatchNM[i,]<span class="ot">&lt;-</span>NumbersM[i,]<span class="sc">*</span>FF[i,]<span class="sc">/</span>ZZ[i,]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ[i,]))</span>
 <span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(NumbersM, CatchNM))</span>
@@ -537,7 +536,6 @@ N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}, &amp; a = a_{max}
 <ul>
 <li><p>Recruitment properties</p></li>
 <li><p>Selectivity</p></li>
-<li><p>Catchability</p></li>
 <li><p>Natural mortality</p></li>
 </ul>
 <div class="cell">
@@ -572,9 +570,7 @@ N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}, &amp; a = a_{max}
 </div>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#We made this model piecewise - by estimating relationships separately, then putting them into a model. The other method would be to estimate all parameters at once, given you have enough data. List the parameters you might expect to estimate in a statistical catch-at-age model. What data could be used to compare to the predictions?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="section" class="level3">
-<h3 class="anchored" data-anchor-id="section"></h3>
+<p>Here are some possibilities <a href="./Age_based_ans1.html">here</a>.</p>
 </section>
 <section id="exercise-2" class="level3">
 <h3 class="anchored" data-anchor-id="exercise-2">Exercise</h3>
@@ -587,6 +583,7 @@ N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}, &amp; a = a_{max}
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  SSB[i,] <span class="ot">&lt;-</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Here are some answers <a href="./Age_based_ans2.html">here</a>.</p>
 </section>
 </section>
 <section id="stock-recruitment-relationships" class="level2">
