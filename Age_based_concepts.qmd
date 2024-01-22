@@ -34,7 +34,7 @@ $N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}$
 Now we can sum over all numbers to get the total numbers in a given year:
 
 $$
-\sum_{n=r}^{a_{max}} N_t = \Bigg\{ 
+ N_t = \sum_{n=r}^{a_{max}} \Bigg\{ 
 \begin{array}{ll}
 N_{a=r, t} = N_{0,t},  & a = r\\
 N_{a,t} = N_{a-1,t-1}e^{-Z}, & a = r+1, ..., a_{max}-1\\
@@ -98,14 +98,17 @@ ZZ <- MM
 NumbersM<-matrix(nrow = YY, ncol = AA + 1)
 
 #run loop through all ages and years. Each of the 3 types of equations are used.
+#run loop through all ages and years. Each of the 3 types of equations are used.
 for(i in 2:YY){
-	#fishes are born
-	  NumbersM[i,1] <- RecC[i]
-	for(j in 2:(AA)){
-	#fishes die
-	NumbersM[i, j]<-NumbersM[i-1, j-1]*exp(-ZZ*1) #*1 is here because it is one time step
-	}
-	NumbersM[i, AA+1]<-NumbersM[i-1, j-1]*exp(-ZZ*1) + NumbersM[i, AA+1]*exp(-ZZ*1)
+  #fishes are born
+  NumbersM[i,1] <- RecC[i]
+  for(j in 2:(AA+1)){
+    #fishes die
+    NumbersM[i, j]<-NumbersM[i-1, j-1]*exp(-ZZ*1) #*1 is here because it is one time step
+  }
+  
+  #This bit overwrites the values in the last column
+  if(i>12) {NumbersM[i, AA+1]<-NumbersM[i-1, AA]*exp(-ZZ*1) + NumbersM[i-1, AA+1]*exp(-ZZ*1)}
 }
 
 View(NumbersM)
@@ -137,20 +140,20 @@ CatchNM<-matrix(nrow = length(Rec), ncol = AA+1, data = 0)
 	  
 	 #calculate fishing on previous year
 	 #because all ages are not available until after the 11th year, we begin calculating catch then
-	  CatchNM[i-1,]<-NumbersM[i-1,]*FF[i-1,]/ZZ[i-1,]*(1-exp(-ZZ[i-1,]))
 
 	#fishes are born
 	  NumbersM[i,1] <- Rec[i] 
 	
-	  for(j in 2:(AA)){
+	  for(j in 2:(AA+1)){
 
 	  	NumbersM[i, j]<-NumbersM[i-1, j-1]*exp(-ZZ[i-1,j])  
 	}
 	  
-	  NumbersM[i, AA+1]<-NumbersM[i-1, AA]*exp(-ZZ[i-1,j]) + NumbersM[i, AA+1]*exp(-ZZ[i-1,AA+1]) 
+	  if(i>12){NumbersM[i, AA+1]<-NumbersM[i-1, AA]*exp(-ZZ[i-1,j]) + NumbersM[i-1, AA+1]*exp(-ZZ[i-1,AA+1])} 
 	  
-			}
 	  CatchNM[i,]<-NumbersM[i,]*FF[i,]/ZZ[i,]*(1-exp(-ZZ[i,]))
+  }
+  
 	return(list(NumbersM, CatchNM))
 	}
 NumbersResults<-AgeStructModel(RecC)[[1]]

@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -116,6 +150,7 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#main-assumptions-and-input-data" id="toc-main-assumptions-and-input-data" class="nav-link" data-scroll-target="#main-assumptions-and-input-data">Main assumptions and input data</a></li>
   <li><a href="#checklist-for-the-acceptance-of-a-spict-assessment" id="toc-checklist-for-the-acceptance-of-a-spict-assessment" class="nav-link" data-scroll-target="#checklist-for-the-acceptance-of-a-spict-assessment">Checklist for the acceptance of a SPiCT assessment</a></li>
+  <li><a href="#independent-exercise" id="toc-independent-exercise" class="nav-link" data-scroll-target="#independent-exercise">Independent exercise</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -164,6 +199,52 @@ ul.task-list li input[type="checkbox"] {
 <li><p>initial values do not influence parameter estimates</p></li>
 </ul>
 <p>With this in mind, let’s install and try a vignette.</p>
+</section>
+<section id="independent-exercise" class="level3">
+<h3 class="anchored" data-anchor-id="independent-exercise">Independent exercise</h3>
+<p>Want to try fitting a SPiCT model on your own? Here are some data from our whelk example and how to format them so that they can be used in with spict package functions. Then just run the model and plot!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">#### whelk ex.</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>WHE_landings <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'WHE_landings.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 30 Columns: 8
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (5): species_name, latin_name, country, area, gear
+dbl (2): year, landings
+lgl (1): landings_type
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>WHE_assessment <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'WHE_assessment.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 19 Columns: 6
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (2): species_name, latin_name
+dbl (4): year, high_cpue, low_cpue, cpue
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>whelk.data <span class="ot">&lt;-</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  WHE_landings <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">landings =</span> <span class="fu">sum</span>(landings))  <span class="sc">%&gt;%</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">tibble</span>(<span class="at">year=</span><span class="dv">2020</span>, <span class="at">landings=</span><span class="cn">NA</span>)) <span class="sc">%&gt;%</span>  </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(WHE_assessment) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">YY =</span> year, <span class="at">II =</span> cpue, <span class="at">CC =</span> landings) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(YY <span class="sc">&gt;</span> <span class="dv">2003</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(year)`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>whelk <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>whelk<span class="sc">$</span>obsC <span class="ot">&lt;-</span> whelk.data<span class="sc">$</span>CC</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>whelk<span class="sc">$</span>timeC <span class="ot">&lt;-</span> whelk<span class="sc">$</span>timeI <span class="ot">&lt;-</span> whelk.data<span class="sc">$</span>YY</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>whelk<span class="sc">$</span>obsI <span class="ot">&lt;-</span> whelk.data<span class="sc">$</span>II</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 </section>

@@ -273,17 +273,20 @@ N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}, &amp; a = a_{max}
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>NumbersM<span class="ot">&lt;-</span><span class="fu">matrix</span>(<span class="at">nrow =</span> YY, <span class="at">ncol =</span> AA <span class="sc">+</span> <span class="dv">1</span>)</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#run loop through all ages and years. Each of the 3 types of equations are used.</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>YY){</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">#fishes are born</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      NumbersM[i,<span class="dv">1</span>] <span class="ot">&lt;-</span> RecC[i]</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>(AA)){</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">#fishes die</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    NumbersM[i, j]<span class="ot">&lt;-</span>NumbersM[i<span class="dv">-1</span>, j<span class="dv">-1</span>]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ<span class="sc">*</span><span class="dv">1</span>) <span class="co">#*1 is here because it is one time step</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    NumbersM[i, AA<span class="sc">+</span><span class="dv">1</span>]<span class="ot">&lt;-</span>NumbersM[i<span class="dv">-1</span>, j<span class="dv">-1</span>]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ<span class="sc">*</span><span class="dv">1</span>) <span class="sc">+</span> NumbersM[i, AA<span class="sc">+</span><span class="dv">1</span>]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ<span class="sc">*</span><span class="dv">1</span>)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(NumbersM)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#run loop through all ages and years. Each of the 3 types of equations are used.</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>YY){</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#fishes are born</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  NumbersM[i,<span class="dv">1</span>] <span class="ot">&lt;-</span> RecC[i]</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>(AA<span class="sc">+</span><span class="dv">1</span>)){</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#fishes die</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    NumbersM[i, j]<span class="ot">&lt;-</span>NumbersM[i<span class="dv">-1</span>, j<span class="dv">-1</span>]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ<span class="sc">*</span><span class="dv">1</span>) <span class="co">#*1 is here because it is one time step</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#This bit overwrites the values in the last column</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(i<span class="sc">&gt;</span><span class="dv">12</span>) {NumbersM[i, AA<span class="sc">+</span><span class="dv">1</span>]<span class="ot">&lt;-</span>NumbersM[i<span class="dv">-1</span>, AA]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ<span class="sc">*</span><span class="dv">1</span>) <span class="sc">+</span> NumbersM[i<span class="dv">-1</span>, AA<span class="sc">+</span><span class="dv">1</span>]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ<span class="sc">*</span><span class="dv">1</span>)}</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(NumbersM)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Now: Include Baranov Catch equation:</span></span>
@@ -309,20 +312,20 @@ N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}, &amp; a = a_{max}
 <span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>      </span>
 <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>     <span class="co">#calculate fishing on previous year</span></span>
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>     <span class="co">#because all ages are not available until after the 11th year, we begin calculating catch then</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>      CatchNM[i<span class="dv">-1</span>,]<span class="ot">&lt;-</span>NumbersM[i<span class="dv">-1</span>,]<span class="sc">*</span>FF[i<span class="dv">-1</span>,]<span class="sc">/</span>ZZ[i<span class="dv">-1</span>,]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ[i<span class="dv">-1</span>,]))</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="co">#fishes are born</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>      NumbersM[i,<span class="dv">1</span>] <span class="ot">&lt;-</span> Rec[i] </span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>(AA)){</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        NumbersM[i, j]<span class="ot">&lt;-</span>NumbersM[i<span class="dv">-1</span>, j<span class="dv">-1</span>]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ[i<span class="dv">-1</span>,j])  </span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>      NumbersM[i, AA<span class="sc">+</span><span class="dv">1</span>]<span class="ot">&lt;-</span>NumbersM[i<span class="dv">-1</span>, AA]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ[i<span class="dv">-1</span>,j]) <span class="sc">+</span> NumbersM[i, AA<span class="sc">+</span><span class="dv">1</span>]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ[i<span class="dv">-1</span>,AA<span class="sc">+</span><span class="dv">1</span>]) </span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>            }</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>      CatchNM[i,]<span class="ot">&lt;-</span>NumbersM[i,]<span class="sc">*</span>FF[i,]<span class="sc">/</span>ZZ[i,]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ[i,]))</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">#fishes are born</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>      NumbersM[i,<span class="dv">1</span>] <span class="ot">&lt;-</span> Rec[i] </span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>(AA<span class="sc">+</span><span class="dv">1</span>)){</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        NumbersM[i, j]<span class="ot">&lt;-</span>NumbersM[i<span class="dv">-1</span>, j<span class="dv">-1</span>]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ[i<span class="dv">-1</span>,j])  </span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(i<span class="sc">&gt;</span><span class="dv">12</span>){NumbersM[i, AA<span class="sc">+</span><span class="dv">1</span>]<span class="ot">&lt;-</span>NumbersM[i<span class="dv">-1</span>, AA]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ[i<span class="dv">-1</span>,j]) <span class="sc">+</span> NumbersM[i<span class="dv">-1</span>, AA<span class="sc">+</span><span class="dv">1</span>]<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ[i<span class="dv">-1</span>,AA<span class="sc">+</span><span class="dv">1</span>])} </span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(i<span class="sc">&gt;</span><span class="dv">12</span>){CatchNM[i,]<span class="ot">&lt;-</span>NumbersM[i,]<span class="sc">*</span>FF[i,]<span class="sc">/</span>ZZ[i,]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">exp</span>(<span class="sc">-</span>ZZ[i,]))}</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(NumbersM, CatchNM))</span>
 <span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    }</span>
 <span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>NumbersResults<span class="ot">&lt;-</span><span class="fu">AgeStructModel</span>(RecC)[[<span class="dv">1</span>]]</span>

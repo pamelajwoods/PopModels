@@ -224,11 +224,11 @@ dbl (4): year, high_cpue, low_cpue, cpue
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>whelk.data <span class="ot">&lt;-</span> </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  WHE_landings <span class="sc">%&gt;%</span> </span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">landings =</span> <span class="fu">sum</span>(landings)) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(WHE_assessment) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">YY =</span> year, <span class="at">II =</span> cpue, <span class="at">CC =</span> landings) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(YY <span class="sc">&gt;</span> <span class="dv">2003</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">tibble</span>(<span class="at">YY=</span><span class="dv">2020</span>, <span class="at">II=</span><span class="cn">NA</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">landings =</span> <span class="fu">sum</span>(landings))  <span class="sc">%&gt;%</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">tibble</span>(<span class="at">year=</span><span class="dv">2020</span>, <span class="at">landings=</span><span class="cn">NA</span>)) <span class="sc">%&gt;%</span>  </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(WHE_assessment) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">YY =</span> year, <span class="at">II =</span> cpue, <span class="at">CC =</span> landings) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(YY <span class="sc">&gt;</span> <span class="dv">2003</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Joining with `by = join_by(year)`</code></pre>
 </div>
@@ -287,9 +287,6 @@ Achieved convergence tolerance: 5.153e-06
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">YY=</span>whelk.data<span class="sc">$</span>YY, <span class="at">II =</span> whelk.data<span class="sc">$</span>II, best_pred) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(YY, best_pred)) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(YY, II)) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Observed (points) and Predicted (line) CPUE"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 1 rows containing missing values (`geom_point()`).</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -300,12 +297,12 @@ Achieved convergence tolerance: 5.153e-06
 </div>
 <p>Now try changing the starting values for parameters (especially KK and PP0) to see whether they affect results. If they do, that means the data don’t carry much information, we need a better estimation method, or we need to rule out some local minima external to the modeling.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Whelk.nls <span class="ot">&lt;-</span> <span class="fu">nls</span>(II <span class="sc">~</span> <span class="fu">ProductionFunction</span>(<span class="at">rr=</span>rr, <span class="at">KK=</span>KK, <span class="at">qq=</span>qq, <span class="at">CC=</span>CC), </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> <span class="fu">list</span>(<span class="at">CC =</span> whelk.data<span class="sc">$</span>CC, <span class="at">II =</span> whelk.data<span class="sc">$</span>II), </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">start =</span> <span class="fu">c</span>(<span class="at">rr =</span> <span class="dv">1</span>, <span class="at">KK =</span> <span class="dv">5000</span>, <span class="at">qq =</span> <span class="fl">0.08</span>), </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxiter =</span> <span class="dv">10000</span>, <span class="at">minFactor=</span><span class="fl">0.000001</span>))</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Whelk.nls)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Whelk.nls <span class="ot">&lt;-</span> <span class="fu">nls</span>(II <span class="sc">~</span> <span class="fu">ProductionFunction</span>(<span class="at">rr=</span>rr, <span class="at">KK=</span>KK, <span class="at">qq=</span>qq, <span class="at">CC=</span>CC), </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> <span class="fu">list</span>(<span class="at">CC =</span> whelk.data<span class="sc">$</span>CC, <span class="at">II =</span> whelk.data<span class="sc">$</span>II), </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">start =</span> <span class="fu">c</span>(<span class="at">rr =</span> <span class="dv">1</span>, <span class="at">KK =</span> <span class="dv">5000</span>, <span class="at">qq =</span> <span class="fl">0.08</span>), </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxiter =</span> <span class="dv">10000</span>, <span class="at">minFactor=</span><span class="fl">0.000001</span>))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Whelk.nls)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Formula: II ~ ProductionFunction(rr = rr, KK = KK, qq = qq, CC = CC)
@@ -324,16 +321,13 @@ Number of iterations to convergence: 13
 Achieved convergence tolerance: 5.261e-06
   (1 observation deleted due to missingness)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>best_pars2 <span class="ot">&lt;-</span> <span class="fu">coef</span>(Whelk.nls) <span class="co">#extract best-fit parameters</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>best_pred2 <span class="ot">&lt;-</span> <span class="fu">ProductionFunction</span>(<span class="at">rr=</span>best_pars2[<span class="dv">1</span>], </span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">KK=</span>best_pars2[<span class="dv">2</span>], </span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">qq=</span>best_pars2[<span class="dv">3</span>], </span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                                <span class="at">CC=</span>whelk.data<span class="sc">$</span>CC) <span class="co"># create predictions</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">YY=</span>whelk.data<span class="sc">$</span>YY, <span class="at">II =</span> whelk.data<span class="sc">$</span>II, best_pred, best_pred2) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(YY, best_pred)) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(YY, II)) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Observed (points) and Predicted (lines) CPUE"</span>) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(YY, best_pred2), <span class="at">color=</span><span class="st">'red'</span>, <span class="at">linetype =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 1 rows containing missing values (`geom_point()`).</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>best_pars2 <span class="ot">&lt;-</span> <span class="fu">coef</span>(Whelk.nls) <span class="co">#extract best-fit parameters</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>best_pred2 <span class="ot">&lt;-</span> <span class="fu">ProductionFunction</span>(<span class="at">rr=</span>best_pars2[<span class="dv">1</span>], </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">KK=</span>best_pars2[<span class="dv">2</span>], </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">qq=</span>best_pars2[<span class="dv">3</span>], </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>                                <span class="at">CC=</span>whelk.data<span class="sc">$</span>CC) <span class="co"># create predictions</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">YY=</span>whelk.data<span class="sc">$</span>YY, <span class="at">II =</span> whelk.data<span class="sc">$</span>II, best_pred, best_pred2) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(YY, best_pred)) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(YY, II)) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Observed (points) and Predicted (lines) CPUE"</span>) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(YY, best_pred2), <span class="at">color=</span><span class="st">'red'</span>, <span class="at">linetype =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -344,14 +338,14 @@ Achieved convergence tolerance: 5.261e-06
 </div>
 <p>Which do you think is closer to the real biological scenario?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>best_pars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>best_pars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          rr           KK           qq 
 1.091162e-01 9.827211e+03 7.327566e-05 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>best_pars2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>best_pars2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           rr            KK            qq 
  1.169129e+00 -2.258058e+03 -2.112510e-04 </code></pre>
@@ -359,13 +353,13 @@ Achieved convergence tolerance: 5.261e-06
 </div>
 <p>Now calculate MSY and Bmsy according to your model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#MSY = r*K / 4</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Bmsy = K / 2</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>MSY <span class="ot">&lt;-</span> best_pars[<span class="dv">1</span>]<span class="sc">*</span>best_pars[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">4</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>Bmsy <span class="ot">&lt;-</span> best_pars[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>MSY; Bmsy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#MSY = r*K / 4</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Bmsy = K / 2</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>MSY <span class="ot">&lt;-</span> best_pars[<span class="dv">1</span>]<span class="sc">*</span>best_pars[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">4</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>Bmsy <span class="ot">&lt;-</span> best_pars[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>MSY; Bmsy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     rr 
 268.077 </code></pre>
@@ -377,19 +371,19 @@ Achieved convergence tolerance: 5.261e-06
 </div>
 <p>Now, we would like to loosen the assumption that the population is starting out at carrying capacity. This adds a parameter, so makes the estimation more difficult.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>ProductionFunction2<span class="ot">&lt;-</span><span class="cf">function</span>(rr, KK, qq, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">CC =</span> CC){</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># II = CPUE data; rr, KK, qq, and PP0 are parameters</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  PP0 <span class="ot">&lt;-</span> a<span class="sc">*</span>KK</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="st">"numeric"</span>, <span class="at">length =</span> <span class="fu">length</span>(CC)); DD<span class="ot">&lt;-</span>PP; Pred<span class="ot">&lt;-</span>PP <span class="co"># this just defines the storage vectors beforehand</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0 <span class="co">#assigns the first year's abundance </span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(CC)){ <span class="co">#then for every other year,</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    DD[ii<span class="dv">-1</span>]<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP[ii<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[ii<span class="dv">-1</span>]<span class="sc">/</span>KK) <span class="co"># calculate the growth of the population based on rr and KK</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    PP[ii]<span class="ot">&lt;-</span>PP[ii<span class="dv">-1</span>] <span class="sc">+</span> DD[ii<span class="dv">-1</span>] <span class="sc">-</span> CC[ii<span class="dv">-1</span>] <span class="co"># and add that growth to that year's population, remove the catch, and update population levels for next year</span></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  Pred <span class="ot">&lt;-</span> qq<span class="sc">*</span>PP <span class="co">#calculate the Predictions for the index of abundance by translating the model population by catchability</span></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(Pred) <span class="co"># this function returns predictions</span></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ProductionFunction2</span>(<span class="at">rr =</span> <span class="fl">0.27</span>, <span class="at">KK =</span> <span class="dv">7000</span>, <span class="at">qq =</span> <span class="fl">0.006</span>, <span class="at">CC =</span> whelk.data<span class="sc">$</span>CC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>ProductionFunction2<span class="ot">&lt;-</span><span class="cf">function</span>(rr, KK, qq, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">CC =</span> CC){</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># II = CPUE data; rr, KK, qq, and PP0 are parameters</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  PP0 <span class="ot">&lt;-</span> a<span class="sc">*</span>KK</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  PP<span class="ot">&lt;-</span><span class="fu">vector</span>(<span class="st">"numeric"</span>, <span class="at">length =</span> <span class="fu">length</span>(CC)); DD<span class="ot">&lt;-</span>PP; Pred<span class="ot">&lt;-</span>PP <span class="co"># this just defines the storage vectors beforehand</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  PP[<span class="dv">1</span>]<span class="ot">&lt;-</span>PP0 <span class="co">#assigns the first year's abundance </span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(CC)){ <span class="co">#then for every other year,</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    DD[ii<span class="dv">-1</span>]<span class="ot">&lt;-</span> rr<span class="sc">*</span>PP[ii<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>PP[ii<span class="dv">-1</span>]<span class="sc">/</span>KK) <span class="co"># calculate the growth of the population based on rr and KK</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    PP[ii]<span class="ot">&lt;-</span>PP[ii<span class="dv">-1</span>] <span class="sc">+</span> DD[ii<span class="dv">-1</span>] <span class="sc">-</span> CC[ii<span class="dv">-1</span>] <span class="co"># and add that growth to that year's population, remove the catch, and update population levels for next year</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  Pred <span class="ot">&lt;-</span> qq<span class="sc">*</span>PP <span class="co">#calculate the Predictions for the index of abundance by translating the model population by catchability</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(Pred) <span class="co"># this function returns predictions</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ProductionFunction2</span>(<span class="at">rr =</span> <span class="fl">0.27</span>, <span class="at">KK =</span> <span class="dv">7000</span>, <span class="at">qq =</span> <span class="fl">0.006</span>, <span class="at">CC =</span> whelk.data<span class="sc">$</span>CC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] 42.00000 36.82200 32.10170 29.11039 28.19853 28.31241 30.10767 31.55742
  [9] 30.60390 30.59596 32.30500 33.76041 34.44466 34.14364 34.90807 35.32956
@@ -398,14 +392,14 @@ Achieved convergence tolerance: 5.261e-06
 </div>
 <p>Below, the model fitting process is written twice so that you can play around with the parameter starting values and lower and upper bounds of the second version while remembering which parameters you tried last in the first version. Can you find a solution that converges? Use your best solution to check how MSY and <span class="math inline">\(B_{MSY}\)</span> values have changed from the other version.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Whelk.nls3<span class="fl">.1</span><span class="ot">&lt;-</span><span class="fu">nls</span>(II <span class="sc">~</span> <span class="fu">ProductionFunction2</span>(<span class="at">rr=</span>rr, <span class="at">KK=</span>KK, <span class="at">qq=</span>qq, <span class="at">a =</span> a, <span class="at">CC =</span> CC), </span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">algorithm =</span> <span class="st">'port'</span>,</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> <span class="fu">list</span>(<span class="at">CC =</span> whelk.data<span class="sc">$</span>CC, <span class="at">II =</span> whelk.data<span class="sc">$</span>II), </span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">start =</span> <span class="fu">c</span>(<span class="at">rr =</span> <span class="fl">0.15</span>, <span class="at">KK =</span> <span class="dv">10000</span>, <span class="at">qq =</span> <span class="fl">0.00008</span>, <span class="at">a =</span> <span class="fl">0.8</span>),</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">lower =</span> <span class="fu">c</span>(<span class="at">rr =</span> <span class="fl">0.01</span>, <span class="at">KK =</span> <span class="dv">1000</span>, <span class="at">qq =</span> <span class="fl">0.000001</span>, <span class="at">a =</span> <span class="fl">0.1</span>),</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">upper =</span> <span class="fu">c</span>(<span class="at">rr =</span> <span class="dv">1</span>, <span class="at">KK =</span> <span class="dv">30000</span>, <span class="at">qq =</span> <span class="fl">0.1</span>, <span class="at">a =</span> <span class="dv">1</span>),</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxiter =</span> <span class="dv">100000</span>, <span class="at">minFactor=</span><span class="fl">0.000001</span>), </span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">trace =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>Whelk.nls3<span class="fl">.1</span><span class="ot">&lt;-</span><span class="fu">nls</span>(II <span class="sc">~</span> <span class="fu">ProductionFunction2</span>(<span class="at">rr=</span>rr, <span class="at">KK=</span>KK, <span class="at">qq=</span>qq, <span class="at">a =</span> a, <span class="at">CC =</span> CC), </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">algorithm =</span> <span class="st">'port'</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> <span class="fu">list</span>(<span class="at">CC =</span> whelk.data<span class="sc">$</span>CC, <span class="at">II =</span> whelk.data<span class="sc">$</span>II), </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">start =</span> <span class="fu">c</span>(<span class="at">rr =</span> <span class="fl">0.15</span>, <span class="at">KK =</span> <span class="dv">10000</span>, <span class="at">qq =</span> <span class="fl">0.00008</span>, <span class="at">a =</span> <span class="fl">0.8</span>),</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">lower =</span> <span class="fu">c</span>(<span class="at">rr =</span> <span class="fl">0.01</span>, <span class="at">KK =</span> <span class="dv">1000</span>, <span class="at">qq =</span> <span class="fl">0.000001</span>, <span class="at">a =</span> <span class="fl">0.1</span>),</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">upper =</span> <span class="fu">c</span>(<span class="at">rr =</span> <span class="dv">1</span>, <span class="at">KK =</span> <span class="dv">30000</span>, <span class="at">qq =</span> <span class="fl">0.1</span>, <span class="at">a =</span> <span class="dv">1</span>),</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxiter =</span> <span class="dv">100000</span>, <span class="at">minFactor=</span><span class="fl">0.000001</span>), </span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">trace =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  0:    0.13018275: 0.150000  10000.0 8.00000e-05 0.800000
   1:    0.11789722: 0.131131  9953.59 8.08475e-05 0.823517
@@ -470,7 +464,7 @@ Achieved convergence tolerance: 5.261e-06
  60:    0.10491026: 0.0829570  30000.0 0.000132551 0.186171
  61:    0.10491026: 0.0829584  30000.0 0.000132552 0.186169</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Whelk.nls3<span class="fl">.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Whelk.nls3<span class="fl">.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Formula: II ~ ProductionFunction2(rr = rr, KK = KK, qq = qq, a = a, CC = CC)
@@ -487,14 +481,14 @@ Residual standard error: 0.1224 on 14 degrees of freedom
 Algorithm "port", convergence message: relative convergence (4)
   (1 observation deleted due to missingness)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>Whelk.nls3<span class="fl">.2</span><span class="ot">&lt;-</span><span class="fu">nls</span>(II <span class="sc">~</span> <span class="fu">ProductionFunction2</span>(<span class="at">rr=</span>rr, <span class="at">KK=</span>KK, <span class="at">qq=</span>qq, <span class="at">a =</span> a, <span class="at">CC =</span> CC), </span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">algorithm =</span> <span class="st">'port'</span>,</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> <span class="fu">list</span>(<span class="at">CC =</span> whelk.data<span class="sc">$</span>CC, <span class="at">II =</span> whelk.data<span class="sc">$</span>II), </span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">start =</span> <span class="fu">c</span>(<span class="at">rr =</span> <span class="dv">1</span>, <span class="at">KK =</span> <span class="dv">5000</span>, <span class="at">qq =</span> <span class="fl">0.08</span>, <span class="at">a =</span> <span class="fl">0.8</span>),</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">lower =</span> <span class="fu">c</span>(<span class="at">rr =</span> <span class="fl">0.01</span>, <span class="at">KK =</span> <span class="dv">1000</span>, <span class="at">qq =</span> <span class="fl">0.000001</span>, <span class="at">a =</span> <span class="fl">0.1</span>),</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">upper =</span> <span class="fu">c</span>(<span class="at">rr =</span> <span class="dv">1</span>, <span class="at">KK =</span> <span class="dv">30000</span>, <span class="at">qq =</span> <span class="fl">0.1</span>, <span class="at">a =</span> <span class="dv">1</span>),</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxiter =</span> <span class="dv">100000</span>, <span class="at">minFactor=</span><span class="fl">0.000001</span>), </span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">trace =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>Whelk.nls3<span class="fl">.2</span><span class="ot">&lt;-</span><span class="fu">nls</span>(II <span class="sc">~</span> <span class="fu">ProductionFunction2</span>(<span class="at">rr=</span>rr, <span class="at">KK=</span>KK, <span class="at">qq=</span>qq, <span class="at">a =</span> a, <span class="at">CC =</span> CC), </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">algorithm =</span> <span class="st">'port'</span>,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> <span class="fu">list</span>(<span class="at">CC =</span> whelk.data<span class="sc">$</span>CC, <span class="at">II =</span> whelk.data<span class="sc">$</span>II), </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">start =</span> <span class="fu">c</span>(<span class="at">rr =</span> <span class="dv">1</span>, <span class="at">KK =</span> <span class="dv">5000</span>, <span class="at">qq =</span> <span class="fl">0.08</span>, <span class="at">a =</span> <span class="fl">0.8</span>),</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">lower =</span> <span class="fu">c</span>(<span class="at">rr =</span> <span class="fl">0.01</span>, <span class="at">KK =</span> <span class="dv">1000</span>, <span class="at">qq =</span> <span class="fl">0.000001</span>, <span class="at">a =</span> <span class="fl">0.1</span>),</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">upper =</span> <span class="fu">c</span>(<span class="at">rr =</span> <span class="dv">1</span>, <span class="at">KK =</span> <span class="dv">30000</span>, <span class="at">qq =</span> <span class="fl">0.1</span>, <span class="at">a =</span> <span class="dv">1</span>),</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxiter =</span> <span class="dv">100000</span>, <span class="at">minFactor=</span><span class="fl">0.000001</span>), </span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">trace =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  0:     1179600.1:  1.00000  5000.00 0.0800000 0.800000
   1:     150833.12: 0.694538  3389.37 0.0506772 0.770942
@@ -527,7 +521,7 @@ Algorithm "port", convergence message: relative convergence (4)
  28:    0.14882335:  1.00000  30000.0 1.78702e-05  1.00000
  29:    0.14882334:  1.00000  30000.0 1.78714e-05  1.00000</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Whelk.nls3<span class="fl">.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Whelk.nls3<span class="fl">.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Formula: II ~ ProductionFunction2(rr = rr, KK = KK, qq = qq, a = a, CC = CC)
@@ -546,21 +540,18 @@ Residual standard error: 0.1458 on 14 degrees of freedom
 Algorithm "port", convergence message: X-convergence (3)
   (1 observation deleted due to missingness)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># insert either Whelk.nls3.1 or Whelk.nls3.2 into the coef() function below, </span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># whichever one you found as the best model you could come up with.</span></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>best_pars3 <span class="ot">&lt;-</span> <span class="fu">coef</span>(Whelk.nls3<span class="fl">.1</span>) <span class="co">#extract best-fit parameters</span></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>best_pred3 <span class="ot">&lt;-</span> <span class="fu">ProductionFunction2</span>(<span class="at">rr=</span>best_pars3[<span class="dv">1</span>], </span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>                                <span class="at">KK=</span>best_pars3[<span class="dv">2</span>], </span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>                                <span class="at">qq=</span>best_pars3[<span class="dv">3</span>], </span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>                                <span class="at">a=</span>best_pars3[<span class="dv">4</span>], </span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>                                <span class="at">CC=</span>whelk.data<span class="sc">$</span>CC) <span class="co"># create predictions</span></span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">YY=</span>whelk.data<span class="sc">$</span>YY, <span class="at">II =</span> whelk.data<span class="sc">$</span>II, best_pred3) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(YY, best_pred)) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(YY, II)) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Observed (points) and Predicted (lines) CPUE"</span>) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(YY, best_pred2), <span class="at">color=</span><span class="st">'red'</span>, <span class="at">linetype =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 1 rows containing missing values (`geom_point()`).</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># insert either Whelk.nls3.1 or Whelk.nls3.2 into the coef() function below, </span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># whichever one you found as the best model you could come up with.</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>best_pars3 <span class="ot">&lt;-</span> <span class="fu">coef</span>(Whelk.nls3<span class="fl">.1</span>) <span class="co">#extract best-fit parameters</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>best_pred3 <span class="ot">&lt;-</span> <span class="fu">ProductionFunction2</span>(<span class="at">rr=</span>best_pars3[<span class="dv">1</span>], </span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>                                <span class="at">KK=</span>best_pars3[<span class="dv">2</span>], </span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>                                <span class="at">qq=</span>best_pars3[<span class="dv">3</span>], </span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>                                <span class="at">a=</span>best_pars3[<span class="dv">4</span>], </span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>                                <span class="at">CC=</span>whelk.data<span class="sc">$</span>CC) <span class="co"># create predictions</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">YY=</span>whelk.data<span class="sc">$</span>YY, <span class="at">II =</span> whelk.data<span class="sc">$</span>II, best_pred3) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(YY, best_pred)) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(YY, II)) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Observed (points) and Predicted (lines) CPUE"</span>) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(YY, best_pred2), <span class="at">color=</span><span class="st">'red'</span>, <span class="at">linetype =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -568,10 +559,10 @@ Algorithm "port", convergence message: X-convergence (3)
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>MSY <span class="ot">&lt;-</span> best_pars3[<span class="dv">1</span>]<span class="sc">*</span>best_pars3[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">4</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>Bmsy <span class="ot">&lt;-</span> best_pars3[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>MSY; Bmsy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>MSY <span class="ot">&lt;-</span> best_pars3[<span class="dv">1</span>]<span class="sc">*</span>best_pars3[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">4</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>Bmsy <span class="ot">&lt;-</span> best_pars3[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>MSY; Bmsy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      rr 
 622.1877 </code></pre>
