@@ -309,7 +309,6 @@ Now try changing properties of the model above to see how they affect the model 
 
 -   Selectivity
 
--   Catchability
 
 -   Natural mortality
 
@@ -342,8 +341,7 @@ gridExtra::grid.arrange(pdist,pc,ncol = 2)
 
 
 ```
-
-### 
+Here are some possibilities [here](Age_based_ans1.qmd). 
 
 ### Exercise
 
@@ -357,6 +355,8 @@ gridExtra::grid.arrange(pdist,pc,ncol = 2)
   SSB[i,] <- 
 	    
 ```
+
+Here are some answers [here](Age_based_ans2.qmd). 
 
 ## Stock-recruitment relationships
 
