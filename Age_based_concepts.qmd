@@ -309,7 +309,6 @@ Now try changing properties of the model above to see how they affect the model 
 
 -   Selectivity
 
-
 -   Natural mortality
 
 ```{r}

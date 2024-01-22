@@ -175,58 +175,82 @@ This version of a catch curve analysis is very simple. If mortality rates are in
 
 Finally, if a stock-recruitment relationship is needed, then we need to estimate maturity-at-age ogives to create spawning stock biomass estimates. Even if stock-recruitment relationships are not used, estimates of spawning stock biomass are often used for visually assessing the stocks, or for creating reference points.
 
-```{r, eval = FALSE}
+```{r}
+#install.packages("AquaticLifeHistory")
+library(AquaticLifeHistory)
+data("maturity_data")
+head(maturity_data)
+range(maturity_data$Maturity)
 
-    SSB<-sum(NumbersM[i-1,]*c(0,WeightatAge)*c(0,PredMat))
 
-LM_Ices<-read.csv("LMIces.csv")
-
-pred<-seq(10,100,5)
-
-sub1<-LM_Ices[LM_Ices$Loc=="Flikrusker" & LM_Ices$Depth==18,]
-sub<-data.frame(rbind(sub1, data.frame(ShellLength=pred, PenisLength=rep(0, length(pred)), Loc = rep("A", length(pred)), Depth = rep(0, length(pred)))), Weight=c(rep(1, dim(sub1)[1]), rep(0, length(pred))))
-plot(PenisLength/ShellLength~ShellLength,data=sub); abline(h=0.5)
-Mat.glm<-glm(as.numeric(sub$PenisLength/sub$ShellLength>0.3)~sub$ShellLength, family = binomial(logit), weights = Weight, data = sub); summary(Mat.glm); fits<-fitted(Mat.glm); names(fits)<-1:length(fits)
-plot(fits~sub$ShellLength)
+Mat.glm<-glm(Maturity~Age, family = binomial(logit), data = maturity_data)
+summary(Mat.glm) 
 
 #Q3.1 What is L50? (look at the web page for the equation)
 
-L50<- -(coef(Mat.glm)[1])/coef(Mat.glm)[2]
-
-#Q3.2: What age does L50 correspond with? Hint: to do this, you need to figure out how does length relates to age.
-VonBertalanffy<-function(Linf = 100, K = 0.5, t0 = 0, Age){
-	pred <- Linf*(1-exp(-K*(Age - t0)))
-	return(pred) }
-LxA.nls<-nls(Length~VonBertalanffy(Linf, K, t0, Age), data = LxA_Ices, start = c(Linf = 80, K = 0.5, t0 = 0))
-summary(LxA.nls)
-plot(1:10, VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], 1:10))
-abline(h = L50)
+A50<- -(coef(Mat.glm)[1])/coef(Mat.glm)[2]
 
 
-#Q3.3: What is the spawning stock biomass with the following population structure?
-Biomass<-seq(50, 140, 10)
-StockAges<-1:10
-PredLength<-VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], StockAges)
-B<-data.frame(StockAges, Biomass)
+p1 <- maturity_data %>% 
+  mutate(fits = fitted(Mat.glm)) %>% 
+  ggplot(aes(Age, Maturity)) + geom_point() + geom_line(aes(Age, fits))  +
+  geom_vline(xintercept = A50, color = 'red')
+
+p2 <- maturity_data %>% 
+  group_by(Age) %>% 
+  summarise(Maturity = sum(Maturity)/n()) %>% 
+  left_join(maturity_data %>% 
+              mutate(fits=fitted(Mat.glm)) %>% 
+              select(Age, fits) %>% 
+              distinct() %>% 
+              arrange(Age)) %>% 
+  ggplot(aes(Age, Maturity)) + geom_point() + geom_line(aes(Age, fits))  +
+  geom_vline(xintercept = A50, color = 'red')
+
+#Above we used fitted values from the model object to represent model predictions. However, this only works if all ages are present in the dataset. If some are missing, it might be better to use true predictions:
 Int<-as.numeric(coef(Mat.glm)[1])
 Slope<-as.numeric(coef(Mat.glm)[2])
 LogitPred<-Int+Slope*PredLength
 PredMat<-boot::inv.logit(LogitPred)
-SSB<-sum(B$Biomass*PredMat)
+
+
+# At what age does 50% maturity occur?
+
+LxA.nls<-nls(Length~VonBertalanffy(Linf, K, t0, Age), data = maturity_data, start = c(Linf = 80, K = 0.2, t0 = 0))
+
+summary(LxA.nls)
+
+p_VB<- 
+  maturity_data %>% 
+  mutate(Pred = VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], Age)) %>% 
+  ggplot(aes(Age, Length)) + geom_point() + geom_line(aes(Age, Pred)) + 
+  geom_vline(xintercept = A50, col = 'red')
+
+
+gridExtra::grid.arrange(p1, p2, p_VB, ncol = 3)
 
 
 
-
-WeightM<-matrix(rep(c(0,WeightatAge), 100), nrow = 100, ncol = 11, byrow = T)
-MatM<-matrix(rep(c(0,PredMat), 100), nrow = 100, ncol = 11, byrow = T)
-plot(apply(NumbersResults*WeightM*MatM, 1, sum))
 ```
 
-link to ICES guidelines
+### Exercise
 
-add L50 to age length plot
+Now let's use the model from yesterday to create a simulation of the above population to plot a stock-recruitment relationship. To implement dependence of the recruitment on the spawning stock biomass, we will use the Ricker function. Follow the steps described below. Look at the plot and compare it to plots used in guidelines for Category 1 stock assessements found [here](https://ices-library.figshare.com/articles/report/Technical_Guidelines_-ICES_fisheries_management_reference_points_for_category_1_and_2_stocks_2021/18638150).
 
-abline(h = L50)
+```{r, eval = FALSE}
+
+# 1- define model dimensions # ages and # years
+
+# 2 - define the model function (copy-paste from yesterday)
+
+# 3 - modify the function to include a recruitment prediction from a stock-recruit relationship. Hint: copy and paste the stock-recruit relationship function and use the predictions from that function to determint a later year's recruitment value. Try adding some error to the predicted recruitment result.
+
+# 4 - define a vector of effort values reflecting fishing history. We are NOT analyzing equilibrium values, we just want contrast in fishing history (effort levels) so we can observe population growth (recruitment) at various population states (low and high).
+
+# 5 - run the model and plot recruitment as a function of SSB. Compare to ICES plots in the guidelines.
+```
+
+See an example of how to do this [here](Age_based_ans3.qmd) .
 
 ## Age-based assessment demonstrations
 

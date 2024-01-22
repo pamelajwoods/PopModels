@@ -1,0 +1,131 @@
+---
+title:  "Using SPICT for surplus production model fitting"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(palmerpenguins)
+theme_set(theme_minimal())
+```
+
+
+
+```{r}
+# 1- define model dimensions # ages and # years
+YY <- 200
+AA <- 20
+
+
+# 2 - define the model function (copy-paste from yesterday)
+
+# 3 - modify the function to include a recruitment prediction from a stock-recruit relationship. Hint: copy and paste the stock-recruit relationship function and use the predictions from that function to determine a later year's recruitment value. Try adding some error to the predicted recruitment result.
+
+#we will need weight and maturity now to calculate SSB within the function. 
+#weights is a two-step process from our fitted models, although you could also use raw data means
+weights <- 
+  maturity_data %>% 
+  select(Age) %>% 
+  distinct %>% 
+  arrange(Age) %>% 
+  filter(Age < AA+1) %>% 
+  mutate(Pred = VonBertalanffy(Linf = coef(LxA.nls)[1], K = coef(LxA.nls)[2], t0=coef(LxA.nls)[3], Age)) %>% 
+  mutate(W = W <- exp(coef(LxW.lm)[1] + coef(LxW.lm)[2]*log(Pred))/1000
+) %>% 
+  select(W) %>%
+  unlist
+
+
+Wmat <- matrix(weights, ncol = 21, nrow = YY, byrow = T)
+
+#maturity can be taken from the fitted maturity ogive
+mats <- 
+  maturity_data %>% 
+  mutate(fits=fitted(Mat.glm)) %>% 
+  select(Age, fits) %>% 
+  distinct() %>% 
+  arrange(Age) %>% 
+  filter(Age<21) %>% 
+  .$fits %>% 
+  unlist
+Mmat <- matrix(mats, ncol = 21, nrow = YY, byrow = T)
+
+AgeStructModel<-function(Rec0, MM = 0.15, W=Wmat, M=Mmat, Effort = rep(0.2, dim(W)[1]), qq=1, Sel = c(0,0,rep(1,AA-1)), alpha = 63.2, beta = 0.059){
+	
+  AA <- dim(W)[2]-1
+  YY <- dim(W)[1]
+  
+  FF<-matrix(Sel, nrow = YY, ncol = AA + 1, byrow = TRUE)*qq*matrix(Effort, nrow = YY, ncol = AA + 1)
+	
+  ZZ <-FF+MM
+	
+#define empty matrix in the right dimensions for saving results
+NumbersM<-matrix(nrow = YY, ncol = AA + 1, data = 0)
+CatchNM<-matrix(nrow = YY, ncol = AA+1, data = 0)
+SSB<-vector(mode='numeric',length=YY)
+
+#run loop through all ages and years. Each of the 3 types of equations are used.
+
+	#fishes are born
+  NumbersM[1:(AA+2),1] <- Rec0
+
+  for(i in 2:YY){
+	  
+	 #calculate fishing on previous year
+	 #because all ages are not available until after the 11th year, we begin calculating catch then
+
+	#fishes are born
+    
+	  if(i>AA+2){NumbersM[i,1] <- BevHoltRec}
+	
+	  for(j in 2:(AA+1)){
+
+	  	NumbersM[i, j]<-NumbersM[i-1, j-1]*exp(-ZZ[i-1,j])  
+	}
+	  
+	  if(i>AA+1){NumbersM[i, AA+1]<-NumbersM[i-1, AA]*exp(-ZZ[i-1,j]) + NumbersM[i-1, AA+1]*exp(-ZZ[i-1,AA+1])} 
+	  
+	  CatchNM[i,]<-NumbersM[i,]*FF[i,]/ZZ[i,]*(1-exp(-ZZ[i,]))
+  if(i > AA+1){
+    SSB[i] <- sum(NumbersM[i,]*W[i,]*M[i,])/1000
+	  BevHoltRec<-alpha*SSB[i]/(1+beta*SSB[i])*rlnorm(1,sdlog=0.1)
+  }
+
+  }
+  
+	return(list(NumbersM, CatchNM,SSB))
+	}
+NumbersResults<-AgeStructModel(1000)[[1]]
+CatchResults<-AgeStructModel(1000)[[2]]
+SSBResults<-AgeStructModel(1000)[[3]]
+
+# 4 - define a vector of effort values reflecting fishing history. We are NOT analyzing equilibrium values, we just want contrast in fishing history (effort levels) so we can observe population growth (recruitment) at various population states (low and high).
+
+Eff <- c(rep(0.2, 50), rep(0.4, 50), rep(0.2, 50), rep(0.1, 50))
+
+# 5 - run the model and plot recruitment as a function of SSB. Compare to ICES plots in the guidelines.
+
+NumbersResults<-AgeStructModel(1000, Effort = Eff)[[1]]
+CatchResults<-AgeStructModel(1000, Effort = Eff)[[2]]
+SSBResults<-AgeStructModel(1000, Effort = Eff)[[3]]
+
+p1 <- tibble(Recruitment = NumbersResults[,1], SSB = SSBResults) %>% 
+  mutate(year = 1:n()) %>% 
+  ggplot(aes(year, Recruitment)) + geom_point() + ylim(0,1500)
+
+p2 <- tibble(Recruitment = NumbersResults[,1], SSB = SSBResults) %>% 
+  mutate(year = 1:n()) %>% 
+  ggplot(aes(year, SSB)) + geom_point() 
+
+p3 <- tibble(Recruitment = NumbersResults[,1], SSB = SSBResults) %>% 
+  mutate(year = 1:n()) %>% 
+  ggplot(aes(SSB, Recruitment)) + geom_point() + ylim(0,1500)
+
+gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
+
+
+```
