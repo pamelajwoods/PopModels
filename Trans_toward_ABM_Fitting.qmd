@@ -27,7 +27,7 @@ Because age data are relatively expensive to collect and process, we only usuall
 
 An age-length key is a simple matrix that lists probabilities of a fish observed to be a certain length actually belonging to a certain age group. For example, let's consider a population with only 3 ages and 5 length groups. Which ALK do you think is more informative?
 
-```{r}
+```{r, echo = TRUE}
 ALK1 <- 
   tibble(length=1:5,
          age1 = c(1, 0.5, 0.2,   0, 0),
@@ -37,13 +37,13 @@ ALK1 %>% mutate(total=age1+age2+age3)
 
 ```
 
-```{r}
+```{r, echo = TRUE}
 
 ALK1 %>% gather(key = age, value = p, -length) %>% mutate(age=gsub('age','',age) %>% as.numeric(.)) %>% ggplot(aes(length,age)) + geom_tile(aes(fill=p))
 
 ```
 
-```{r}
+```{r, echo = TRUE}
 ALK2 <- 
   tibble(length=1:5,
          age1 = c(0.5, 0.2, 0.1,   0, 0),
@@ -52,7 +52,7 @@ ALK2 <-
 ALK2 %>% mutate(total=age1+age2+age3)
 ```
 
-```{r}
+```{r, echo = TRUE}
 ALK2 %>% gather(key = age, value = p, -length) %>% mutate(age=gsub('age','',age) %>% as.numeric(.)) %>% ggplot(aes(length,age)) + geom_tile(aes(fill=p))
 
 ```
@@ -65,7 +65,7 @@ If length-at-age is expected to differ based on different components of the popu
 
 Frequently, sampling and extrapolation is based on catch or survey weight measurements. In these cases, we also need to use weight-length relationships to translate a total catch into numbers at length, given the expected weight-at-length relationship. In many species, this is quite a stable relationship, so is fitted to data once and then the predictions used when needed. However, due to changes in condition over time or spatially, this assumption should be checked periodically. Here is a basic example for fitting a length-weight relationship:
 
-```{r}
+```{r, echo = TRUE}
 # Let's first generate some length-weight relationships. If they are unknown, they are often approximated by a simple cubic dimension  (line to volume, which is similar to line to weight):
 
 #Weight = a*Lenghth^b, where a=1 and b=3
@@ -90,7 +90,7 @@ summary(LxW.lm)
 
 Even though growth is obviously a very important biological relationship, and body growth is an important process, it is not incorporated directly into age-based modeling, and therefore never estimated. Growth processes are implicitly included in the creation of the ALK. Therefore, by plotting and fitting for example, a Von Bertalanffy growth curve, we can gain a better understanding of our data and biological processes, even if it is not directly incorporated into the modeling framework. For example, let's consider two growth curves that look very different. They are intended to reflect growth similar to haddock versus golden redfish.
 
-```{r}
+```{r, echo = TRUE}
 # To fit length at age data to a Von Bertalanffy curve, we can use the nls function as we did to fit the surplus production function
 # Let's first define a VonBertalanffy curve:
 
@@ -136,7 +136,7 @@ Let's look at the assessment reports for haddock and golden redfish, found on th
 
 ## Catch curve analysis - method for estimating mortality
 
-```{r}
+```{r, echo = TRUE}
 #Below is age frequency data on whelk caught in 1993 during a survey at Hrappsey. Fishing began in 1996, so this population is thought to be pristine. 
 #Q1 What is a) number of recruits at birth (age 0); b) mortality rate Z; c) the proportion of the population that dies each year, and d) the number of recruits at age 3?
 HrappseyCatch<-c(15, 11, 20, 16, 14, 10, 12);
@@ -175,7 +175,7 @@ This version of a catch curve analysis is very simple. If mortality rates are in
 
 Finally, if a stock-recruitment relationship is needed, then we need to estimate maturity-at-age ogives to create spawning stock biomass estimates. Even if stock-recruitment relationships are not used, estimates of spawning stock biomass are often used for visually assessing the stocks, or for creating reference points.
 
-```{r}
+```{r, echo = TRUE}
 #install.packages("AquaticLifeHistory")
 library(AquaticLifeHistory)
 data("maturity_data")
@@ -186,7 +186,7 @@ range(maturity_data$Maturity)
 Mat.glm<-glm(Maturity~Age, family = binomial(logit), data = maturity_data)
 summary(Mat.glm) 
 
-#Q3.1 What is L50? (look at the web page for the equation)
+#Q3.1 What is A50? (look at the web page for the equation)
 
 A50<- -(coef(Mat.glm)[1])/coef(Mat.glm)[2]
 
@@ -214,7 +214,7 @@ LogitPred<-Int+Slope*c(0:20)
 PredMat<-boot::inv.logit(LogitPred)
 
 
-# At what age does 50% maturity occur?
+# At what length does 50% maturity occur?
 
 LxA.nls<-nls(Length~VonBertalanffy(Linf, K, t0, Age), data = maturity_data, start = c(Linf = 80, K = 0.2, t0 = 0))
 
@@ -255,3 +255,13 @@ See an example of how to do this [here](Age_based_ans3.qmd) .
 ## Age-based assessment demonstrations
 
 Age-based assessments are data-intensive and often take several months to develop. Many software packages are available but should be used with caution. We don't have time in this course to go through a full example of fitting an age-based assessment, but it is based on the same principles as fitting a surplus production model. The largest difference is that because there are several more parameters and possibly multiple sources of data, the objective function used to fit the model, most often a likelihood, can get rather complex. For a good R-based vignette on fitting an age-based statistical catch-at-age model, refer to the FLR set of packages found [here](https://flr-project.org/).
+
+They have a simple introduction with a subset of models needed located [here](https://flr-project.org/doc/A_quick_introduction_to_FLR.html).
+
+```{r, echo = TRUE}
+install.packages(c("latticeExtra", "gridExtra", "ggplot2", "triangle", "copula", "coda", "mgcv"))
+install.packages(c("FLCore", "ggplotFL", "FLa4a", "FLBRP", "FLash"), repos="http://flr-project.org/R")
+
+
+
+```

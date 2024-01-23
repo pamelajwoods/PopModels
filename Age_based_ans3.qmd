@@ -13,8 +13,6 @@ library(palmerpenguins)
 theme_set(theme_minimal())
 ```
 
-
-
 ```{r}
 
 # 1- define model dimensions # ages and # years
