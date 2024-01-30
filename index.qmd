@@ -12,7 +12,7 @@ The population dynamics section of teaching is split into roughly 8 half-day ses
 
 [Simple population models](Simple_population_models.qmd)
 
-[Review-what are models?](Review-what%20are%20models.qmd)
+[Review: what are models?](Review-what%20are%20models.qmd)
 
 [Fitting a logistic growth curve](Fitting_logistic_curve.qmd)
 

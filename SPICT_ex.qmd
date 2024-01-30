@@ -46,8 +46,8 @@ With this in mind, let's install and try a vignette.
 Want to try fitting a SPiCT model on your own? Here are some data from our whelk example and how to format them so that they can be used in with spict package functions. Then just run the model and plot!
 
 ```{r, echo = TRUE}
-#### whelk ex.
-
+#### whelk ex. Download data files from the advice page for Common whelk at hafogvatn.is.
+library(spict)
 WHE_landings <- read_csv('WHE_landings.csv')
 WHE_assessment <- read_csv('WHE_assessment.csv')
 
@@ -58,11 +58,46 @@ whelk.data <-
   bind_rows(tibble(year=2020, landings=NA)) %>%  
   left_join(WHE_assessment) %>% 
   rename(YY = year, II = cpue, CC = landings) %>% 
-  filter(YY > 2003) 
+  filter(YY > 2003) %>% 
+  arrange(YY)
 
 whelk <- NULL
 whelk$obsC <- whelk.data$CC
 whelk$timeC <- whelk$timeI <- whelk.data$YY
 whelk$obsI <- whelk.data$II
+
+
+inp <- check.inp(whelk)
+inp
+
+
+
+```
+
+```{r}
+plotspict.data(inp)
+
+```
+
+```{r}
+plotspict.ci(inp)
+
+```
+
+```{r}
+res <- fit.spict(inp)
+names(res)
+res$opt
+
+
+```
+
+```{r}
+summary(res)
+
+```
+
+```{r}
+plot(res)
 
 ```

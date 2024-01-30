@@ -419,6 +419,6 @@ MSY
 
 As mentioned before, this method is not recommended as it requires the assumption that the values you are observing are long-term results, or equilibrium values, as gathered in the above exercises. This is obviously not a correct assumption, as they are observations taken in consecutive years, although in many of the cases you could argue that they are close to equilibrium values when observed. also shows how this assumption is not correct, especially at the initiation of a new fishery when the population is transitioning from an unfished population to a fished one, creating a mismatch between short- and long-term expectations of CPUE. In the earliest years of a fishery, CPUE tends to more greatly exceed long-term expectations for CPUE given a constant effort level, as biomass has not had a chance to decrease over time. See this figure taken directly from the FAO report linked above:
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, out.width = "100%"}
 knitr::include_graphics('imgs/FAO_T306_1_TransitionFig.png')
 ```
