@@ -1,0 +1,44 @@
+---
+title: "Pella Tomlinson Exercise"
+author: "Pamela J. Woods"
+date: "2024-01-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Introduction
+
+Google Pella Tomlinson, describe what it is. This is a good place to start: <https://haddonm.github.io/URMQMF/surplus-production-models.html>
+
+## Methods
+
+Describe the exercise.
+
+## Results and Discussion
+
+R code and a plot.
+
+Below, copy and paste the Schaefer model, then modify it to be Pella Tomlinson. Rename the vectors so that they will not be overwritten by code in the next R chunk.
+
+```{r model}
+    #p1_p <- tibble(XX,YY_p,eff_p) %>% ggplot(aes(eff_p, YY_p)) + geom_point() + ylab("Yield") + xlab( "Effort")
+```
+
+Below, copy and paste the Schaeffer model again, but you don't need to change anything.
+
+```{r model2}
+  
+      #p1 <- tibble(XX,YY,eff) %>% ggplot(aes(eff, YY)) + geom_point() + ylab("Yield") + xlab( "Effort")
+```
+
+Plot effort x Yield from Pella Tomlinson.
+
+```{r pressure, echo=FALSE}
+#p1 + geom_point(aes(eff_p, YY_p), shape=2, data = tibble(eff_p, YY_p), color = 'red' )
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

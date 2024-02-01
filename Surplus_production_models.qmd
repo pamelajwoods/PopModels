@@ -364,6 +364,8 @@ eff[which.max(YY - Cost)] #MEY
 
 ### Independent exercise
 
+Here     data/Pella_Tomlinson_Ex.Rmd is an Rmarkdown file to get you started.
+
 ```{r}
 #Extra - Now look up the equation for a Pella-Tomlinson production function and 
 #repeat the above exercise to plot Pella-Tomlinson surplus production function alongside
@@ -372,6 +374,8 @@ eff[which.max(YY - Cost)] #MEY
 #How is the shape of the MSY relationship changed by the extra parmaeter?
 
 ```
+
+Here     data/Pella_Tomlinson_Ex_answer.Rmd is a final version.
 
 ## Let's talk about a shortcut
 
