@@ -66,7 +66,7 @@ where $B_{a,t}=N_{a,t}W_{a,t}$.
 
 This incorporates body growth, but does not need to be part of the statistical modeling process unless it is not possible to back-calculate ages from observed biomasses.
 
-### Exercise
+### Exercise 1
 
 ```{r}
 #age-based model simulation
@@ -301,7 +301,7 @@ The shape of the age distributions you see here can be translated into length di
 
 If growth were perfectly linear, these length distributions would look the same. However, in most cases, linear growth is only observed at younger ages and growth slows at higher ages, so instead what is observed is that the right side of the distributions would get shorter and squeezed toward the middle. In addition, the process of growth usually happens in reality with some amount of error, as well as seasonality and year-to-year variation. Therefore the translation between the two needs to be carefully done, and some careful statistical modeling of growth relationships is needed.
 
-### Exercise
+### Exercise 2
 
 Now try changing properties of the model above to see how they affect the model results in terms of MSY and length distributions. Try changing for example:
 
@@ -340,7 +340,8 @@ gridExtra::grid.arrange(pdist,pc,ncol = 2)
 
 
 ```
-Here are some possibilities [here](Age_based_ans1.qmd). 
+
+Here are some possibilities [here](Age_based_ans1.qmd).
 
 ### Exercise
 
@@ -355,7 +356,7 @@ Here are some possibilities [here](Age_based_ans1.qmd).
 	    
 ```
 
-Here are some answers [here](Age_based_ans2.qmd). 
+Here are some answers [here](Age_based_ans2.qmd).
 
 ## Stock-recruitment relationships
 

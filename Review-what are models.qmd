@@ -32,7 +32,9 @@ the intercept parameter $a$ and the slope parameter $b$ can be chosen to be cert
 ```{r, echo=TRUE}
 a <- 0; b<-1; x<-1:10; y<- a + b*x
 
-tibble(x,y) %>% ggplot(aes(x,y)) + geom_line()
+p <- tibble(x,y) %>% ggplot(aes(x,y)) + geom_line()
+
+p
 ```
 
 This line is an example of a *mathematical model*:
@@ -58,7 +60,8 @@ This is one option, but others exist. Polynomial models for example could replic
 ```{r, echo = TRUE}
 x <- seq(0,3*pi,pi/10); y <- sin(x)
 
-tibble(x,y) %>% ggplot(aes(x,y)) + geom_line()
+p <- tibble(x,y) %>% ggplot(aes(x,y)) + geom_line()
+p
 ```
 
 Another kind of model could describe circular processes:
@@ -82,9 +85,11 @@ Distributions are well-used in the study of biological processes, because biolog
 ```{r}
 age <- 6:115; pred_size <- 6:115; size <-pred_size + rnorm(110, sd = 10)
 
-tibble(age, size, pred_size) %>% ggplot(aes(age, size)) + geom_point() + geom_line(aes(age, pred_size))
+p1 <- tibble(age, size, pred_size) %>% ggplot(aes(age, size)) + geom_point() + geom_line(aes(age, pred_size))
 
-tibble(age, size, pred_size) %>% ggplot(aes(size - pred_size)) + geom_histogram()
+p2 <- tibble(age, size, pred_size) %>% ggplot(aes(size - pred_size)) + geom_histogram()
+
+gridExtra::grid.arrange(p1, p2, ncol = 2)
 ```
 
 ## Fitting
@@ -232,7 +237,7 @@ The plot below shows the relationship between flipper and bill lengths of these 
 #| warning: false
 #| echo: false
 
-ggplot(penguins, 
+p <- ggplot(penguins, 
        aes(x = flipper_length_mm, y = bill_length_mm)) +
   geom_point(aes(color = species, shape = species)) +
   scale_color_manual(values = c("darkorange","purple","cyan4")) +
@@ -243,4 +248,5 @@ ggplot(penguins,
     color = "Penguin species", shape = "Penguin species"
   ) +
   theme_minimal()
+p
 ```

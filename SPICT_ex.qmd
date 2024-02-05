@@ -35,7 +35,7 @@ SPiCT is a model of 'Surplus Production in Continuous Time', implemented in the 
 
 -   Realistic production curve (not too skewed)
 
--   Assessment uncertainty is not too high (not span more than 1 order of magnitude
+-   Assessment uncertainty is not too high (not span more than 1 order of magnitude)
 
 -   initial values do not influence parameter estimates
 
@@ -43,7 +43,7 @@ With this in mind, let's install and try a vignette.
 
 ### Independent exercise
 
-Want to try fitting a SPiCT model on your own? Here are some data from our whelk example and how to format them so that they can be used in with spict package functions. Then just run the model and plot!
+Want to try fitting a SPiCT model on your own? Here are some data from our common whelk example and how to format them so that they can be used in with spict package functions. Then just run the model and plot!
 
 ```{r, echo = TRUE}
 #### whelk ex. Download data files from the advice page for Common whelk at hafogvatn.is.
@@ -101,3 +101,5 @@ summary(res)
 plot(res)
 
 ```
+
+Would this model tick all boxes in the checklist and be acceptable? What could be done make the model better? Try taking a second look at the [technical guidelines](https://raw.githubusercontent.com/DTUAqua/spict/master/spict/inst/doc/spict_guidelines.pdf).

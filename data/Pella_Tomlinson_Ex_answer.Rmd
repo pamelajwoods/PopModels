@@ -82,9 +82,9 @@ Below, copy and paste the Pella Tomlinson model, then modify it to be Pella Toml
   # MSY = K*r/4
   # Nmsy = K/2
   
-  eff[which.max(YY_p)] #MSY
+  eff_p[which.max(YY_p)] #MSY
   
-  eff[which.max(YY_p - Cost)] #MEY
+  eff_p[which.max(YY_p - Cost)] #MEY
 ```
 
 Below, copy and paste the Schaeffer model again, but you don't need to change anything.
