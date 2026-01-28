@@ -58,7 +58,7 @@ $F_{a,t}=E_t*S_{a,t}$
 
 By applying the fishing mortality to the population biomass, then the Baranov catch equation can be used to reflect the expected catches in numbers at age observed $C_{N,a,t}$:
 
-$C_{N,a,t}=\frac{F_{a,t}}{F_{a,t}+M}(1-e^{-(F_{a,t}+M)})$
+$C_{N,a,t}=N_{a, t}\frac{F_{a,t}}{F_{a,t}+M}(1-e^{-(F_{a,t}+M)})$
 
 Finally, all the dynamics are described here in terms of numbers, but they can always be converted to biomass to facilitate comparisons to data by defining biomass as the product of numbers and weight:
 
@@ -111,7 +111,7 @@ for(i in 2:YY){
   if(i>12) {NumbersM[i, AA+1]<-NumbersM[i-1, AA]*exp(-ZZ*1) + NumbersM[i-1, AA+1]*exp(-ZZ*1)}
 }
 
-View(NumbersM)
+#View(NumbersM)
 
 ```
 
@@ -193,8 +193,8 @@ Notice that individual cohorts can be tracked through the numbers matrices in bo
 NumbersResults<-AgeStructModel(Rec)[[1]]
 CatchResults<-AgeStructModel(Rec)[[2]]
 
-View(NumbersResults)
-View(CatchResults)
+#View(NumbersResults)
+#View(CatchResults)
 
 ```
 

@@ -13,11 +13,9 @@ library(palmerpenguins)
 theme_set(theme_minimal())
 ```
 
-
-
 ## Logistic growth - review
 
-Remember this equation from the Simple Population Models section?
+Remember this equation from the [Simple Population Models](Simple_population_models.qmd) section?
 
 $N_t = N_{t-1} + rN_{t-1}(1-N_{t-1}/K)$
 
@@ -105,8 +103,13 @@ Now we would like to fit this model by minimizing the objective function using a
 
 ```{r, echo = TRUE}
 
+# Here we are comparing the fit based on trying two different optimization 
+# algorithms. Note the starting values are the same, but the 'L-BFGS-B'
+# method requires corresponding upper and lower boundary limits to be
+# inputted (OptPars1). The OptPars2 version uses a default "Port algorithm".
 OptPars1<-optim(c(7500,0.5,1), LogisticGrowthModel, method = 'L-BFGS-B', Years = Yrs, Numbers = Data, lower = c(2000, 0,0.8), upper = c(10000, 1,100), control = list(maxit = 50000))
 OptPars1
+
 
 OptPars2<-optim(c(7500,0.5,1), LogisticGrowthModel, Years = Yrs, Numbers = Data, control = list(maxit = 50000))
 OptPars2
@@ -121,7 +124,13 @@ Predictions2<-LogisticGrowthModel(OptPars2$par, Yrs, Data, ReturnResults=T)[[1]]
 tibble(Yrs, Data) %>% 
   ggplot(aes(Yrs, Data)) + geom_point(shape = '*', color = 'red', size = 5) + ylim(0,8000) + geom_line(aes(Years, Pred), data = Predictions1) + geom_line(aes(Years, Pred), data = Predictions2, linetype = 2)
 
+# 
+
 ```
+
+Do any of the values in the resulting OptPars1 function hit a bound? That means it is not well estimated. Standard practice is to change the bound to try to widen the search space and let the algorithm find the best value. But if that doesn't work, then perhaps it is not possible to estimate this parameter. Too many 'right' answers are avaible - a large space of different values for this parameter lead to the same answer.
+
+However, when judging whether we should optimize a loose parameter versus fix its value, it is also important to judge the model's resulting realism. Which of the above versions have more biological realism for elephants?
 
 ```{r, echo = TRUE}
 # Now try to figure out the best time lag as shown in the on-line example. 
@@ -174,7 +183,6 @@ for(i in 0:6){
 
 SS1 
 SS2 
-
 ```
 
 ```{r, echo = TRUE}
@@ -228,10 +236,10 @@ gridExtra::grid.arrange(L5, L3, L0, ncol = 3)
 
 ```
 
-### TAKE HOME MESSAGES 
+### TAKE HOME MESSAGES
 
-+ The optimizer matters
+-   The optimizer matters
 
-+ The starting values matter
+-   The starting values matter
 
-+ The biology matters
+-   The biology matters

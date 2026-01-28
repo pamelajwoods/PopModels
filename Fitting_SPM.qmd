@@ -136,7 +136,7 @@ ProductionFunction2(rr = 0.27, KK = 7000, qq = 0.006, CC = whelk.data$CC)
 
 ```
 
-Below, the model fitting process is written twice so that you can play around with the parameter starting values and lower and upper bounds of the second version while remembering which parameters you tried last in the first version. Can you find a solution that converges? Use your best solution to check how MSY and $B_{MSY}$ values have changed from the other version.
+Below, the model fitting process is written several times so that you can play around with the parameter starting values and lower and upper bounds of the second version while remembering which parameters you tried last in the first version. Can you find a solution that converges? Use your best solution to check how MSY and $B_{MSY}$ values have changed from the other version.
 
 ```{r, echo = TRUE}
 
@@ -175,7 +175,55 @@ best_pred3 <- ProductionFunction2(rr=best_pars3[1],
                                 CC=whelk.data$CC) # create predictions
 
 
-tibble(YY=whelk.data$YY, II = whelk.data$II, best_pred3) %>% ggplot(aes(YY, best_pred)) + geom_line() + geom_point(aes(YY, II)) + xlab("Time") + ylab("Observed (points) and Predicted (lines) CPUE") + geom_line(aes(YY, best_pred2), color='red', linetype = 2)
+tibble(YY=whelk.data$YY, II = whelk.data$II, best_pred3) %>% ggplot(aes(YY, best_pred)) + 
+  geom_line() + geom_point(aes(YY, II)) + xlab("Time") + ylab("Observed (points) and Predicted (lines) CPUE") + 
+  geom_line(aes(YY, best_pred2), color='red', linetype = 2) + 
+  geom_line(aes(YY, best_pred3), color='blue', linetype = 3) 
+
+
+
+ProductionFunction3<-function(rr, KK, qq, a = 1, CC = CC){
+  # II = CPUE data; rr, KK, qq, and PP0 are parameters
+  KK_big <- KK*10000
+  qq_small <- qq/10000
+  PP0 <- a*KK_big
+  PP<-vector("numeric", length = length(CC)); DD<-PP; Pred<-PP # this just defines the storage vectors beforehand
+  PP[1]<-PP0 #assigns the first year's abundance 
+  for(ii in 2:length(CC)){ #then for every other year,
+    DD[ii-1]<- rr*PP[ii-1]*(1-PP[ii-1]/KK_big) # calculate the growth of the population based on rr and KK
+    PP[ii]<-PP[ii-1] + DD[ii-1] - CC[ii-1] # and add that growth to that year's population, remove the catch, and update population levels for next year
+  }
+  Pred <- qq_small*PP #calculate the Predictions for the index of abundance by translating the model population by catchability
+  return(Pred) # this function returns predictions
+}
+
+ProductionFunction3(rr = 0.27, KK = 7000/10000, qq = 0.006*10000, CC = whelk.data$CC)
+
+Whelk.nls4.1<-nls(II ~ ProductionFunction3(rr=rr, KK=KK, qq=qq, a = a, CC = CC), 
+                  algorithm = 'port',
+                  data = list(CC = whelk.data$CC, II = whelk.data$II), 
+                  start = c(rr = 0.15, KK = 10000/10000, qq = 0.00008*10000, a = 0.8),
+                  lower = c(rr = 0.01, KK = 1000/10000, qq = 0.000001*10000, a = 0.1),
+                  upper = c(rr = 1, KK = 30000/10000, qq = 0.1*10000, a = 1),
+                  control = list(maxiter = 100000, minFactor=0.000001), 
+                  trace = TRUE)
+
+summary(Whelk.nls4.1)
+
+best_pars4 <- coef(Whelk.nls4.1) #extract best-fit parameters
+
+best_pred4 <- ProductionFunction3(rr=best_pars4[1], 
+                                  KK=best_pars4[2], 
+                                  qq=best_pars4[3], 
+                                  a=best_pars4[4], 
+                                  CC=whelk.data$CC) # create predictions
+
+tibble(YY=whelk.data$YY, II = whelk.data$II, best_pred3, best_pred4) %>% ggplot(aes(YY, best_pred)) + 
+  geom_line() + geom_point(aes(YY, II)) + xlab("Time") + ylab("Observed (points) and Predicted (lines) CPUE") + 
+  geom_line(aes(YY, best_pred2), color='red', linetype = 2) + 
+  geom_line(aes(YY, best_pred3), color='blue', linetype = 3) +
+  geom_line(aes(YY, best_pred4), color='purple', linetype = 4) 
+
 
 MSY <- best_pars3[1]*best_pars3[2]/4
 Bmsy <- best_pars3[2]/2

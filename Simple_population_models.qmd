@@ -155,10 +155,10 @@ tibble(PP,TT) %>% ggplot(aes(TT,PP)) + geom_point() + xlab("Time") + ylab("Popul
 #Q2.0: Try KK between values of 10 and 70. What does it control?
 
 PP<-vector(mode = "numeric", length = 10); PP0<-2; rr<-1 ;
-TT<-1:10
+TT<-1:50
 KK<-70
 PP[1]<-PP0+rr*PP0*(1-PP0/KK)
-for(i in 2:10){ PP[i]<-PP[i-1] + rr*PP[i-1]*(1-PP[i-1]/KK)} 
+for(i in 2:max(TT)){ PP[i]<-PP[i-1] + rr*PP[i-1]*(1-PP[i-1]/KK)} 
 PP
 tibble(PP,TT) %>% ggplot(aes(TT,PP)) + geom_point() + xlab("Time") + ylab("Population N")
 ```
@@ -167,10 +167,11 @@ tibble(PP,TT) %>% ggplot(aes(TT,PP)) + geom_point() + xlab("Time") + ylab("Popul
 #Q2.1: Set KK at 50 and rr at 2. Why do you get strange shapes at higher rr values?
 
 PP<-vector(mode = "numeric", length = 1500); PP0<-2; rr<-2 ;
-TT<-1:1500
+TT<-1:1500 
 KK<-50
+#KK <- 70; TT <- 1:50
 PP[1]<-PP0+rr*PP0*(1-PP0/KK)
-for(i in 2:1500){ PP[i]<-PP[i-1] + rr*PP[i-1]*(1-PP[i-1]/KK)} 
+for(i in 2:max(TT)){ PP[i]<-PP[i-1] + rr*PP[i-1]*(1-PP[i-1]/KK)} 
 PP
 tibble(PP,TT) %>% ggplot(aes(TT,PP)) + geom_point() + xlab("Time") + ylab("Population N")
 

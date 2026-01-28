@@ -124,11 +124,11 @@ Yield is maximized at a certain value for population size, usually towards a mid
 
 To understand how much we should fish in order to achieve the 'right' population size, we need three pieces of information:
 
--   the relationship between fishing activity and population size (effort x biomass).
+-   the relationship between fishing activity and population size (effort -\> biomass).
 
--   the relationship between population size and growth rate (growth rate x biomass).
+-   the relationship between population size and growth (biomass -\> growth).
 
--   how growth rate translates into concrete fish removals in terms of tonnes or kg (growth rate and effort x catch).
+-   how growth translates controls total fish removals in terms of tonnes or kg (growth -\> catch).
 
 These pieces of information are controlled by *parameters*. Choosing the parameters is done through *fitting* the model to data in order to have a well-supported *parameterization*.
 
@@ -352,7 +352,10 @@ Here is a demonstration of the difference between maximum sustainable yield (MSY
 #If cost linearly increases with effort...
 Cost<-eff*40
 #Q - then what is maximum economic yield (MEY)? [Hint: MEY is the yield with the greatest profit; that is, the greatest difference between Yield and cost]
-tibble(YY, eff, Cost) %>% ggplot(aes(eff, YY)) + geom_point() + ylab("Yield") + xlab("Effort") + geom_point(aes(eff, Cost), shape = 2)
+tibble(YY, eff, Cost) %>% ggplot(aes(eff, YY)) + geom_point() + ylab("Yield") + xlab("Effort") + geom_point(aes(eff, Cost), shape = 2) + 
+  geom_vline(aes(xintercept = eff[which.max(YY)])) +
+  geom_vline(aes(xintercept = eff[which.max(YY - Cost)] ), color = 'red')
+
 
 
 # MSY = K*r/4
