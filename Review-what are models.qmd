@@ -196,7 +196,7 @@ In order to run this script, the 'golden.section.search' function must be saved 
 
 ```{r, echo = TRUE}
 
-source('goldensectionsearch.r')
+source('lib/goldensectionsearch.r')
 
 golden.section.search(SS_f, 1, 3, 0.00001)
 

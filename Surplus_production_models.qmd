@@ -367,7 +367,7 @@ eff[which.max(YY - Cost)] #MEY
 
 ### Independent exercise
 
-[Here](data/Pella_Tomlinson_Ex.Rmd) are sections that can be put into an Rmarkdown file as a template to get you started.
+[Here](Pella_Tomlinson_Ex_template.Rmd) are sections that can be put into an Rmarkdown file as a template to get you started.
 
 ```{r}
 #Extra - Now look up the equation for a Pella-Tomlinson production function and 
@@ -378,7 +378,7 @@ eff[which.max(YY - Cost)] #MEY
 
 ```
 
-[Here](data/Pella_Tomlinson_Ex_answer.Rmd) is a final version.
+[Here](Pella_Tomlinson_Ex.Rmd) is a final version.
 
 ## Let's talk about a shortcut
 

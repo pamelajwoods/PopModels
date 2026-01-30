@@ -15,21 +15,22 @@ theme_set(theme_minimal())
 
 In this exercise, we take the concepts we learned yesterday regarding equilibrium properties of the Schaefer surplus production model, and we attempt to apply them using whelk data.
 
-Whelk data you can retrieve by downloading and importing them from the institute advice [webpage](https://dt.hafogvatn.is/astand/2023/45_WHE_en.html).
+Whelk data you can retrieve by downloading and importing them from the institute advice [webpage](https://www.hafogvatn.is/en/harvesting-advice).
 
 ```{r, echo = TRUE}
 
-WHE_landings <- read_csv('WHE_landings.csv')
-WHE_assessment <- read_csv('WHE_assessment.csv')
+WHE_landings <- read_csv('data/WHE_landings.csv')
+WHE_assessment <- read_csv('data/WHE_assessment.csv')
 
 whelk.data <- 
   WHE_landings %>% 
   group_by(year) %>% 
   summarise(landings = sum(landings))  %>% 
-  bind_rows(tibble(year=2020, landings=NA)) %>%  
+  bind_rows(tibble(year=2020, landings=0)) %>%  
   left_join(WHE_assessment) %>% 
   rename(YY = year, II = cpue, CC = landings) %>% 
-  filter(YY > 2003) 
+  filter(YY > 2003) |> 
+  arrange(YY)
 
 ProductionFunction<-function(rr, KK, qq, PP0=KK, CC){
   # II = CPUE data; rr, KK, qq, and PP0 are parameters
@@ -54,9 +55,9 @@ ProductionFunction<-function(rr, KK, qq, PP0=KK, CC){
 #Note the scale of q, KK, and PP0 should be roughly right for nls to work. If not, try multiplying
 #or dividing by 10 or 100 or 1000
 #c(rr = 0.25, KK = 9000, qq = 0.01)
-Whelk.nls <- nls(II ~ ProductionFunction(rr=rr, KK=KK, qq=qq, CC=CC), 
-               data = list(CC = whelk.data$CC, II = whelk.data$II), 
-               start = c(rr = 0.15, KK = 10000, qq = 0.00008), 
+Whelk.nls <- nls(II ~ ProductionFunction(rr=rr1, KK=KK1, qq=qq1, CC=CC1), 
+               data = list(CC1 = whelk.data$CC, II = whelk.data$II), 
+               start = c(rr1 = 0.15, KK1 = 10000, qq1 = 0.00008), 
                control = list(maxiter = 10000, minFactor=0.000001))
 
 summary(Whelk.nls)
@@ -153,12 +154,12 @@ summary(Whelk.nls3.1)
 
 
 
-Whelk.nls3.2<-nls(II ~ ProductionFunction2(rr=rr, KK=KK, qq=qq, a = a, CC = CC), 
+Whelk.nls3.2<-nls(II ~ ProductionFunction2(rr=rr1, KK=KK1, qq=qq1, a = a1, CC = CC1), 
                algorithm = 'port',
-               data = list(CC = whelk.data$CC, II = whelk.data$II), 
-               start = c(rr = 1, KK = 5000, qq = 0.08, a = 0.8),
-               lower = c(rr = 0.01, KK = 1000, qq = 0.000001, a = 0.1),
-               upper = c(rr = 1, KK = 30000, qq = 0.1, a = 1),
+               data = list(CC1 = whelk.data$CC, II = whelk.data$II), 
+               start = c(rr1 = 1, KK1 = 5000, qq1 = 0.08, a1 = 0.8),
+               lower = c(rr1 = 0.01, KK1 = 1000, qq1 = 0.000001, a = 0.1),
+               upper = c(rr1 = 1, KK1 = 30000, qq1 = 0.1, a1 = 1),
                control = list(maxiter = 100000, minFactor=0.000001), 
                trace = TRUE)
 

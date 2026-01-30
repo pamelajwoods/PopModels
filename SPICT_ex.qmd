@@ -48,17 +48,17 @@ Want to try fitting a SPiCT model on your own? Here are some data from our commo
 ```{r, echo = TRUE}
 #### whelk ex. Download data files from the advice page for Common whelk at hafogvatn.is.
 library(spict)
-WHE_landings <- read_csv('WHE_landings.csv')
-WHE_assessment <- read_csv('WHE_assessment.csv')
+WHE_landings <- read_csv('data/WHE_landings.csv')
+WHE_assessment <- read_csv('data/WHE_assessment.csv')
 
 whelk.data <- 
   WHE_landings %>% 
   group_by(year) %>% 
   summarise(landings = sum(landings))  %>% 
-  bind_rows(tibble(year=2020, landings=NA)) %>%  
+  bind_rows(tibble(year=2020, landings=0)) %>%  
   left_join(WHE_assessment) %>% 
-  rename(YY = year, II = cpue, CC = landings) %>% 
-  filter(YY > 2003) %>% 
+  rename(YY = year, II = `biomass index`, CC = landings) %>% 
+  filter(YY > 2003) |> 
   arrange(YY)
 
 whelk <- NULL
@@ -66,12 +66,8 @@ whelk$obsC <- whelk.data$CC
 whelk$timeC <- whelk$timeI <- whelk.data$YY
 whelk$obsI <- whelk.data$II
 
-
 inp <- check.inp(whelk)
 inp
-
-
-
 ```
 
 ```{r}
@@ -88,18 +84,14 @@ plotspict.ci(inp)
 res <- fit.spict(inp)
 names(res)
 res$opt
-
-
 ```
 
 ```{r}
 summary(res)
-
 ```
 
 ```{r}
 plot(res)
-
 ```
 
 Would this model tick all boxes in the checklist and be acceptable? What could be done make the model better? Try taking a second look at the [technical guidelines](https://raw.githubusercontent.com/DTUAqua/spict/master/spict/inst/doc/spict_guidelines.pdf). These technical guidelines will refer to "residuals", which are standardly used across all statistical modelling frameworks to understand how well a model fits a set of data.
@@ -146,7 +138,15 @@ hist(rnorm(200,sd = 10))
 
 ```
 
-The same principles apply when looking at more complex models, such as non-linear models like SPICT. The model is considered to fit the data well when there patterns in the residuals appear random. Further diagnostics aim to show how much information regarding population dynamics lies in the model.
+The same principles apply when looking at more complex models, such as non-linear models like SPICT. The model is considered to fit the data well when there patterns in the residuals appear random. The diagnostics plots below check to determine whether residuals are:
+
+-   (second row of plots): normally distributed around a slope of 0 along the full time series
+
+-   (third row of plots): independentally and identically distributed (iid), especially with regards to autocorrelation (i.e., there should be no autocorrelation along the time series)
+
+-   (fourth row of plots): normally distributed along the full range of minimum -\> maximum values
+
+Further diagnostics aim to show how consistent the model estimation is from year to year, and whether there is any consistent over- or under-estimation (retrospective analysis, with bias measured by a Mohn's rho statistic).
 
 ```{r}
 pres <- calc.process.resid(res)
@@ -156,3 +156,65 @@ retrores <- retro(res, nretroyear = 4, mc.cores = 1)
 plotspict.retro(retrores)
 
 ```
+
+### Review: residuals demonstration
+
+When there is not a lot of contrast in the data, or the data are highly variable, some assumptions may be needed to constrain the optimization. For example, the whelk model used for assessment at the MFRI is constrained to have a symmetrical surplus production curve, thereby assuming a Schaeffer model. Other changes include:
+
+-    changing the priors for several parameters
+
+-   constraining the ratio between observation and process error to be 1 (i.e., forcing them to be equal) for both the biomass model and the fishing model
+
+-   Phasing the estimation so certain parameters are estimating before others.
+
+Can you see in the code below where these are implemented?
+
+```{r}
+#-----------Adding settings from the actual assessment--------#
+# Priors from Pamela Woods, Jónas Páll Jonasson,
+# Bayesian hierarchical surplus production model of the common whelk Buccinum undatum in Icelandic waters,
+# Fisheries Research,
+# Volume 194,
+# 2017,
+# Pages 117-128,
+# ISSN 0165-7836,
+# https://doi.org/10.1016/j.fishres.2017.05.011.
+# (https://www.sciencedirect.com/science/article/pii/S0165783617301388)
+
+# A prior is set using
+list.possible.priors()
+
+inp$priors$logK <- c(log(3*2500 + 2*3500 + 4000), sqrt(0.0924), 1)
+inp$priors$logr <- c(log(0.0753), sqrt(0.0342), 1)
+inp$priors$logbkfrac<-c(log(0.4674),sqrt(0.0102),1)
+#inp$priors$logq <- c(log(0.1196), sqrt(0.0650),1)
+
+inp$priors$logalpha=c(1,1,0) # deactivate
+inp$priors$logbeta=c(1,1,0) # deactivate
+inp$priors$logn <- c(1, 1, 0) # deactivate
+inp$phases$logsdb <- -1
+inp$phases$logn= -1
+
+inp$ini$logsdb <- log(0.1)
+inp$priors$logsdf=c(log(3), 0.5, 1) # process noise of F
+inp$priors$logsdc=c(log(0.1), 0.2, 1) # observation noise Catch
+
+res<-fit.spict(inp)
+summary(res)
+plot(res)
+
+# Diagnostics plot
+
+res1<- calc.osa.resid(res)
+plotspict.diagnostic(res1)
+
+#retro figures
+
+res2 <- spict::retro(res, nretroyear = 5, mc.cores = 1)
+plotspict.retro(res2)
+
+mohns_rho(res2, what = c("FFmsy", "BBmsy"))
+
+```
+
+### 

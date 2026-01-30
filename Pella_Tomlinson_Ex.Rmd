@@ -1,0 +1,156 @@
+---
+title: "Pella Tomlinson Exercise"
+author: "Pamela J. Woods"
+date: "2024-01-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Introduction
+
+Google Pella Tomlinson, describe what it is. <https://haddonm.github.io/URMQMF/surplus-production-models.html>
+
+## Methods
+
+Describe the exercise.
+
+## Results and Discussion
+
+R code and a plot.
+
+Below, copy and paste the Schaefer model, then modify it to be Pella Tomlinson.
+
+```{r model}
+  eff_p<-seq(0,2,0.1) # values of effort to loop over
+  YY_p<-vector(mode = "numeric", length = length(eff_p))
+  XX_p<-vector(mode = "numeric", length = length(eff_p))
+  
+  Catchability<-0.1
+  TT<-1:500
+  KK<-2000
+  PP0<-1; rr<- 0.2
+  p <- 1.5
+  
+  
+  for(j in 1:length(eff_p)){
+    
+    PP<-vector(mode = "numeric", length = 500); 
+    DD<-vector(mode = "numeric", length = 500);
+    CC<-vector(mode = "numeric", length = 500); 
+    
+    Effort<- eff_p[j] 
+    
+    DD0<-rr/p*PP0*(1-(PP0/KK)^p)
+    CC0<-PP0*Effort*Catchability; 
+    PP[1]<-PP0 + DD0 - CC0
+    
+    for(i in 2:500){ 
+      
+      DD[i-1]<- rr*PP[i-1]/p*(1-(PP[i-1]/KK)^p)
+      CC[i-1]<- PP[i-1]*Effort*Catchability
+      PP[i]<- PP[i-1] + DD[i-1] - CC[i-1]
+      
+    } 
+    
+    DD[500]<- rr*PP[500]/p*(1-(PP[500]/KK)^p)
+    CC[500]<- PP[500]*Effort*Catchability
+    
+    #SAVE RESULTS: LAST (EQUILIBRIUM) VALUE OF CATCH AND LAST VALUE OF POPULATION 
+    YY_p[j] <- CC[500] # Equilibrium Yield
+    XX_p[j] <-  PP[500] #or PP[500] # Equilibrium Population B
+    
+  }
+  
+  
+  p1 <- tibble(XX_p,YY_p,eff_p) %>% ggplot(aes(eff_p, YY_p)) + geom_point() + ylab("Yield") + xlab( "Effort")
+  p2 <- tibble(XX_p,YY_p,eff_p) %>% ggplot(aes(eff_p, XX_p)) + geom_point() + ylab("Population B") + xlab( "Effort")
+  p3 <- tibble(XX_p,YY_p,eff_p) %>% mutate(CPUE = YY_p/eff_p) %>% ggplot(aes(eff_p, CPUE)) + geom_point() + xlab("Effort") 
+  
+  gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
+  
+  #If cost linearly increases with effort...
+  Cost<-eff_p*40
+  #Q - then what is maximum economic yield (MEY)? [Hint: MEY is the yield with the greatest profit; that is, the greatest difference between Yield and cost]
+  tibble(YY_p, eff_p, Cost) %>% ggplot(aes(eff_p, YY_p)) + geom_point() + ylab("Yield") + xlab("Effort") + geom_point(aes(eff_p, Cost), shape = 2)
+
+  # MSY = K*r/4
+  # Nmsy = K/2
+  
+  eff_p[which.max(YY_p)] #MSY
+  
+  eff_p[which.max(YY_p - Cost)] #MEY
+```
+
+Below, copy and paste the Schaeffer model. Rename the vectors for Saving Results.
+
+```{r model2}
+  eff<-seq(0,2,0.1) # values of effort to loop over
+  YY<-vector(mode = "numeric", length = length(eff))
+  XX<-vector(mode = "numeric", length = length(eff))
+  
+  Catchability<-0.1
+  TT<-1:500
+  KK<-2000
+  PP0<-1; rr<- 0.2
+  
+  for(j in 1:length(eff)){
+    
+    PP<-vector(mode = "numeric", length = 500); 
+    DD<-vector(mode = "numeric", length = 500);
+    CC<-vector(mode = "numeric", length = 500); 
+    
+    Effort<- eff[j] 
+    
+    DD0<-rr*PP0*(1-PP0/KK)
+    CC0<-PP0*Effort*Catchability; 
+    PP[1]<-PP0 + DD0 - CC0
+    
+    for(i in 2:500){ 
+      
+      DD[i-1]<- rr*PP[i-1]*(1-PP[i-1]/KK)
+      CC[i-1]<- PP[i-1]*Effort*Catchability
+      PP[i]<- PP[i-1] + DD[i-1] - CC[i-1]
+      
+    } 
+    
+    DD[500]<- rr*PP[500]*(1-PP[500]/KK)
+    CC[500]<- PP[500]*Effort*Catchability
+    
+    #SAVE RESULTS: LAST (EQUILIBRIUM) VALUE OF CATCH AND LAST VALUE OF POPULATION 
+    YY[j] <- CC[500] # Equilibrium Yield
+    XX[j] <-  PP[500] #or PP[500] # Equilibrium Population B
+    
+  }
+  
+  
+  p1 <- tibble(XX,YY,eff) %>% ggplot(aes(eff, YY)) + geom_point() + ylab("Yield") + xlab( "Effort")
+  p2 <- tibble(XX,YY,eff) %>% ggplot(aes(eff, XX)) + geom_point() + ylab("Population B") + xlab( "Effort")
+  p3 <- tibble(XX,YY,eff) %>% mutate(CPUE = YY/eff) %>% ggplot(aes(eff, CPUE)) + geom_point() + xlab("Effort") 
+  
+  gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
+  
+  #If cost linearly increases with effort...
+  Cost<-eff*40
+  #Q - then what is maximum economic yield (MEY)? [Hint: MEY is the yield with the greatest profit; that is, the greatest difference between Yield and cost]
+  tibble(YY, eff, Cost) %>% ggplot(aes(eff, YY)) + geom_point() + ylab("Yield") + xlab("Effort") + geom_point(aes(eff, Cost), shape = 2)
+
+  # MSY = K*r/4
+  # Nmsy = K/2
+  
+  eff[which.max(YY)] #MSY
+  
+  eff[which.max(YY - Cost)] #MEY
+  
+```
+
+Plot effort x Yield from Pella Tomlinson.
+
+```{r pressure, echo=FALSE}
+p1 + geom_point(aes(eff_p, YY_p), shape=2, data = tibble(eff_p, YY_p), color = 'red' )
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
