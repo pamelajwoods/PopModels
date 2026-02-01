@@ -161,7 +161,7 @@ plotspict.retro(retrores)
 
 When there is not a lot of contrast in the data, or the data are highly variable, some assumptions may be needed to constrain the optimization. For example, the whelk model used for assessment at the MFRI is constrained to have a symmetrical surplus production curve, thereby assuming a Schaeffer model. Other changes include:
 
--    changing the priors for several parameters
+-   changing the priors for several parameters
 
 -   constraining the ratio between observation and process error to be 1 (i.e., forcing them to be equal) for both the biomass model and the fishing model
 
