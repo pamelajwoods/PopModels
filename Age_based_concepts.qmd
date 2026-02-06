@@ -15,19 +15,19 @@ theme_set(theme_minimal())
 
 ## Age-based population dynamics
 
-In surplus production models, the exploitable portion of the population is modeled as a single blob of biomass that grows and declines over time according to some rules (i.e., parameters). These properties of growth and decline determine the amount of sustainable catch removals (e.g., $MSY = Kr/4$ for a Schaefer model). Using production models simplifies the biological processes greatly, and therefore cannot track true population dynamics when fitted to data as closely as more complex models that contain more parameters designed to track individual cohorts or year classes. The trade-off with adding more parameters is that more data and different types of data are needed to capture age-based dynamics.
+In surplus production models, the exploitable portion of the population is modeled as a single blob of biomass that grows and declines over time according to some rules (i.e., parameters). These properties of growth and decline determine the amount of sustainable catch removals (e.g., $MSY = Kr/4$ for a Schaefer model). Using production models simplifies the biological processes greatly, and therefore cannot track true population dynamics when fitted to data as closely as more complex age-based models that contain more parameters designed to track individual cohorts or year classes. The trade-off with capturing age-based dynamics is that more data and different types of data are needed to fit additional parameters .
 
-In age-based models, the number of individuals in a cohort is estimated by tracking the numbers observed each year through time. As in production models, these numbers may on average grown or declined, but this change is dependent on biological processes that are explicitly modeled, like mortality, reproduction, and body growth. Therefore, the intrinsic growth rate in a surplus production model reflects the combined effects of these factors over all cohorts observed a certain time.
+In age-based models, the number of individuals in a cohort is estimated by tracking the numbers observed each year through time. Each observation of a cohort at each age contributes to the estimation of its initial cohort size, i.e., its recruitment. As in production models, these numbers may on average grow or decline, but this change is dependent on biological processes that are explicitly modeled, like mortality, reproduction, and body growth. Therefore, the intrinsic growth rate in a surplus production model reflects the combined effects of these factors over all cohorts observed a certain time.
 
-To track cohorts, first we need age information, and second we need estimates of numbers at that age in a given year $N_{a,t}$ and then compare them to previous years numbers at the previous $N_{a-1,t-1}$. If we assume for now that there is no migration and the ages we are referring to are greater than the recruitment age, then these numbers should always decline in consecutive years due to mortality. This decline is applied as an exponential decline so that the same proportion of $N_{t-1}$ is removed every year. The rate of this exponential decline $Z$ is a new parameter.
+To track cohorts, first we need age information, and second we need estimates of numbers at that age in a given year $N_{a,t}$. Then, compare them to previous years numbers at the previous age $N_{a-1,t-1}$. If we assume for now that there is no migration and the ages we are referring to are older than the recruiting age, then these numbers should always decline in consecutive years due to mortality. This decline can be applied as an exponential decline so that the same proportion of $N_{t-1}$ is removed every year. The rate of this exponential decline is described by the new parameter $Z$.
 
 $N_{a,t} = N_{a-1,t-1}e^{-Z}$
 
-If we left the equation like this, the population could never grow, but rather only decline over time. To reflect growth, we need to introduce another parameter, which describes the recruitment process. This means we first need to define recruitment age, usually the first age that is observed with decent confidence in the data. Let's call this recruitment age $r$ and call the recruitment number $N_0$. This is similar to the initial population size parameter estimated in a surplus production model, except that it occurs every year at the same age.
+If we left the equation like this, the population could never grow, but rather only decline over time. To reflect growth, we need to introduce another parameter, which describes the recruitment process. Recruitment parameters are comparable to initial population sizes in surplus production models, because they represent the initial unobserved numbers, but are cohort-specific in age-based models. This means we first need to define recruitment age, which for convenience is usually the first age that is observed with decent confidence in the data. Let's call this recruitment age $r$ and call the recruitment number $R_t$.
 
-$N_{a=r, t} = N_{0,t}$
+$N_{a=r, t} = R_{t}$
 
-Now, if we want to understand how the dynamics change over time, all the numbers at a certain time, then we must sum over all ages to get the total numbers. To do this, however, we need to define what the maximum age of the population we want to consider will be. We then have two options for determining numbers at the maximum population age. The first option is to leave the equation as is, and just assume that there are no fish above a certain age. This option may not be realistic in many cases because the older fish may simply be unobserved rather than dead. If they were dead, they would also not be able to be fished, causing a mismatch between the model and reality if older fish come occasionally into the catch. Therefore, the more often used approach is to create a 'plus group' for numbers at maximal ages, where numbers greater than or equal to the age accumulate and are tracked, with mortality and fishing still applied. This requires a new equation for the plus group that includes mortality applied to both fish aging into this final age, as well as the ages already present, allowing numbers to accumulate in this bin. If we set the maximal age to be $a_{max}$, then this equation is:
+Now, if we want to understand how the dynamics change over time, all the numbers at a certain time, then we must sum over all ages to get the total numbers. To do this, however, we need to define what the maximum age of the population we want to consider will be. We then have two options for determining numbers at the maximum population age. The first option is to leave the equation as is, and just assume that there are no fish above a certain age. This option may not be realistic in many cases because the older fish may simply be unobserved rather than dead. If they were dead, they would also not be able to be fished, causing a mismatch between the model and reality if older fish come occasionally into the catch. Therefore, the more popular approach is to create a 'plus group' for numbers at maximal ages, where numbers greater than or equal to the age are tracked together within the same age bin, with mortality and fishing still applied. This requires a new equation for the plus group that incorporates both fish aging into this final age, as well as the ages already present, allowing numbers to accumulate in this bin. If we set the maximal age to be $a_{max}$, then this equation is:
 
 $N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}$
 
@@ -36,11 +36,15 @@ Now we can sum over all numbers to get the total numbers in a given year:
 $$
  N_t = \sum_{n=r}^{a_{max}} \Bigg\{ 
 \begin{array}{ll}
-N_{a=r, t} = N_{0,t},  & a = r\\
+N_{a=r, t} = R_{t},  & a = r\\
 N_{a,t} = N_{a-1,t-1}e^{-Z}, & a = r+1, ..., a_{max}-1\\
 N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}, & a = a_{max}
 \end{array}
 $$
+
+There is one more problem left with fully expressing the cohort-based dynamics, if we want these dynamics to much all the data normally available to us. If we imagine the (theoretical) first year of a population's existence, one could imagine that population to be entirely composed of a single recruitment event, or a single cohort. Over time, several years of recruitment would accumulate, leading to the gradual accumulation of several cohorts, until all age bins are tracking some fish. This would take roughly a generation to fill all length bins.
+
+Normally, we are not tracking populations from their inception, but rather from some point at time in which we actually started observing the numbers in a population. Therefore, our first year of data normally contains all age classes and all cohorts. Age r in the first year is simply the first observation of a cohort that can observed through samples taken at every age through the whole model. All other cohorts in the first year are only partially observed, being generated from recruitment that occurred *a*-*r* years before the model began. Still, because there are data for these cohorts, recruitment can be estimated, but it is usually done via parameters normally referred to as 'initial numbers at age' $N_{a,t=t_0}$, where $t_0$ is the first time-step of the model. If necessary, recruitment could be back-calculated due to the direct relationship to recruitment, but these tend to be highly uncertain due to fewer data points backing their estimation, and are not generally valuable for further analyses.
 
 ## Adding catch to age-based population dynamics
 
@@ -77,7 +81,7 @@ This incorporates body growth, but does not need to be part of the statistical m
 #First set the model structure
 #100 years, ages 0-10
 YY <- 100
-AA <- 10
+AA <- 10 + 1
 ```
 
 Now set the growth and mortality parameters in numbers occurs through adding individuals (i.e., recruitment while ignoring immigration). Mortality is set to $M=0.2$, assuming no fishing mortality at first.
@@ -86,7 +90,7 @@ Now set the growth and mortality parameters in numbers occurs through adding ind
 #natural mortality - these values should be positive
 MM <- 0.2
 
-RecC <- rep(1000,YY)
+RecC <- rep(500,YY)
 
 ```
 
@@ -95,23 +99,23 @@ RecC <- rep(1000,YY)
 #Set total mortality
 ZZ <- MM
 #define empty matrix in the right dimensions for saving results
-NumbersM<-matrix(nrow = YY, ncol = AA + 1)
+NumbersM<-matrix(nrow = YY, ncol = AA)
 
 #run loop through all ages and years. Each of the 3 types of equations are used.
 #run loop through all ages and years. Each of the 3 types of equations are used.
 for(i in 2:YY){
   #fishes are born
   NumbersM[i,1] <- RecC[i]
-  for(j in 2:(AA+1)){
+  for(j in 2:(AA-1)){
     #fishes die
     NumbersM[i, j]<-NumbersM[i-1, j-1]*exp(-ZZ*1) #*1 is here because it is one time step
   }
   
-  #This bit overwrites the values in the last column
-  if(i>12) {NumbersM[i, AA+1]<-NumbersM[i-1, AA]*exp(-ZZ*1) + NumbersM[i-1, AA+1]*exp(-ZZ*1)}
+  #This bit writes the values in the last column
+  if(i>12) {NumbersM[i, AA]<-NumbersM[i-1, AA-1]*exp(-ZZ*1) + NumbersM[i-1, AA]*exp(-ZZ*1)}
 }
 
-#View(NumbersM)
+#View(t(NumbersM))
 
 ```
 
@@ -123,13 +127,13 @@ for(i in 2:YY){
 
 AgeStructModel<-function(Rec, AA=10, Effort = rep(0.2, length(Rec)), qq=1, Sel = c(0,0,rep(1,AA-1))){
 	
-  FF<-matrix(Sel, nrow = length(Rec), ncol = AA + 1, byrow = TRUE)*qq*matrix(Effort, nrow = length(Rec), ncol = AA + 1)
+  FF<-matrix(Sel, nrow = length(Rec), ncol = AA1, byrow = TRUE)*qq*matrix(Effort, nrow = length(Rec), ncol = AA1)
 	
   ZZ <-FF+MM
 	
 #define empty matrix in the right dimensions for saving results
-NumbersM<-matrix(nrow = length(Rec), ncol = AA + 1, data = 0)
-CatchNM<-matrix(nrow = length(Rec), ncol = AA+1, data = 0)
+NumbersM<-matrix(nrow = length(Rec), ncol = AA, data = 0)
+CatchNM<-matrix(nrow = length(Rec), ncol = AA, data = 0)
 
 #run loop through all ages and years. Each of the 3 types of equations are used.
 
@@ -144,12 +148,12 @@ CatchNM<-matrix(nrow = length(Rec), ncol = AA+1, data = 0)
 	#fishes are born
 	  NumbersM[i,1] <- Rec[i] 
 	
-	  for(j in 2:(AA+1)){
+	  for(j in 2:(AA)){
 
 	  	NumbersM[i, j]<-NumbersM[i-1, j-1]*exp(-ZZ[i-1,j])  
 	}
 	  
-	  if(i>12){NumbersM[i, AA+1]<-NumbersM[i-1, AA]*exp(-ZZ[i-1,j]) + NumbersM[i-1, AA+1]*exp(-ZZ[i-1,AA+1])} 
+	  if(i>12){NumbersM[i, AA]<-NumbersM[i-1, AA-1]*exp(-ZZ[i-1,j]) + NumbersM[i-1, AA]*exp(-ZZ[i-1,AA])} 
 	  
 	  CatchNM[i,]<-NumbersM[i,]*FF[i,]/ZZ[i,]*(1-exp(-ZZ[i,]))
   }
@@ -174,10 +178,10 @@ Let's try to repeat the same figure but with variability in Recruitment implemen
 
 ```{r, echo = TRUE}
 set.seed(100)
-Rec <- rep(1000,YY)*rlnorm(n = YY) 
+Rec <- rep(500,YY)*rlnorm(n = YY, sd = 0.5) 
 Rec
 set.seed(100)
-exp(log(1000) + rnorm(n = YY)) #notice that this form of the equation is the same as above
+exp(log(500) + rnorm(n = YY)) #notice that this form of the equation is the same as above
 
 p1 <- tibble(Rec) %>% ggplot(aes(Rec)) + geom_histogram()
 
@@ -194,7 +198,7 @@ NumbersResults<-AgeStructModel(Rec)[[1]]
 CatchResults<-AgeStructModel(Rec)[[2]]
 
 #View(NumbersResults)
-#View(CatchResults)
+#View(t(CatchResults))
 
 ```
 

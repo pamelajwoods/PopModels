@@ -10,7 +10,7 @@ For this part of the GRO-FTP ARAM line, you are expected to already have some fl
 
 The population dynamics section of teaching is split into roughly 8 half-day sessions:
 
-[Simple](Simple%20population%20models.qmd)[population models](Simple_population_models.qmd)
+[Simple population models](Simple_population_models.qmd)
 
 [Review: what are models?](Review-what_are_models.qmd)
 
