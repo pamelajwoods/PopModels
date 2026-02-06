@@ -127,7 +127,7 @@ for(i in 2:YY){
 
 AgeStructModel<-function(Rec, AA=10, Effort = rep(0.2, length(Rec)), qq=1, Sel = c(0,0,rep(1,AA-1))){
 	
-  FF<-matrix(Sel, nrow = length(Rec), ncol = AA1, byrow = TRUE)*qq*matrix(Effort, nrow = length(Rec), ncol = AA1)
+  FF<-matrix(Sel, nrow = length(Rec), ncol = AA, byrow = TRUE)*qq*matrix(Effort, nrow = length(Rec), ncol = AA)
 	
   ZZ <-FF+MM
 	
