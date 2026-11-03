@@ -15,11 +15,15 @@ theme_set(theme_minimal())
 
 ## Age-based population dynamics
 
-In surplus production models, the exploitable portion of the population is modeled as a single blob of biomass that grows and declines over time according to some rules (i.e., parameters). These properties of growth and decline determine the amount of sustainable catch removals (e.g., $MSY = Kr/4$ for a Schaefer model). Using production models simplifies the biological processes greatly, and therefore cannot track true population dynamics when fitted to data as closely as more complex age-based models that contain more parameters designed to track individual cohorts or year classes. The trade-off with capturing age-based dynamics is that more data and different types of data are needed to fit additional parameters .
+In surplus production models, the exploitable portion of the population is modeled as a single blob of biomass that grows and declines over time according to some rules (i.e., parameters). These properties of growth and decline determine the amount of sustainable catch removals (e.g., $MSY = Kr/4$\$MSY = Kr/4\$ for a Schaefer model). Using production models simplifies the biological processes greatly, and therefore cannot track true population dynamics when fitted to data as closely as more complex age-based models that contain more parameters designed to track individual cohorts or year classes. The trade-off with capturing age-based dynamics is that more data and different types of data are needed to fit additional parameters .
 
 In age-based models, the number of individuals in a cohort is estimated by tracking the numbers observed each year through time. Each observation of a cohort at each age contributes to the estimation of its initial cohort size, i.e., its recruitment. As in production models, these numbers may on average grow or decline, but this change is dependent on biological processes that are explicitly modeled, like mortality, reproduction, and body growth. Therefore, the intrinsic growth rate in a surplus production model reflects the combined effects of these factors over all cohorts observed a certain time.
 
-To track cohorts, first we need age information, and second we need estimates of numbers at that age in a given year $N_{a,t}$. Then, compare them to previous years numbers at the previous age $N_{a-1,t-1}$. If we assume for now that there is no migration and the ages we are referring to are older than the recruiting age, then these numbers should always decline in consecutive years due to mortality. This decline can be applied as an exponential decline so that the same proportion of $N_{t-1}$ is removed every year. The rate of this exponential decline is described by the new parameter $Z$.
+To visualize cohorts, it is helpful to think in terms of changes in length distributions over time:
+
+[See Elefan description](https://www.seaaroundus.org/doc/Researcher+Publications/dpauly/PDF/1990/Other/TheGrowthOfELEFAN.pdf)
+
+To track cohorts, first we need age information, and second we need estimates of numbers at that age in a given year $N_{a,t}$. Then, wecompare them to previous years numbers at the previous age $N_{a-1,t-1}$. If we assume for now that there is no migration and the ages we are referring to are older than the recruiting age, then these numbers should always decline in consecutive years due to mortality. This decline can be applied as an exponential decline so that the same proportion of $N_{t-1}$ is removed every year. The rate of this exponential decline is described by the new parameter $Z$.
 
 $N_{a,t} = N_{a-1,t-1}e^{-Z}$
 
@@ -33,16 +37,14 @@ $N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}$
 
 Now we can sum over all numbers to get the total numbers in a given year:
 
-$$
- N_t = \sum_{n=r}^{a_{max}} \Bigg\{ 
+$$ N_t = \sum_{n=r}^{a_{max}} \Bigg\{ 
 \begin{array}{ll}
 N_{a=r, t} = R_{t},  & a = r\\
 N_{a,t} = N_{a-1,t-1}e^{-Z}, & a = r+1, ..., a_{max}-1\\
 N_{a=a_{max}, t}= N_{a-1, t-1}e^{-Z} + N_{a, t-1}e^{-Z}, & a = a_{max}
-\end{array}
-$$
+\end{array}$$
 
-There is one more problem left with fully expressing the cohort-based dynamics, if we want these dynamics to much all the data normally available to us. If we imagine the (theoretical) first year of a population's existence, one could imagine that population to be entirely composed of a single recruitment event, or a single cohort. Over time, several years of recruitment would accumulate, leading to the gradual accumulation of several cohorts, until all age bins are tracking some fish. This would take roughly a generation to fill all length bins.
+There is one more problem left with fully expressing the cohort-based dynamics, if we want these dynamics to match all the data normally available to us. If we imagine the (theoretical) first year of a population's existence, one could imagine that population to be entirely composed of a single recruitment event, or a single cohort. Over time, several years of recruitment would accumulate, leading to the gradual accumulation of several cohorts, until all age bins are tracking some fish. This would take roughly a generation to fill all age bins.
 
 Normally, we are not tracking populations from their inception, but rather from some point at time in which we actually started observing the numbers in a population. Therefore, our first year of data normally contains all age classes and all cohorts. Age r in the first year is simply the first observation of a cohort that can observed through samples taken at every age through the whole model. All other cohorts in the first year are only partially observed, being generated from recruitment that occurred *a*-*r* years before the model began. Still, because there are data for these cohorts, recruitment can be estimated, but it is usually done via parameters normally referred to as 'initial numbers at age' $N_{a,t=t_0}$, where $t_0$ is the first time-step of the model. If necessary, recruitment could be back-calculated due to the direct relationship to recruitment, but these tend to be highly uncertain due to fewer data points backing their estimation, and are not generally valuable for further analyses.
 
@@ -105,8 +107,8 @@ NumbersM<-matrix(nrow = YY, ncol = AA)
 #run loop through all ages and years. Each of the 3 types of equations are used.
 for(i in 2:YY){
   #fishes are born
-  NumbersM[i,1] <- RecC[i]
-  for(j in 2:(AA-1)){
+  NumbersM[i-1,1] <- RecC[i]
+  for(j in 2:(AA)){
     #fishes die
     NumbersM[i, j]<-NumbersM[i-1, j-1]*exp(-ZZ*1) #*1 is here because it is one time step
   }
@@ -114,7 +116,7 @@ for(i in 2:YY){
   #This bit writes the values in the last column
   if(i>12) {NumbersM[i, AA]<-NumbersM[i-1, AA-1]*exp(-ZZ*1) + NumbersM[i-1, AA]*exp(-ZZ*1)}
 }
-
+NumbersM[YY,1] <- RecC[YY]
 #View(t(NumbersM))
 
 ```
@@ -125,7 +127,7 @@ for(i in 2:YY){
 #F = selectivity*q*effort
 #Catch(1979,1980) = N(1979)*F/Z*(1 – exp(-Z*(1980 – 1979)) 
 
-AgeStructModel<-function(Rec, AA=10, Effort = rep(0.2, length(Rec)), qq=1, Sel = c(0,0,rep(1,AA-1))){
+AgeStructModel<-function(Rec, AA=10, Effort = rep(0.2, length(Rec)), qq=1, Sel = c(0,0,rep(1,AA-2))){
 	
   FF<-matrix(Sel, nrow = length(Rec), ncol = AA, byrow = TRUE)*qq*matrix(Effort, nrow = length(Rec), ncol = AA)
 	
@@ -137,16 +139,13 @@ CatchNM<-matrix(nrow = length(Rec), ncol = AA, data = 0)
 
 #run loop through all ages and years. Each of the 3 types of equations are used.
 
-	#fishes are born
-  NumbersM[1,1] <- Rec[1]
-
   for(i in 2:length(Rec)){
 	  
 	 #calculate fishing on previous year
 	 #because all ages are not available until after the 11th year, we begin calculating catch then
 
 	#fishes are born
-	  NumbersM[i,1] <- Rec[i] 
+	  NumbersM[i-1,1] <- Rec[i] 
 	
 	  for(j in 2:(AA)){
 
@@ -158,6 +157,9 @@ CatchNM<-matrix(nrow = length(Rec), ncol = AA, data = 0)
 	  CatchNM[i,]<-NumbersM[i,]*FF[i,]/ZZ[i,]*(1-exp(-ZZ[i,]))
   }
   
+#fishes are born
+NumbersM[length(Rec),1] <- Rec[length(Rec)]
+
 	return(list(NumbersM, CatchNM))
 	}
 NumbersResults<-AgeStructModel(RecC)[[1]]
@@ -167,7 +169,7 @@ p1 <- tibble(year = 1:YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResult
 
 p2 <- tibble(year = 1:YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(N, C)) + geom_line() 
 
-p3 <- tibble(R=NumbersResults[,1], N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(R, N)) + geom_line() 
+p3 <- tibble(R=NumbersResults[,1], N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(N, R)) + geom_line() 
 
 gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
 
@@ -207,7 +209,7 @@ p1 <- tibble(year = 1:YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResult
 
 p2 <- tibble(year = 1:YY, N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(N, C)) + geom_line() 
 
-p3 <- tibble(R=NumbersResults[,1], N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(R, N)) + geom_line() 
+p3 <- tibble(R=NumbersResults[,1], N=apply(NumbersResults, 1, sum), C = apply(CatchResults, 1, sum)) %>% ggplot(aes(N,R)) + geom_line() 
 
 gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
 ```
@@ -309,11 +311,11 @@ If growth were perfectly linear, these length distributions would look the same.
 
 Now try changing properties of the model above to see how they affect the model results in terms of MSY and length distributions. Try changing for example:
 
--   Recruitment properties
+- Recruitment properties
 
--   Selectivity
+- Selectivity
 
--   Natural mortality
+- Natural mortality
 
 ```{r}
 
@@ -376,8 +378,8 @@ Depending on the amount of contrast in the data, it may also be able to detect a
 	BevHoltRec<-alpha*SSB/(1+beta*SSB)
 	p1 <- tibble(SSB, BevHoltRec) %>%  ggplot(aes(SSB, BevHoltRec)) + geom_point()
 
-	alpha<-0.39
-	beta<-0.015
+	alpha<-0.9
+	beta<-0.003
 	RickerRec<-alpha*SSB*exp(-beta*SSB)
 	p2 <- tibble(SSB, RickerRec) %>%  ggplot(aes(SSB, RickerRec)) + geom_point()
 
@@ -387,8 +389,8 @@ gridExtra::grid.arrange(p1, p2, ncol = 2)
 
 ### Further considerations
 
--   What data are necessary to fit an statistical catch-at-age model?
+- What data are necessary to fit an statistical catch-at-age model?
 
--   How would you get the data needed to fill in this information?
+- How would you get the data needed to fill in this information?
 
--   What would the sampling scheme look like?
+- What would the sampling scheme look like?
